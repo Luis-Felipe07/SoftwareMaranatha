@@ -1,0 +1,201 @@
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    background: url(../IMG/fondo.jpeg) no-repeat center center;
+    background-size: cover;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.contenedor {
+    position: relative;
+    width: 400px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.2); 
+    height: auto;
+    padding: 40px;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5); 
+}
+
+.input-contenedor {
+    position: relative;
+    margin: 30px 0;
+    width: 100%;
+    border-bottom: 2px solid #fff;
+    transition: border-color 0.3s ease;
+}
+
+.input-contenedor input {
+    width: 100%;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #fff;
+    padding: 0 40px 0 10px; 
+}
+
+.input-contenedor input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.input-contenedor i {
+    position: absolute;
+    color: #fff;
+    font-size: 1.6rem;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.input-contenedor i:hover {
+    color: #ff0000;
+    transform: scale(1.1); 
+}
+
+input:focus {
+    border-bottom-color: #ff0000;
+    outline: none;
+}
+
+.olvidar {
+    color: #fff;
+    margin: 15px 0;
+}
+
+.olvidar a {
+    margin-left: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.boton-acceder {
+    width: 100%;
+    padding: 12px;
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    position: relative;
+}
+
+.boton-acceder:hover {
+    background-color: #cc0000;
+    transform: translateY(-2px);
+}
+
+.boton-google {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; 
+    transition: background-color 0.3s;
+}
+
+.boton-google img {
+    width: 18px; 
+}
+
+.boton-google:hover {
+    background-color: #f0f0f0;
+}
+
+.registrar {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.registrar a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.mensaje-error {
+    color: #ff4444;
+    font-size: 0.9rem; 
+    margin-top: 5px;
+    display: none;
+    text-align: left;
+}
+
+.cargando {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #ff0000;
+    border-radius: 50%;
+    animation: girar 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes girar {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+    .contenedor {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+    -webkit-text-fill-color: #fff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+.input-contenedor input:-webkit-autofill {
+    background-color: transparent !important;
+}

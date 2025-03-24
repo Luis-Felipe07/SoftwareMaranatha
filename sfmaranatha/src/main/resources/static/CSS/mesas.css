@@ -1,0 +1,8 @@
+body {
+    background-color: #d63031;
+    color: #fdd835;
+}
+
+button.btn-warning {
+    width: 100%;
+}

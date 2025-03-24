@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Registro</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="CSS/estilo-FR.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header text-center">
+            <h2>Registro</h2>
+            <p class="subtitle">Crea tu cuenta</p>
+          </div>
+          <div class="card-body">
+            <form id="formularioRegistro">
+              <!-- Nombre Completo -->
+              <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fas fa-user"></i>
+                    </span>
+                  </div>
+                  <input type="text" id="nombre" class="form-control" placeholder="Ingrese su nombre completo" required>
+                </div>
+              </div>
+              
+              <!-- Correo Electrónico -->
+              <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                  </div>
+                  <input type="email" id="correo" class="form-control" placeholder="Escriba su correo electrónico" required>
+                </div>
+              </div>
+              
+              <!-- Seleccionar Rol -->
+              <div class="form-group">
+                <label for="rol">Rol</label>
+                <select id="rol" class="form-control custom-select" required>
+                  <option value="" disabled selected>Seleccione un rol</option>
+                  <option value="ENCARGADO">Encargado de Mesas y Menús</option>
+                  <option value="ADMIN">Administrador</option>
+                </select>
+              </div>
+              
+              <!-- Crear Contraseña -->
+              <div class="form-group">
+                <label for="contraseña">Contraseña</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </div>
+                  <input type="password" id="contraseña" class="form-control" placeholder="Crear una contraseña" required>
+                  <div class="input-group-append">
+                    <button class="btn toggle-password" type="button" id="mostrarContraseña">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="password-strength mt-2">
+                  <div class="progress">
+                    <div class="progress-bar" id="barraFortaleza" role="progressbar" style="width: 0%;"></div>
+                  </div>
+                  <small id="passwordHelp" class="form-text">Usa mayúsculas, números y símbolos para una contraseña segura</small>
+                </div>
+              </div>
+              
+              <!-- Confirmar Contraseña -->
+              <div class="form-group">
+                <label for="confirmarContraseña">Confirmar Contraseña</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </div>
+                  <input type="password" id="confirmarContraseña" class="form-control" placeholder="Confirmar contraseña" required>
+                  <div class="input-group-append">
+                    <button class="btn toggle-password" type="button" id="mostrarConfirmarContraseña">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Botón de Registro -->
+              <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary btn-block">Registrarme</button>
+              </div>
+              
+              <div class="text-center mt-3">
+                <p>¿Ya tienes cuenta? <a href="/login.html" class="login-link">Inicia sesión</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="JS/formulario-de-registro.js"></script>
+</body>
+</html>

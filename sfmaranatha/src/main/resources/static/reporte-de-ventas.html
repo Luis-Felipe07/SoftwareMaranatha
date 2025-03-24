@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Ventas - Restaurante Maranatha</title>
+  <!-- Bootstrap  -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- CSS  -->
+  <link rel="stylesheet" href="/CSS/reporte-de-ventas.css">
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Maranatha - Reporte de Ventas</a>
+    </div>
+  </nav>
+
+  <!-- Contenedor principal -->
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Reporte de Ventas</h2>
+
+    <!-- Filtros de fecha -->
+    <div class="row justify-content-center filter-row">
+      <div class="col-md-4 mb-2">
+        <label for="fechaInicio">Fecha Inicio:</label>
+        <input type="date" id="fechaInicio" class="form-control">
+      </div>
+      <div class="col-md-4 mb-2">
+        <label for="fechaFin">Fecha Fin:</label>
+        <input type="date" id="fechaFin" class="form-control">
+      </div>
+      <div class="col-md-4 align-self-end text-center">
+        <button class="btn btn-primary mt-2" id="actualizarReporte">Actualizar Reporte</button>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <canvas id="graficoSemanal"></canvas>
+      </div>
+      <div class="col-md-6 mb-4">
+        <canvas id="graficoMensual"></canvas>
+      </div>
+    </div>
+
+    <!-- Botones para descargar reportes -->
+    <div class="text-center mt-5">
+      <button class="btn btn-success" id="descargarExcel">Descargar Reporte (Excel)</button>
+      <button class="btn btn-danger" id="descargarPDF">Descargar Reporte (PDF)</button>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script src="/JS/reporte-de-ventas.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+body {
+    background-color: #ffeaa7; 
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #d62828; 
+    color: white;
+  }
+  
+  .navbar-brand {
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .navbar-brand:hover {
+    color: #ffcccc; 
+  }
+  
+  /* Contenedor Principal */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Filtros */
+  .filter-row label {
+    font-weight: bold;
+  }
+  
+  #actualizarReporte {
+    background-color: #d62828;
+    border: none;
+  }
+  
+  #actualizarReporte:hover {
+    background-color: #b22222;
+  }
+  
+  /* Gráficos */
+  canvas {
+    max-height: 300px;
+    margin: 20px auto;
+    display: block;
+  }
+  
+  /* Botones para descargar reportes */
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  #descargarExcel {
+    background-color: #28a745;
+    border: none;
+    color: white;
+  }
+  
+  #descargarExcel:hover {
+    background-color: #218838;
+  }
+  
+  #descargarPDF {
+    background-color: #dc3545; 
+    border: none;
+    color: white;
+  }
+  
+  #descargarPDF:hover {
+    background-color: #c82333;
+  }
+  

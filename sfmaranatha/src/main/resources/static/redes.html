@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PQR - Restaurante Maranatha</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+  <!-- Íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Animaciones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/CSS/redes.css">
+</head>
+<body>
+  <header class="py-3 shadow">
+    <div class="logo-container">
+      <h1 class="logo-text mb-0">Restaurante Maranatha</h1>
+    </div>
+  </header>
+
+  <div class="container main-container animate__animated animate__fadeIn">
+    <h2 class="text-center mb-4" style="color: var(--dark-red)">Peticiones, Quejas y Reclamos</h2>
+    
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <div class="social-card">
+          <h3 class="text-center mb-4" style="color: var(--dark-red)">Síguenos en redes sociales</h3>
+          <div class="d-flex justify-content-center flex-wrap gap-4">
+            <a href="#" class="social-link" target="_blank">
+              <i class="fab fa-facebook"></i>
+              <span>Restaurante Maranatha</span>
+            </a>
+            <a href="#" class="social-link" target="_blank">
+              <i class="fab fa-instagram"></i>
+              <span>@Restaurante_maranatha</span>
+            </a>
+            <a href="mailto:restaurantemaranatha@gmail.com" class="contact-link">
+              <i class="fas fa-envelope"></i>
+              <span>restaurantemaranatha@gmail.com</span>
+            </a>
+            <a href="https://wa.me/573222222222" class="contact-link" target="_blank">
+              <i class="fab fa-whatsapp"></i>
+              <span>+57 322 222 2222</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="pqr-form">
+          <h3 class="form-section-title">Formulario PQR</h3>
+          <form id="pqrForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="nombre" placeholder="Nombre completo" required>
+                  <label for="nombre">Nombre completo</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="email" class="form-control" id="email" placeholder="Correo electrónico" required>
+                  <label for="email">Correo electrónico</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="tel" class="form-control" id="telefono" placeholder="Teléfono">
+                  <label for="telefono">Teléfono</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <select class="form-select" id="tipo" required>
+                    <option value="" selected disabled>Seleccione una opción</option>
+                    <option value="peticion">Petición</option>
+                    <option value="queja">Queja</option>
+                    <option value="reclamo">Reclamo</option>
+                    <option value="sugerencia">Sugerencia</option>
+                    <option value="felicitacion">Felicitación</option>
+                  </select>
+                  <label for="tipo">Tipo de solicitud</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label for="calificacion" class="form-label">¿Cómo calificaría nuestro servicio?</label>
+              <div class="star-rating" id="calificacion">
+                <i class="fas fa-star star" data-value="1"></i>
+                <i class="fas fa-star star" data-value="2"></i>
+                <i class="fas fa-star star" data-value="3"></i>
+                <i class="fas fa-star star" data-value="4"></i>
+                <i class="fas fa-star star" data-value="5"></i>
+              </div>
+              <input type="hidden" id="rating-value" name="rating" value="0">
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea class="form-control" id="mensaje" style="height: 150px" placeholder="Escribe tu mensaje aquí" required></textarea>
+              <label for="mensaje">Detalle de tu solicitud</label>
+            </div>
+            
+            <div class="form-floating mb-4">
+              <textarea class="form-control" id="sugerencias" style="height: 100px" placeholder="¿Cómo podemos mejorar?"></textarea>
+              <label for="sugerencias">Sugerencias o comentarios adicionales</label>
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-submit px-5 py-3">
+                <i class="fas fa-paper-plane me-2"></i>Enviar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Restaurante Maranatha. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+  
+  <script src="/JS/redes.js"></script>
+</body>
+</html>

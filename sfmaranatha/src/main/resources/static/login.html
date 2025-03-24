@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión</title>
+    <script src="https://kit.fontawesome.com/39501d78e3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="CSS/estilo.css">
+</head>
+<body>
+    <section>
+        <div class="contenedor">
+            <form id="login-formulario" novalidate>
+                <h2>Iniciar Sesión</h2>
+
+                <div class="input-contenedor">
+                    <input type="email" id="email" name="email" 
+                           placeholder="Correo electrónico" 
+                           required autocomplete="email">
+                    <i class="fa-regular fa-envelope"></i>
+                    <div class="mensaje-error" id="errorEmail"></div>
+                </div>
+
+                <div class="input-contenedor">
+                    <input type="password" id="contraseña" name="contraseña" 
+                           placeholder="Contraseña" 
+                           required autocomplete="current-password">
+                    <i class="fa-solid fa-eye" id="mostrar-contraseña"></i>
+                    <div class="mensaje-error" id="errorContraseña"></div>
+                </div>
+
+                <div class="olvidar">
+                    <label>
+                        <input type="checkbox" id="recordar"> Recordar
+                    </label>
+                    <a href="recuperar-contrasenia.html" target="_blank" rel="noopener noreferrer">Olvidé mi contraseña</a>
+                </div>
+
+                <button type="submit" class="boton-acceder">
+                    <span>Acceder</span>
+                    <div class="cargando"></div>
+                </button>
+
+                <!-- Botón de Google -->
+                <button type="button" class="boton-google" id="google-login-btn">
+                    <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="logo de google">
+                    Iniciar sesión con Google
+                </button>
+
+                <!-- Mensaje de error o éxito general -->
+                <div id="login-mensaje" class="mensaje-error"></div>
+            </form>
+        </div>
+    </section>
+    <script src="JS/login.js"></script>
+</body>
+</html>

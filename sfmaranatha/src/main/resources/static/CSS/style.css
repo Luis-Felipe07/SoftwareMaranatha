@@ -1,0 +1,170 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e91111;
+    color: #f6cb0f;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #e91111;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.letras {
+    font-size: 32px;
+    color: #fff714;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #e1dcc5;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: #f0f010;
+}
+
+.img-galeria {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background-color: #e91111;
+}
+
+.img-galeria img {
+    max-width: 30%;
+    border: 5px solid #e1dcc5;
+    border-radius: 10px;
+}
+
+.descripcion {
+    text-align: center;
+    padding: 20px;
+    background-color: #e91111;
+    border-top: 5px solid #f35f19;
+    border-bottom: 5px solid #f35f19;
+}
+
+.footer-info {
+    text-align: center;
+    padding: 10px;
+    background-color: #e91111;
+}
+
+.footer-info a {
+    color: #f35f19;
+    text-decoration: none;
+}
+
+.footer-info a:hover {
+    text-decoration: underline;
+}
+
+
+@media (max-width: 768px) {
+
+    
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        padding: 0;
+    }
+
+    nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    nav ul li a {
+        font-size: 1rem;
+    }
+
+    
+    .img-galeria {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .img-galeria img {
+        max-width: 80%; 
+        margin-bottom: 15px;
+    }
+
+    
+    .descripcion {
+        padding: 15px;
+        font-size: 1rem;
+    }
+
+    .footer-info {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    
+    .logo-texto .letras {
+        font-size: 24px; 
+    }
+
+    
+    nav ul li a {
+        font-size: 0.9rem;
+    }
+
+
+    img-galeria img {
+        max-width: 90%;
+    }
+
+    
+    .descripcion, .footer-info {
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+}

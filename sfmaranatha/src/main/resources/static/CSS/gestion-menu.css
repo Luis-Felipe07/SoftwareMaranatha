@@ -1,0 +1,65 @@
+body {
+    background-color: #ff6b6b; 
+}
+
+h1 {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+.card {
+    background-color: #fff5ee;
+    border: none;
+}
+
+.card-title {
+    color: #d63031;
+}
+
+.btn-warning {
+    background-color: #d63031;
+    border: none;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+p {
+    color: #000;
+}
+
+form label {
+    color: #000;
+}
+
+.btn-amarillo-personalizado {
+    background-color: #ffc107;
+    border: none;
+    color: #fff;
+}
+
+.btn-rojo-personalizado {
+    background-color: #d63031;
+    border: none;
+    color: #fff;
+}
+
+/* Estilo del botón flotante */
+#Boton-Flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+#Boton-Flotante button {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eaf429;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

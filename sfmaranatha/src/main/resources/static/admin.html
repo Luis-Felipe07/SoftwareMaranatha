@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administración - Restaurante Maranatha</title>
+    
+    <link rel="stylesheet" href="/CSS/admin.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Panel de Administración</h1>
+    </header>
+
+    <main class="contenedor-principal">
+        <!-- Sección de subir imagen para menú -->
+        <section class="tarjeta">
+            <h2>Editar Menú del Día</h2>
+            <p>Seleccione la imagen del menú desde su dispositivo y presione "Cargar Imagen".</p>
+            <input type="file" id="inputImagenMenu" accept="image/*" />
+            <button id="btnCargarImagen">Cargar Imagen</button>
+            <div id="vistaPrevia" class="vista-previa"></div>
+        </section>
+
+        <!-- Sección para habilitar mesas -->
+        <section class="tarjeta">
+            <h2>Habilitar Mesas</h2>
+            <label for="selectMesas">Seleccione la mesa a habilitar:</label>
+            <select id="selectMesas">
+                <option value="" selected disabled>-- Elija una mesa --</option>
+                <option value="Mesa 1">Mesa 1</option>
+                <option value="Mesa 2">Mesa 2</option>
+                <option value="Mesa 3">Mesa 3</option>
+                <option value="Mesa 4">Mesa 4</option>
+                <option value="Mesa 5">Mesa 5</option>
+            </select>
+            <button id="btnHabilitarMesa">Habilitar Mesa</button>
+        </section>
+
+        <!-- Sección para ver pedidos -->
+        <section class="tarjeta">
+            <h2>Ver Pedidos</h2>
+            <div class="opciones-pedidos">
+                <button id="btnPedidosRealizados">Pedidos Realizados</button>
+                <button id="btnPedidosPendientes">Pedidos Pendientes</button>
+                <button id="btnPedidosCancelados">Pedidos Cancelados</button>
+            </div>
+        </section>
+
+        <!-- Sección para eliminar menú -->
+        <section class="tarjeta">
+            <h2>Eliminar Menú</h2>
+            <p>Elija el menú que desea eliminar:</p>
+            <select id="selectEliminarMenu">
+                <option value="" selected disabled>-- Elija un menú --</option>
+                <option value="Menu 1">Menú 1</option>
+                <option value="Menu 2">Menú 2</option>
+                <option value="Menu 3">Menú 3</option>
+            </select>
+            <button id="btnEliminarMenu">Eliminar</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Restaurante Maranatha</p>
+    </footer>
+
+    
+    <script src="/JS/admin.js"></script>
+</body>
+
+</html>

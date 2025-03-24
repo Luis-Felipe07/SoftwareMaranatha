@@ -1,0 +1,114 @@
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fondo general y tipografía */
+body {
+    background: url('/IMG/fondo.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Contenedor principal  */
+.custom-bg {
+    margin: 40px auto;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9);  /* Fondo blanco con opacidad para mejor legibilidad */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Cabecera de la card */
+.card-header {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #1cd037, #38ef54);
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+    color: #fff;
+    text-align: center;
+}
+
+/* Estilos para los campos de formulario */
+.form-control {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.form-control:focus {
+    border-color: #ff416c;
+    box-shadow: 0 0 5px rgba(255, 65, 108, 0.5);
+    outline: none;
+}
+
+/* Botón para guardar cambios */
+.guardar {
+    padding: 12px 25px;
+    color: #fcfffc;
+    background-color: #21ca3d;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+    cursor: pointer;
+}
+
+.guardar {
+    background-color: #21ca3d;
+    transform: translateY(-2px);
+}
+
+/* Estilos para alertas y mensajes */
+.alert {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Etiquetas  */
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Espaciado interno de la card */
+.card-body {
+    padding: 20px;
+}
+
+/* Adaptabilidad para pantallas pequeñas */
+@media (max-width: 576px) {
+    .custom-bg {
+        margin: 20px;
+        padding: 15px;
+    }
+    .card-header {
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+}

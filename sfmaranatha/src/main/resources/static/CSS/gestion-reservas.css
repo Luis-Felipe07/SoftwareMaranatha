@@ -1,0 +1,79 @@
+body {
+  background-color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* Estilos de las pestañas */
+.nav-tabs .nav-link {
+  border-radius: 10px;
+  margin-right: 5px;
+  color: white;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #ffc107 !important; 
+  color: black !important;
+  font-weight: bold;
+}
+
+.nav-tabs .nav-link:not(.active) {
+  background-color: #dc3545 !important; 
+  color: white;
+}
+
+.nav-tabs .nav-link:hover {
+  background-color: #ffcc00 !important; 
+  color: black !important;
+}
+
+/* Estilos de la lista de pedidos */
+.list-group-item {
+  background-color: #fff8e1; 
+  border-left: 5px solid #ffc107;
+  font-weight: bold;
+}
+
+/* Estilos de los títulos */
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Botones */
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: black;
+}
+
+.btn-warning:hover {
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Inputs y Selects */
+input[type="file"], select {
+  border: 2px solid #ffc107;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+input[type="file"]:focus, select:focus {
+  outline: none;
+  border-color: #ff9800;
+  box-shadow: 0 0 5px #ff9800;
+}

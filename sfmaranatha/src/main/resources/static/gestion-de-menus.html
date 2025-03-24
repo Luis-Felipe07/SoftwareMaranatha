@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú del Día</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/gestion-menu.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Sección de Menús -->
+            <div class="col-lg-9">
+                <h1 class="text-center text-warning">MENÚS DEL DÍA</h1>
+                <div class="row mt-4">
+                    <!-- Carne Asada -->
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <img src="IMG/carne asada.jpg" class="card-img-top" alt="Carne Asada">
+                            <div class="card-body">
+                                <h5 class="card-title">CARNE ASADA</h5>
+                                <p class="card-text">7000 COP</p>
+                                <input type="number" min="1" value="1" class="form-control mb-2">
+                                <button class="btn btn-warning w-100 add-to-cart" data-name="Carne Asada" data-price="7000">
+                                    <i class="bi bi-cart"></i> Añadir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bandeja Paisa -->
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <img src="IMG/bandeja paisa.jpg" class="card-img-top" alt="Bandeja Paisa">
+                            <div class="card-body">
+                                <h5 class="card-title">Bandeja Paisa</h5>
+                                <p class="card-text">20000 COP <br> (Si compras 3, la 4ta es gratis)</p>
+                                <input type="number" min="1" value="1" class="form-control mb-2">
+                                <button class="btn btn-warning w-100 add-to-cart" data-name="Bandeja Paisa" data-price="20000">
+                                    <i class="bi bi-cart"></i> Añadir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hígado Encebollado -->
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <img src="IMG/higado encebollado.jpg" class="card-img-top" alt="Hígado Encebollado">
+                            <div class="card-body">
+                                <h5 class="card-title">Hígado Encebollado</h5>
+                                <p class="card-text">12000 COP</p>
+                                <input type="number" min="1" value="1" class="form-control mb-2">
+                                <button class="btn btn-warning w-100 add-to-cart" data-name="Hígado Encebollado" data-price="12000">
+                                    <i class="bi bi-cart"></i> Añadir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Pedido -->
+            <div class="col-lg-3">
+                <div id="formularioPedidoContainer" class="bg-light p-4 d-none">
+                    <h3 class="text-danger">Confirme su pedido</h3>
+                    <p>Complete su orden aquí:</p>
+                    <!-- Formulario para Pedido a Domicilio -->
+                    <form id="pedidoForm">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre Completo*</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico*</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono o Celular*</label>
+                            <input type="tel" class="form-control" id="telefono" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección para envío*</label>
+                            <input type="text" class="form-control" id="direccion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="barrio" class="form-label">Barrio*</label>
+                            <input type="text" class="form-control" id="barrio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="metodoPago" class="form-label">Método de pago*</label>
+                            <select class="form-control" id="metodoPago" required>
+                                <option value="efectivo">efectivo</option>
+                                <option value="pse">pse</option>
+                                <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                                <option value="Nequi">Nequi</option>
+                                <option value="Daviplata">Daviplata</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Completar Orden</button>
+                    </form>
+
+                    <!-- Formulario para Pedido en Restaurante -->
+                    <form id="pedidoForm2">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre Completo*</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico*</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono o Celular*</label>
+                            <input type="tel" class="form-control" id="telefono" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="horaReserva" class="form-label">Seleccionar Hora*</label>
+                            <input type="time" class="form-control" id="horaReserva" min="11:00" max="22:00" required>
+                            <small class="text-muted">Horario disponible: 11:00 AM - 10:00 PM</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="metodoPago" class="form-label">Método de pago*</label>
+                            <select class="form-control" id="metodoPago" required>
+                                <option value="efectivo">efectivo</option>
+                                <option value="pse">pse</option>
+                                <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                                <option value="Nequi">Nequi</option>
+                                <option value="Daviplata">Daviplata</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Completar Orden</button>
+                    </form>
+
+                    <!-- Botón para cancelar el pedido se mostrará cuando se cree un pedido-->
+                    <button id="cancelarPedido" class="btn btn-secondary w-100 mt-2" style="display:none;">Cancelar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para selección de tipo de pedido -->
+    <div class="modal fade" id="opcionModal" tabindex="-1" aria-labelledby="opcionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="opcionModalLabel">¿Cómo desea proceder con su pedido?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Por favor, elija si desea comer en el restaurante o solicitar un pedido a domicilio:</p>
+                    <button id="comerRestaurante" class="btn btn-amarillo-personalizado w-100 mb-2">Comer en el Restaurante</button>
+                    <button id="pedidoDomicilio" class="btn btn-rojo-personalizado w-100">Pedido a Domicilio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón flotante para ir al pago -->
+    <div id="Boton-Flotante">
+        <button id="ir-A-pago" class="btn btn-warning rounded-circle">
+            <i class="bi bi-cart"></i>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/gestion-de-menus.js"></script>
+</body>
+</html>

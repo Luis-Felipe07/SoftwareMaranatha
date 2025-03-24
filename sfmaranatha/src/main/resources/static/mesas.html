@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservación de Mesas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="CSS/mesas.css">
+    
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <!-- Sección de reserva de mesas -->
+        <h2>Haga la reserva de su mesa aquí, tenga en cuenta que cada mesa cuenta con 4 asientos.</h2>
+        <div class="row mt-5">
+            <div class="col-md-3">
+                <h4>Mesa 1</h4>
+                <img src="IMG/mesas.png" alt="Mesa 1" class="img-fluid">
+                <button class="btn btn-warning mt-2" onclick="reservarMesa(1)">Reservar Mesa</button>
+            </div>
+            <div class="col-md-3">
+                <h4>Mesa 2</h4>
+                <img src="IMG/mesas.png" alt="Mesa 2" class="img-fluid">
+                <button class="btn btn-warning mt-2" onclick="reservarMesa(2)">Reservar Mesa</button>
+            </div>
+            <div class="col-md-3">
+                <h4>Mesa 3</h4>
+                <img src="IMG/mesas.png" alt="Mesa 3" class="img-fluid">
+                <button class="btn btn-warning mt-2" onclick="reservarMesa(3)">Reservar Mesa</button>
+            </div>
+            <div class="col-md-3">
+                <h4>Mesa 4</h4>
+                <img src="IMG/mesas.png" alt="Mesa 4" class="img-fluid">
+                <button class="btn btn-warning mt-2" onclick="reservarMesa(4)">Reservar Mesa</button>
+            </div>
+        </div>
+
+        <!-- Formulario de reserva -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <p>Por favor complete los siguientes campos para realizar su reservación.</p>
+                <div class="mb-3">
+                    <label for="fecha" class="form-label">Fecha para la reserva:</label>
+                    <input type="date" class="form-control" id="fecha">
+                </div>
+                <div class="mb-3">
+                    <label for="hora" class="form-label">Hora para la reserva:</label>
+                    <input type="time" class="form-control" id="hora">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--MODAL-->
+    <div class="modal" id="modalPago" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Seleccione su método de pago</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <!-- Primera fila de métodos de pago -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-credit-card mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">Nequi</h5>
+                  <p>
+                    <img src="/IMG/nequi.ico" alt="logo de nequi" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="nequi" class="form-check-input">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-money-bill-wave mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">Efectivo</h5>
+                  <p>
+                    <img src="/IMG/pago en efectivo.ico" alt="" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="efectivo" class="form-check-input">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-exchange-alt mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">PSE</h5>
+                  <p>
+                    <img src="/IMG/pse.ico" alt="" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="pse" class="form-check-input">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segunda fila de métodos de pago -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-mobile-alt mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">Daviplata</h5>
+                  <p>
+                    <img src="/IMG/daviplata.ico" alt="logo de daviplata" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="daviplata" class="form-check-input">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-piggy-bank mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">Ahorro a la Mano</h5>
+                  <p>
+                    <img src="/IMG/ahorro a la mano.ico" alt="" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="ahorro-mano" class="form-check-input">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-university mb-3" style="font-size: 1rem;"></i>
+                  <h5 class="text-danger">Bancolombia</h5>
+                  <p>
+                    <img src="/IMG/bancolombia.ico" alt="" style="width: 32px; height: 32px; object-fit: contain;">
+                  </p>
+                  <input type="radio" name="metodoPago" value="bancolombia" class="form-check-input">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumen de la reserva -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="text-danger">Detalles de la Reserva</h5>
+                  <ul class="list-unstyled">
+                    <li>Mesa: <span id="numeroMesa"></span></li>
+                    <li>Fecha: <span id="fechaReserva"></span></li>
+                    <li>Hora: <span id="horaReserva"></span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="text-danger">Términos de Pago</h5>
+                  <ul class="list-unstyled">
+                    <li>Depósito requerido: $XX.XX</li>
+                    <li>Cancelación gratuita hasta 24h antes</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="confirmarPago()">Confirmar Pago</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="JS/mesas.js" defer></script>
+</body>
+</html>

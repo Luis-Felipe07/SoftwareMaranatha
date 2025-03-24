@@ -1,0 +1,125 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d62828;
+    
+    font-family: Arial, sans-serif;
+    color: #ffd700;
+    
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encabezado */
+header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #b71c1c;
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffd700;
+    
+}
+
+/* Contenedor principal */
+.contenedor-principal {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Tarjetas de sección */
+.tarjeta {
+    background-color: #ffedb5;
+   
+    color: #333;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tarjeta h2 {
+    color: #b71c1c;
+    
+    margin-bottom: 10px;
+}
+
+.tarjeta p {
+    margin-bottom: 10px;
+}
+
+/* Sección de subir imagen */
+.vista-previa {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Botones */
+button {
+    background-color: #b71c1c;
+   
+    color: #ffd700;
+    
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #8b0f0f;
+   
+}
+
+/* Inputs y selects */
+input[type="file"],
+select {
+    display: block;
+    margin-top: 10px;
+    padding: 6px;
+    border: 2px solid #b71c1c;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-weight: bold;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Sección pedidos */
+.opciones-pedidos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background-color: #b71c1c;
+    padding: 10px;
+}
+
+footer p {
+    color: #ffd700;
+    font-weight: bold;
+}
