@@ -14,7 +14,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 pedidos.forEach(pedido => {
                     const item = document.createElement("li");
                     item.classList.add("list-group-item");
-                    item.textContent = `${pedido.nombreCliente} - ${pedido.tipoPedido} - ${pedido.montoTotal} COP`;
+                    let texto = `${pedido.nombreCliente} - ${pedido.tipoPedido} - ${pedido.montoTotal} COP`;
+                    if (pedido.detallePedido) {
+                        try {
+                            const detalle = JSON.parse(pedido.detallePedido);
+                            const itemsDescripcion = detalle.map(i => `${i.nombre} x ${i.cantidad}`).join(", ");
+                            if (itemsDescripcion) {
+                                texto += ` | [${itemsDescripcion}]`;
+                            }
+                        } catch (e) {
+                            console.error("Error parseando detallePedido:", e);
+                        }
+                    }
+                    item.textContent = texto;
                     lista.appendChild(item);
                 });
             });
