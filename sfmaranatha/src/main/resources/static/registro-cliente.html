@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Registro de Cliente - Restaurante Maranatha</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/sfmaranatha/src/main/resources/static/CSS/registro-cliente.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+          <!-- Logo y nombre del restaurante -->
+          <div class="text-center logo-container">
+            <h1 class="restaurant-name">Restaurante Maranatha</h1>
+            <p class="tagline">Una experiencia culinaria inolvidable</p>
+          </div>
+          
+          <!-- Tarjeta del formulario -->
+          <div class="card form-card shadow-lg">
+            <div class="card-header text-center">
+              <h2 class="form-title"><i class="fas fa-user-plus"></i> Crea tu cuenta</h2>
+              <p class="form-subtitle">Completa tus datos para registrarte</p>
+            </div>
+            <div class="card-body">
+              <!-- Formulario de registro -->
+              <form id="formRegistroCliente">
+                <div class="row">
+                  <!-- Columna izquierda -->
+                  <div class="col-md-6">
+                    <!-- Campo: Nombre -->
+                    <div class="form-group mb-3">
+                      <label for="nombre" class="form-label"><i class="fas fa-user"></i> Nombre</label>
+                      <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required>
+                    </div>
+                    
+                    <!-- Campo: Tipo de Documento -->
+                    <div class="form-group mb-3">
+                      <label for="tipoDocumento" class="form-label"><i class="fas fa-id-card"></i> Tipo de Documento</label>
+                      <select class="form-select" id="tipoDocumento" required>
+                        <option value="">Seleccione...</option>
+                        <option value="CC">CC</option>
+                        <option value="TI">TI</option>
+                      </select>
+                    </div>
+                    
+                    <!-- Campo: Correo Electrónico -->
+                    <div class="form-group mb-3">
+                      <label for="email" class="form-label"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                      <input type="email" class="form-control" id="email" placeholder="Ingrese su email" required>
+                    </div>
+                    
+                    <!-- Campo: Dirección -->
+                    <div class="form-group mb-3">
+                      <label for="direccion" class="form-label"><i class="fas fa-map-marker-alt"></i> Dirección</label>
+                      <input type="text" class="form-control" id="direccion" placeholder="Ingrese su dirección">
+                    </div>
+                  </div>
+                  
+                  <!-- Columna derecha -->
+                  <div class="col-md-6">
+                    <!-- Campo: Número de Documento -->
+                    <div class="form-group mb-3">
+                      <label for="numeroDocumento" class="form-label"><i class="fas fa-passport"></i> Número de Documento</label>
+                      <input type="text" class="form-control" id="numeroDocumento" placeholder="Ingrese su número de documento" required>
+                    </div>
+                    
+                    <!-- Campo: Teléfono -->
+                    <div class="form-group mb-3">
+                      <label for="telefono" class="form-label"><i class="fas fa-phone"></i> Teléfono</label>
+                      <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Fila para campos de contraseña -->
+                <div class="row password-row">
+                  <!-- Columna contraseña -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3 password-container">
+                      <label for="clave" class="form-label"><i class="fas fa-lock"></i> Contraseña</label>
+                      <div class="input-group">
+                        <input type="password" class="form-control" id="clave" placeholder="Ingrese su contraseña" required>
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="clave">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </div>
+                      <div class="password-strength" id="passwordStrength">Muy débil</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Columna confirmar contraseña -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3 confirm-password-container">
+                      <label for="confirmarClave" class="form-label"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+                      <div class="input-group">
+                        <input type="password" class="form-control" id="confirmarClave" placeholder="Confirme su contraseña" required>
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmarClave">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Términos y condiciones -->
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="aceptarTerminos" required>
+                  <label class="form-check-label" for="aceptarTerminos">
+                    Acepto los <a href="#" class="terms-link">términos y condiciones</a>
+                  </label>
+                </div>
+                
+                <!-- Botón de Envío -->
+
+                <!--de momento solo simula el envio a el login-->
+                <button type="button" class="btn btn-register w-100" onclick="window.location.href='/sfmaranatha/src/main/resources/static/login.html'">
+                    <i class="fas fa-user-plus"></i> Crear cuenta
+                  </button>
+                  
+              
+              <!-- Div para mostrar mensajes de registro -->
+              <div id="mensajeRegistro" class="alert-container mt-3"></div>
+              
+              <!-- Enlace para iniciar sesión -->
+              <div class="login-link text-center mt-3">
+                ¿Ya tienes una cuenta? <a href="/sfmaranatha/src/main/resources/static/login.html" class="login-text">Inicia sesión aquí</a>
+              </div>
+            </div>
+          </div>
+          <!-- Fin de la tarjeta -->
+          
+          <!-- Footer del formulario -->
+          <div class="form-footer text-center">
+            <p>&copy; 2025 Restaurante Maranatha. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script personalizado -->
+  <script src="/sfmaranatha/src/main/resources/static/JS/registro-cliente.js"></script>
+</body>
+</html>
