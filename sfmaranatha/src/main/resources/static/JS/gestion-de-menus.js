@@ -1,240 +1,453 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const carrito = [];
-    let pedidoActualId = null; 
-    const modal = new bootstrap.Modal(document.getElementById('opcionModal'));
-    const formularioDomicilio = document.getElementById('pedidoForm');
-    const formularioRestaurante = document.getElementById('pedidoForm2');
-    const contenedorFormulario = document.getElementById('formularioPedidoContainer');
-    const botonCancelarPedido = document.getElementById('cancelarPedido');
-
-    // Inicializar formularios ocultos
-    formularioDomicilio.style.display = 'none';
-    formularioRestaurante.style.display = 'none';
-
-    // Gestión del carrito
-    const botonIrApago = document.getElementById('ir-A-pago');
-    botonIrApago.addEventListener('click', function () {
-        if (carrito.length === 0) {
-            alert('El carrito está vacío. Por favor, añada productos antes de proceder.');
-        } else {
-            modal.show();
-        }
+// Espero a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales para gestionar el carrito y los formularios
+    let carrito = [];
+    let total = 0;
+    const carritoVacio = document.querySelector('.empty-cart-message');
+    const carritoItems = document.getElementById('cart-items');
+    const carritoTotal = document.getElementById('cart-total-amount');
+    const irAPagoBtn = document.getElementById('ir-A-pago');
+    const formularioPedidoContainer = document.getElementById('formularioPedidoContainer');
+    const cancelarPedidoBtn = document.getElementById('cancelarPedido');
+    const mobileCartBtn = document.getElementById('mobile-cart-btn');
+    const mobileCartCount = document.getElementById('mobile-cart-count');
+    
+    // Inicializo el modal de opciones de pedido
+    const opcionModal = new bootstrap.Modal(document.getElementById('opcionModal'));
+    
+    // Capturo todos los botones de añadir al carrito
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    
+    // Configuro los eventos para los botones de incremento y decremento de cantidad
+    const decrementButtons = document.querySelectorAll('.decrement');
+    const incrementButtons = document.querySelectorAll('.increment');
+    
+    // Evento para incrementar cantidad
+    incrementButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('.quantity-input');
+            input.value = parseInt(input.value) + 1;
+        });
     });
-
-    // Agregar productos al carrito
-    const botones = document.querySelectorAll('.add-to-cart');
-    botones.forEach(boton => {
-        boton.addEventListener('click', function () {
-            const nombreProducto = this.getAttribute('data-name');
-            const precioProducto = this.getAttribute('data-price');
-            const cantidadProducto = this.previousElementSibling.value;
-
-            const item = {
-                nombre: nombreProducto,
-                precio: parseInt(precioProducto),
-                cantidad: parseInt(cantidadProducto)
-            };
-
-            const itemExistente = carrito.find(producto => producto.nombre === item.nombre);
-            if (itemExistente) {
-                itemExistente.cantidad += item.cantidad;
-            } else {
-                carrito.push(item);
+    
+    // Evento para decrementar cantidad
+    decrementButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('.quantity-input');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
             }
-
+        });
+    });
+    
+    // Evento para añadir productos al carrito
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.menu-card');
+            const name = this.getAttribute('data-name');
+            const price = parseInt(this.getAttribute('data-price'));
+            const quantity = parseInt(card.querySelector('.quantity-input').value);
+            
+            // Verifico si el producto ya está en el carrito
+            const existingItemIndex = carrito.findIndex(item => item.name === name);
+            
+            if (existingItemIndex !== -1) {
+                // Si ya existe, incremento la cantidad
+                carrito[existingItemIndex].quantity += quantity;
+            } else {
+                // Si no existe, lo añado como nuevo ítem
+                carrito.push({
+                    name: name,
+                    price: price,
+                    quantity: quantity
+                });
+            }
+            
+            // Actualizo el carrito y muestro feedback visual
             actualizarCarrito();
-            alert(`${cantidadProducto} x ${nombreProducto} añadido(s) al carrito`);
+            this.classList.add('pulse');
+            setTimeout(() => {
+                this.classList.remove('pulse');
+            }, 500);
         });
     });
-
-    // Selección de tipo de pedido
-    document.getElementById('comerRestaurante').addEventListener('click', function () {
-        contenedorFormulario.classList.remove('d-none');
-        formularioDomicilio.style.display = 'none';
-        formularioRestaurante.style.display = 'block';
-        modal.hide();
-
-        const metodoPagoRestaurante = formularioRestaurante.querySelector('#metodoPago');
-        agregarOpcionEfectivo(metodoPagoRestaurante);
-    });
-
-    document.getElementById('pedidoDomicilio').addEventListener('click', function () {
-        contenedorFormulario.classList.remove('d-none');
-        formularioDomicilio.style.display = 'block';
-        formularioRestaurante.style.display = 'none';
-        modal.hide();
-
-        const metodoPagoDomicilio = formularioDomicilio.querySelector('#metodoPago');
-        eliminarOpcionEfectivo(metodoPagoDomicilio);
-    });
-
-    // Funciones para manipular opciones de método de pago
-    function eliminarOpcionEfectivo(selectElement) {
-        const opcionEfectivo = selectElement.querySelector('option[value="efectivo"]');
-        if (opcionEfectivo) {
-            opcionEfectivo.remove();
-        }
-    }
-
-    function agregarOpcionEfectivo(selectElement) {
-        const existeEfectivo = selectElement.querySelector('option[value="efectivo"]');
-        if (!existeEfectivo) {
-            const opcion = document.createElement('option');
-            opcion.value = 'efectivo';
-            opcion.textContent = 'Efectivo';
-            selectElement.appendChild(opcion);
-        }
-    }
-
-    // Validación de hora para pedido en restaurante
-    const horaReserva = document.getElementById('horaReserva');
-    if (horaReserva) {
-        horaReserva.addEventListener('change', function () {
-            const hora = this.value;
-            const [horas] = hora.split(':');
-            if (horas < 11 || horas >= 22) {
-                alert('Por favor seleccione un horario entre 11:00 AM y 10:00 PM');
-                this.value = '';
-            }
-        });
-    }
-
-    // Función para enviar el pedido al backend
-    function enviarPedido(form, tipoOrden) {
-        const nombreCliente = form.querySelector('#nombre').value;
-        const correo = form.querySelector('#email').value;
-        const telefono = form.querySelector('#telefono').value;
-        const metodoPago = form.querySelector('#metodoPago').value;
-
-        let payload = {
-            nombreCliente: nombreCliente,
-            correo: correo,
-            telefono: telefono,
-            metodoPago: metodoPago,
-            tipoPedido: tipoOrden.toUpperCase(), 
-            detallePedido: JSON.stringify(carrito),
-            montoTotal: calcularTotal()
-        };
-
-        if (tipoOrden === 'domicilio') {
-            const direccion = form.querySelector('#direccion').value;
-            const barrio = form.querySelector('#barrio').value;
-            payload.direccion = direccion + ", " + barrio;
-        } else if (tipoOrden === 'restaurante') {
-            payload.horaReserva = form.querySelector('#horaReserva').value;
-        }
-
-        return fetch('/api/pedidos/crear', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exito) {
-                alert(data.mensaje);
-                //  el backend devuelve el id del pedido creado
-                pedidoActualId = data.pedidoId; 
-                // Mostrar el botón de cancelar pedido
-                botonCancelarPedido.style.display = 'block';
-                // Limpiar el carrito después de un pedido exitoso
-                vaciarCarrito();
-                return true;
-            } else {
-                alert("Error: " + data.mensaje);
-                throw new Error(data.mensaje);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Error de conexión con el servidor.");
-            throw error;
-        });
-    }
-
-    // Función para vaciar el carrito
-    function vaciarCarrito() {
-        carrito.length = 0;
-        actualizarCarrito();
-    }
-
-    // Procesamiento de formularios
-    function procesarFormulario(e, tipoOrden) {
-        e.preventDefault();
-        const form = e.target;
-        
-        enviarPedido(form, tipoOrden)
-            .then(() => {
-                // Si el pedido se envía correctamente, limpio el formulario
-                form.reset();
-                // Oculto el contenedor del formulario después de enviar con éxito
-                contenedorFormulario.classList.add('d-none');
-            })
-            .catch(error => {
-                console.error(error);
-               
-            });
-    }
-
-    formularioDomicilio.addEventListener('submit', e => procesarFormulario(e, 'domicilio'));
-    formularioRestaurante.addEventListener('submit', e => procesarFormulario(e, 'restaurante'));
-
-    // Listener para el botón de cancelar pedido
-    botonCancelarPedido.addEventListener('click', function () {
-        if (!pedidoActualId) {
-            alert('No hay ningún pedido activo para cancelar.');
-            return;
-        }
-        // Confirmar la cancelación
-        if (confirm('¿Está seguro que desea cancelar su pedido?')) {
-            cancelarPedido(pedidoActualId);
-        }
-    });
-
-    // Función para cancelar el pedido
-    function cancelarPedido(idPedido) {
-        console.log("ID del pedido a cancelar:", idPedido);
-        fetch(`/api/pedidos/cancelar/${idPedido}`, { 
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'}
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exito) {
-                alert('Pedido cancelado exitosamente.');
-                // Oculto el botón y limpio el id
-                botonCancelarPedido.style.display = 'none';
-                pedidoActualId = null;
-            } else {
-                alert("Error: " + data.mensaje);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Error al conectar con el servidor para cancelar el pedido.");
-        });
-    }
-
-    // Funciones auxiliares
-    function calcularTotal() {
-        return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
-    }
-
+    
+    // Función para actualizar la visualización del carrito
     function actualizarCarrito() {
-        const total = calcularTotal();
-        console.log(`Total del carrito: $${total}`);
+        carritoItems.innerHTML = '';
+        total = 0;
+        
+        if (carrito.length === 0) {
+            carritoVacio.style.display = 'flex';
+            mobileCartCount.textContent = '0';
+        } else {
+            carritoVacio.style.display = 'none';
+            
+            carrito.forEach((item, index) => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price.toLocaleString()}</div>
+                    </div>
+                    <span class="cart-item-quantity">${item.quantity}x</span>
+                    <i class="bi bi-x-circle cart-item-remove" data-index="${index}"></i>
+                `;
+                carritoItems.appendChild(itemElement);
+            });
+            
+            // Actualizo contadores
+            mobileCartCount.textContent = carrito.length;
+        }
+        
+        // Actualizo el total
+        carritoTotal.textContent = `$${total.toLocaleString()}`;
+        
+        // Agrego eventos para eliminar ítems
+        document.querySelectorAll('.cart-item-remove').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                carrito.splice(index, 1);
+                actualizarCarrito();
+            });
+        });
     }
-
-    function generarResumenPedido(detallesPedido) {
-        return detallesPedido.items.map(item =>
-            `<p>${item.cantidad}x ${item.nombre} - $${item.precio * item.cantidad}</p>`
-        ).join('') + `<p><strong>Total: $${detallesPedido.total}</strong></p>`;
+    
+    // Evento para el botón de pago
+    irAPagoBtn.addEventListener('click', function() {
+        if (carrito.length > 0) {
+            // Muestro el modal para que elija tipo de pedido
+            opcionModal.show();
+        } else {
+            alert('Por favor, agregue productos a su carrito antes de continuar.');
+        }
+    });
+    
+    // Evento para el botón de carrito móvil
+    mobileCartBtn.addEventListener('click', function() {
+        const cartSection = document.querySelector('.cart-section');
+        cartSection.scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Configuración de los formularios según tipo de pedido
+    const pedidoForm = document.getElementById('pedidoForm');
+    const pedidoForm2 = document.getElementById('pedidoForm2');
+    
+    // Oculto ambos formularios inicialmente
+    pedidoForm.style.display = 'none';
+    pedidoForm2.style.display = 'none';
+    
+    // Configuro evento para pedido a domicilio
+    document.getElementById('pedidoDomicilio').addEventListener('click', function() {
+        // Oculto el modal
+        opcionModal.hide();
+        
+        // Muestro el formulario de pedido a domicilio
+        formularioPedidoContainer.classList.remove('d-none');
+        pedidoForm.style.display = 'block';
+        pedidoForm2.style.display = 'none';
+        irAPagoBtn.style.display = 'none';
+        cancelarPedidoBtn.style.display = 'block';
+        
+        // Actualizo el formulario a domicilio con los campos necesarios
+        actualizarFormularioDomicilio();
+    });
+    
+    // Configuro evento para comer en restaurante
+    document.getElementById('comerRestaurante').addEventListener('click', function() {
+        // Oculto el modal
+        opcionModal.hide();
+        
+        // Muestro el formulario para comer en restaurante
+        formularioPedidoContainer.classList.remove('d-none');
+        pedidoForm.style.display = 'none';
+        pedidoForm2.style.display = 'block';
+        irAPagoBtn.style.display = 'none';
+        cancelarPedidoBtn.style.display = 'block';
+        
+        // Actualizo el formulario de restaurante con los campos necesarios
+        actualizarFormularioRestaurante();
+    });
+    
+    // Función para actualizar el formulario de domicilio con los campos requeridos
+    function actualizarFormularioDomicilio() {
+        // Limpio el formulario existente
+        pedidoForm.innerHTML = '';
+        
+        // Agrego los campos de información personal
+        pedidoForm.innerHTML += `
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="nombre" class="form-label">Nombre*</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="apellido" class="form-label">Apellido*</label>
+                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tipoDocumento" class="form-label">Tipo de Documento*</label>
+                    <select class="form-control" id="tipoDocumento" name="tipoDocumento" required>
+                        <option value="">Seleccione</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="PP">Pasaporte</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="numeroDocumento" class="form-label">Número de Documento*</label>
+                    <input type="text" class="form-control" id="numeroDocumento" name="numeroDocumento" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono o Celular*</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico*</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección para envío*</label>
+                <input type="text" class="form-control" id="direccion" name="direccion" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="barrio" class="form-label">Barrio*</label>
+                <input type="text" class="form-control" id="barrio" name="barrio" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="metodoPago" class="form-label">Método de pago*</label>
+                <select class="form-control" id="metodoPago" name="metodoPago" required>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="pse">PSE</option>
+                    <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                    <option value="Nequi">Nequi</option>
+                    <option value="Daviplata">Daviplata</option>
+                    <option value="Bancolombia">Bancolombia</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-submit">Completar Orden</button>
+        `;
+        
+        // Agrego evento para enviar el formulario
+        pedidoForm.addEventListener('submit', enviarPedidoDomicilio);
+    }
+    
+    // Función para actualizar el formulario de restaurante con los campos requeridos
+    function actualizarFormularioRestaurante() {
+        // Limpio el formulario existente
+        pedidoForm2.innerHTML = '';
+        
+        // Agrego los campos de información personal
+        pedidoForm2.innerHTML += `
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="nombreR" class="form-label">Nombre*</label>
+                    <input type="text" class="form-control" id="nombreR" name="nombre" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="apellidoR" class="form-label">Apellido*</label>
+                    <input type="text" class="form-control" id="apellidoR" name="apellido" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tipoDocumentoR" class="form-label">Tipo de Documento*</label>
+                    <select class="form-control" id="tipoDocumentoR" name="tipoDocumento" required>
+                        <option value="">Seleccione</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="PP">Pasaporte</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="numeroDocumentoR" class="form-label">Número de Documento*</label>
+                    <input type="text" class="form-control" id="numeroDocumentoR" name="numeroDocumento" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="telefonoR" class="form-label">Teléfono o Celular*</label>
+                <input type="tel" class="form-control" id="telefonoR" name="telefono" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="emailR" class="form-label">Correo Electrónico*</label>
+                <input type="email" class="form-control" id="emailR" name="email" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="horaReserva" class="form-label">Seleccionar Hora*</label>
+                <input type="time" class="form-control" id="horaReserva" name="horaReserva" min="11:00" max="22:00" required>
+                <small class="form-text text-muted">Horario disponible: 11:00 AM - 10:00 PM</small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">¿Es tu primera visita al restaurante?*</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="primeraVisita" id="primeraVisitaSi" value="si" required>
+                    <label class="form-check-label" for="primeraVisitaSi">
+                        Sí, es mi primera vez
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="primeraVisita" id="primeraVisitaNo" value="no">
+                    <label class="form-check-label" for="primeraVisitaNo">
+                        No, ya he visitado antes
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="metodoPagoR" class="form-label">Método de pago*</label>
+                <select class="form-control" id="metodoPagoR" name="metodoPago" required>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="pse">PSE</option>
+                    <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                    <option value="Nequi">Nequi</option>
+                    <option value="Daviplata">Daviplata</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-submit">Completar Orden</button>
+        `;
+        
+        // Agrego evento para enviar el formulario
+        pedidoForm2.addEventListener('submit', enviarPedidoRestaurante);
+    }
+    
+    // Evento para cancelar el pedido
+    cancelarPedidoBtn.addEventListener('click', function() {
+        formularioPedidoContainer.classList.add('d-none');
+        irAPagoBtn.style.display = 'block';
+        cancelarPedidoBtn.style.display = 'none';
+    });
+    
+    // Función para enviar pedido a domicilio a SpringBoot
+    function enviarPedidoDomicilio(event) {
+        event.preventDefault();
+        
+        // Obtengo los datos del formulario
+        const formData = new FormData(pedidoForm);
+        const pedidoData = {
+            nombre: formData.get('nombre'),
+            apellido: formData.get('apellido'),
+            tipoDocumento: formData.get('tipoDocumento'),
+            numeroDocumento: formData.get('numeroDocumento'),
+            telefono: formData.get('telefono'),
+            email: formData.get('email'),
+            direccion: formData.get('direccion'),
+            barrio: formData.get('barrio'),
+            metodoPago: formData.get('metodoPago'),
+            esDomicilio: true,
+            fueDirectamenteEnRestaurante: false,
+            primerVisita: false,
+            items: carrito.map(item => ({
+                nombre: item.name,
+                cantidad: item.quantity,
+                precio: item.price
+            })),
+            total: total
+        };
+        
+        // Envío los datos al backend
+        fetch('/api/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pedidoData)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Error al procesar el pedido');
+        })
+        .then(data => {
+            // Manejo la respuesta exitosa
+            alert('¡Su pedido ha sido procesado correctamente! Pronto recibirá su comida.');
+            limpiarCarrito();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un problema al procesar su pedido. Por favor, inténtelo nuevamente.');
+        });
+    }
+    
+    // Función para enviar pedido en restaurante a SpringBoot
+    function enviarPedidoRestaurante(event) {
+        event.preventDefault();
+        
+        // Obtengo los datos del formulario
+        const formData = new FormData(pedidoForm2);
+        const pedidoData = {
+            nombre: formData.get('nombre'),
+            apellido: formData.get('apellido'),
+            tipoDocumento: formData.get('tipoDocumento'),
+            numeroDocumento: formData.get('numeroDocumento'),
+            telefono: formData.get('telefono'),
+            email: formData.get('email'),
+            horaReserva: formData.get('horaReserva'),
+            metodoPago: formData.get('metodoPago'),
+            esDomicilio: false,
+            fueDirectamenteEnRestaurante: true,
+            primerVisita: formData.get('primeraVisita') === 'si',
+            items: carrito.map(item => ({
+                nombre: item.name,
+                cantidad: item.quantity,
+                precio: item.price
+            })),
+            total: total
+        };
+        
+        // Envío los datos al backend
+        fetch('/api/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pedidoData)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Error al procesar el pedido');
+        })
+        .then(data => {
+            // Manejo la respuesta exitosa
+            alert('¡Su pedido ha sido registrado correctamente! Puede acercarse a la caja para pagar.');
+            limpiarCarrito();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un problema al procesar su pedido. Por favor, inténtelo nuevamente.');
+        });
+    }
+    
+    // Función para limpiar el carrito después de un pedido exitoso
+    function limpiarCarrito() {
+        carrito = [];
+        actualizarCarrito();
+        formularioPedidoContainer.classList.add('d-none');
+        irAPagoBtn.style.display = 'block';
+        cancelarPedidoBtn.style.display = 'none';
     }
 });
-
-// Función global para envío de factura 
-function enviarFactura(email) {
-    console.log(`Enviando factura a ${email}`);
-    alert('¡Gracias por su compra! La factura ha sido enviada a su correo.');
-    location.reload(); 
-}

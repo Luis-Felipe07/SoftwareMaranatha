@@ -1,204 +1,165 @@
-// Mostrar/Ocultar Contraseña
-document.getElementById('mostrarContraseña').addEventListener('click', () => {
-    const campoContraseña = document.getElementById('contraseña');
-    const icono = document.querySelector('#mostrarContraseña i');
-    
-    if (campoContraseña.type === 'password') {
-        campoContraseña.type = 'text';
-        icono.classList.remove('fa-eye');
-        icono.classList.add('fa-eye-slash');
-    } else {
-        campoContraseña.type = 'password';
-        icono.classList.remove('fa-eye-slash');
-        icono.classList.add('fa-eye');
-    }
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const formularioRegistro = document.getElementById('formularioRegistroAdmin');
+    const mensajeRegistroDiv = document.getElementById('mensajeRegistroAdmin');
+    const contraseñaInput = document.getElementById('contraseña');
+    const confirmarContraseñaInput = document.getElementById('confirmarContraseña');
+    const nombreInput = document.getElementById('nombre');
+    const apellidoInput = document.getElementById('apellido');
+    const numDocInput = document.getElementById('numeroDocumento');
+    const telInput = document.getElementById('telefono');
+    const selectTipoUsuario = document.getElementById('tipoUsuarioSelect');
 
-// Mostrar/Ocultar Confirmar Contraseña
-document.getElementById('mostrarConfirmarContraseña').addEventListener('click', () => {
-    const campoConfirmarContraseña = document.getElementById('confirmarContraseña');
-    const icono = document.querySelector('#mostrarConfirmarContraseña i');
-    
-    if (campoConfirmarContraseña.type === 'password') {
-        campoConfirmarContraseña.type = 'text';
-        icono.classList.remove('fa-eye');
-        icono.classList.add('fa-eye-slash');
-    } else {
-        campoConfirmarContraseña.type = 'password';
-        icono.classList.remove('fa-eye-slash');
-        icono.classList.add('fa-eye');
-    }
-});
+    // Validar coincidencia y longitud de contraseñas
+    function validarCoincidenciaContraseñas() {
+        const pass1 = contraseñaInput.value;
+        const pass2 = confirmarContraseñaInput.value;
+        let valido = true;
 
-// Validar que el nombre solo contenga letras y espacios
-const campoNombre = document.getElementById('nombre');
-campoNombre.addEventListener('input', () => {
-    const valor = campoNombre.value;
-    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
-    
-    if (!regex.test(valor) && valor.length > 0) {
-        campoNombre.setCustomValidity('El nombre solo debe contener letras y espacios');
-        campoNombre.value = valor.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
-    } else {
-        campoNombre.setCustomValidity('');
-    }
-});
+        if (pass1 && pass1.length < 8) {
+            valido = false;
+            contraseñaInput.classList.add('is-invalid');
+            contraseñaInput.classList.remove('is-valid');
+        } else if (pass1.length >= 8) {
+            contraseñaInput.classList.remove('is-invalid');
+            contraseñaInput.classList.add('is-valid');
+        }
 
-// Formatear el nombre al perder el foco
-campoNombre.addEventListener('blur', () => {
-    if (campoNombre.value.trim() !== '') {
-        const palabras = campoNombre.value.trim().split(/\s+/);
-        const nombreFormateado = palabras.map(palabra => 
-            palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()
-        ).join(' ');
-        campoNombre.value = nombreFormateado;
-    }
-});
-
-// Validar Fortaleza de Contraseña
-const entradaContraseña = document.getElementById('contraseña');
-const barraFortaleza = document.getElementById('barraFortaleza');
-const passwordHelp = document.getElementById('passwordHelp');
-
-entradaContraseña.addEventListener('input', () => {
-    const valor = entradaContraseña.value;
-    
-    const tieneMayuscula = /[A-Z]/.test(valor);
-    const tieneMinuscula = /[a-z]/.test(valor);
-    const tieneNumero = /\d/.test(valor);
-    const tieneEspecial = /[@$!%*?&#]/.test(valor);
-    const longitudMinima = valor.length >= 8;
-    
-    const fortaleza = (tieneMayuscula + tieneMinuscula + tieneNumero + tieneEspecial) * (longitudMinima ? 1 : 0.5);
-    
-    const colores = ['danger', 'warning', 'warning', 'info', 'success'];
-    const mensajes = [
-        'Contraseña muy débil',
-        'Contraseña débil',
-        'Contraseña moderada',
-        'Contraseña fuerte',
-        'Contraseña muy fuerte'
-    ];
-    
-    const indice = Math.min(Math.floor(fortaleza), 4);
-    
-    barraFortaleza.style.width = `${(fortaleza / 4) * 100}%`;
-    barraFortaleza.className = `progress-bar bg-${colores[indice]}`;
-    
-    if (valor.length > 0) {
-        passwordHelp.textContent = mensajes[indice];
-        if (!longitudMinima) passwordHelp.textContent += ' - Añade al menos 8 caracteres';
-        else if (fortaleza < 4) {
-            let requisitos = [];
-            if (!tieneMayuscula) requisitos.push('mayúsculas');
-            if (!tieneMinuscula) requisitos.push('minúsculas');
-            if (!tieneNumero) requisitos.push('números');
-            if (!tieneEspecial) requisitos.push('símbolos (@$!%*?&#)');
-            if (requisitos.length > 0) {
-                passwordHelp.textContent += ' - Añade ' + requisitos.join(', ');
+        if (pass2) {
+            if (pass1 !== pass2 || pass1.length < 8) {
+                valido = false;
+                confirmarContraseñaInput.classList.add('is-invalid');
+                confirmarContraseñaInput.classList.remove('is-valid');
+                const feedback = confirmarContraseñaInput.closest('.form-floating')
+                    .querySelector('.invalid-feedback');
+                if (feedback) {
+                    feedback.textContent = pass1.length < 8
+                        ? 'La contraseña debe tener al menos 8 caracteres.'
+                        : 'Las contraseñas no coinciden.';
+                }
+            } else {
+                confirmarContraseñaInput.classList.remove('is-invalid');
+                confirmarContraseñaInput.classList.add('is-valid');
             }
         }
-    } else {
-        passwordHelp.textContent = 'Usa mayúsculas, números y símbolos para una contraseña segura';
+
+        return valido;
     }
-});
 
-// Confirmar Contraseña
-const confirmarContraseña = document.getElementById('confirmarContraseña');
-confirmarContraseña.addEventListener('input', () => {
-    confirmarContraseña.setCustomValidity(
-        confirmarContraseña.value !== entradaContraseña.value ? 'Las contraseñas no coinciden.' : ''
-    );
-});
+    confirmarContraseñaInput?.addEventListener('blur', validarCoincidenciaContraseñas);
+    contraseñaInput?.addEventListener('blur', validarCoincidenciaContraseñas);
 
-// Manejo de Envío del Formulario con integración al backend
-document.getElementById('formularioRegistro').addEventListener('submit', function(evento) {
-    evento.preventDefault(); 
-    
-    // Recopilar datos del formulario
-    const nombre = document.getElementById('nombre').value;
-    const correo = document.getElementById('correo').value;
-    const contrasena = document.getElementById('contraseña').value;
-    const rol = document.getElementById('rol').value; 
-
-    // Validar que el formulario sea válido
-    if (this.checkValidity()) {
-        // Remover alertas previas
-        const alertasAnteriores = document.querySelectorAll('.alert');
-        alertasAnteriores.forEach(alerta => alerta.remove());
-        
-        // Crear objeto usuario para enviar al backend
-        const usuario = {
-            nombreCompleto: nombre,
-            correo: correo,
-            contrasena: contrasena,
-            rol: rol
-        };
-        
-        // Enviar datos al endpoint de registro en el backend
-        fetch('/api/usuarios/registrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(usuario)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Mostrar mensaje de éxito
-            const mensajeExitoso = document.createElement('div');
-            mensajeExitoso.className = 'alert alert-success mt-4 animate__animated animate__fadeIn';
-            mensajeExitoso.innerHTML = `
-                <i class="fas fa-check-circle mr-2"></i>
-                <strong>¡Registro exitoso!</strong><br>
-                Bienvenido/a ${nombre}. Tu cuenta ha sido creada con el rol: ${rol}
-            `;
-            document.getElementById('formularioRegistro').appendChild(mensajeExitoso);
-            
-            // Deshabilitar el botón para evitar envíos múltiples
-            document.querySelector('button[type="submit"]').disabled = true;
-            
-            // Redirigir al formulario de inicio de sesión después de 3 segundos
-            setTimeout(() => {
-                window.location.href = '/login.html'; 
-            }, 3000);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const mensajeError = document.createElement('div');
-            mensajeError.className = 'alert alert-danger mt-4';
-            mensajeError.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Ocurrió un error al registrar el usuario. Intenta de nuevo.';
-            document.getElementById('formularioRegistro').appendChild(mensajeError);
-        });
-    } else {
-        // Validar campos específicos y mostrar alerta de error
-        const camposRequeridos = document.querySelectorAll('[required]');
-        let primerCampoInvalido = null;
-        
-        camposRequeridos.forEach(campo => {
-            if (!campo.checkValidity() && !primerCampoInvalido) {
-                primerCampoInvalido = campo;
+    // Validar nombre/apellido
+    function validarTexto(inputElement) {
+        if (!inputElement) return;
+        inputElement.addEventListener('input', () => {
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]*$/;
+            const esValido = regex.test(inputElement.value);
+            inputElement.classList.toggle('is-invalid', !esValido && inputElement.value);
+            inputElement.classList.toggle('is-valid', esValido && inputElement.value);
+            const feedback = inputElement.closest('.form-floating')
+                .querySelector('.invalid-feedback');
+            if (feedback) {
+                feedback.textContent = !esValido && inputElement.value
+                    ? 'Solo se permiten letras y espacios.'
+                    : `Ingrese un ${inputElement.id === 'nombre' ? 'nombre' : 'apellido'} válido.`;
             }
         });
-        
-        if (primerCampoInvalido) {
-            primerCampoInvalido.focus();
+        inputElement.addEventListener('blur', () => {
+            const val = inputElement.value.trim();
+            if (val) {
+                inputElement.value = val
+                    .split(/\s+/)
+                    .map(p => p[0].toUpperCase() + p.slice(1).toLowerCase())
+                    .join(' ');
+                inputElement.dispatchEvent(new Event('input'));
+            }
+        });
+    }
+    validarTexto(nombreInput);
+    validarTexto(apellidoInput);
+
+    // Documento y teléfono
+    numDocInput?.addEventListener('input', () => {
+        const esValido = /^[0-9]*$/.test(numDocInput.value);
+        numDocInput.classList.toggle('is-invalid', !esValido && numDocInput.value);
+        numDocInput.classList.toggle('is-valid', esValido && numDocInput.value);
+    });
+    telInput?.addEventListener('input', () => {
+        const soloNums = telInput.value.replace(/[^0-9]/g, '');
+        telInput.value = soloNums;
+        const esValido = soloNums.length >= 7 && soloNums.length <= 15;
+        telInput.classList.toggle('is-invalid', !esValido && soloNums);
+        telInput.classList.toggle('is-valid', esValido);
+    });
+
+    formularioRegistro?.addEventListener('submit', function(evento) {
+        evento.preventDefault();
+        evento.stopPropagation();
+        mensajeRegistroDiv.innerHTML = '';
+
+        const contrasenasValidas = validarCoincidenciaContraseñas();
+        formularioRegistro.classList.add('was-validated');
+
+        if (formularioRegistro.checkValidity() && contrasenasValidas) {
+            const usuario = {
+                nombre:          nombreInput.value.trim(),
+                apellido:        apellidoInput.value.trim(),
+                tipoDocumento:   document.getElementById('tipoDocumento').value,
+                numeroDocumento: numDocInput.value.trim(),
+                correo:          document.getElementById('correo').value.trim().toLowerCase(),
+                telefono:        telInput?.value.trim() || '',
+                direccion:       document.getElementById('direccion')?.value.trim() || '',
+                contrasena:      contraseñaInput.value,
+                tipoUsuario:     selectTipoUsuario.value  // ADMIN o ENCARGADO
+            };
+
+            const boton = formularioRegistro.querySelector('button[type="submit"]');
+            const htmlOrig = boton.innerHTML;
+            boton.disabled = true;
+            boton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registrando...';
+
+            fetch('/api/usuarios/registrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(usuario)
+            })
+            .then(async resp => {
+                const data = await resp.json();
+                if (!resp.ok) throw new Error(data.mensaje || `Error ${resp.status}`);
+                return data;
+            })
+            .then(data => {
+                mostrarMensaje(data.mensaje || '¡Registro exitoso!', 'success');
+                formularioRegistro.reset();
+                formularioRegistro.classList.remove('was-validated');
+                formularioRegistro.querySelectorAll('.form-control, .form-select')
+                    .forEach(el => el.classList.remove('is-valid','is-invalid'));
+
+                // **Redirijo siempre al login**
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 1500);
+            })
+            .catch(err => {
+                console.error('Error en registro:', err);
+                mostrarMensaje(`Error al registrar: ${err.message}`, 'danger');
+                boton.disabled = false;
+                boton.innerHTML = htmlOrig;
+            });
+
+        } else {
+            mostrarMensaje('Por favor, corrija los campos marcados en rojo.', 'warning');
+            formularioRegistro.querySelector(':invalid')?.focus();
         }
-        
-        const mensajeError = document.createElement('div');
-        mensajeError.className = 'alert alert-danger mt-4';
-        mensajeError.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Por favor, complete todos los campos requeridos correctamente.';
-        
-        const errorExistente = document.querySelector('.alert-danger');
-        if (!errorExistente) {
-            document.getElementById('formularioRegistro').appendChild(mensajeError);
-            
-            setTimeout(() => {
-                mensajeError.remove();
-            }, 3000);
-        }
+    });
+
+    function mostrarMensaje(mensaje, tipo) {
+        if (!mensajeRegistroDiv) return;
+        const tipoBS = (tipo === 'error' ? 'danger' : tipo);
+        mensajeRegistroDiv.innerHTML = `
+            <div class="alert alert-${tipoBS} alert-dismissible fade show mt-3" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
     }
 });

@@ -2,49 +2,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const formulario = document.getElementById('login-formulario');
     const inputContraseña = document.getElementById('contraseña');
     const inputCorreo = document.getElementById('email');
-    const mostrarContraseña = document.getElementById('mostrar-contraseña');
+    const togglePass = document.getElementById('mostrar-contraseña');
     const mensajeLogin = document.getElementById('login-mensaje');
     const recordarCheckbox = document.getElementById('recordar');
     const botonGoogle = document.getElementById('google-login-btn');
 
     // Mostrar/Ocultar Contraseña
-    mostrarContraseña.addEventListener('click', () => {
-        if (inputContraseña.type === 'password') {
-            inputContraseña.type = 'text';
-            mostrarContraseña.classList.remove('fa-eye');
-            mostrarContraseña.classList.add('fa-eye-slash');
-        } else {
-            inputContraseña.type = 'password';
-            mostrarContraseña.classList.remove('fa-eye-slash');
-            mostrarContraseña.classList.add('fa-eye');
-        }
+    togglePass.addEventListener('click', () => {
+        const tipo = inputContraseña.type === 'password' ? 'text' : 'password';
+        inputContraseña.type = tipo;
+        togglePass.classList.toggle('fa-eye');
+        togglePass.classList.toggle('fa-eye-slash');
     });
 
-    // Cargar datos si se marcó "Recordar" antes
+    // Cargar datos si se marcó "Recordar"
     window.addEventListener('load', () => {
-        const recordadoCorreo = localStorage.getItem('correoRecordado');
-        const recordadoContraseña = localStorage.getItem('contraseñaRecordada');
-        if (recordadoCorreo && recordadoContraseña) {
-            inputCorreo.value = recordadoCorreo;
-            inputContraseña.value = recordadoContraseña;
+        const c = localStorage.getItem('correoRecordado');
+        const p = localStorage.getItem('contraseñaRecordada');
+        if (c && p) {
+            inputCorreo.value = c;
+            inputContraseña.value = p;
             recordarCheckbox.checked = true;
         }
     });
 
-    // Manejo de Envío del Formulario
-    formulario.addEventListener('submit', async (evento) => {
+    formulario.addEventListener('submit', async evento => {
         evento.preventDefault();
-        
-        // Ocultar mensajes previos
         mensajeLogin.textContent = '';
-        mensajeLogin.style.display = 'none'; 
+        mensajeLogin.style.display = 'none';
 
-        // Simulación de carga
-        const botonAcceder = document.querySelector('.boton-acceder');
-        const textoBoton = botonAcceder?.querySelector('span');
-        const indicadorCarga = document.querySelector('.cargando');
-
-        // Validar campos vacíos en el frontend
+        // Validaciones básicas
         if (!inputCorreo.value.trim()) {
             mostrarError('Por favor, ingresa tu correo');
             return;
@@ -54,14 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        try {
-            // Animación de carga
-            if (textoBoton) textoBoton.style.display = 'none';
-            if (indicadorCarga) indicadorCarga.style.display = 'block';
+        // Animación de carga
+        const botonAcceder = formulario.querySelector('button[type="submit"]');
+        const textoBoton = botonAcceder.textContent;
+        botonAcceder.disabled = true;
+        botonAcceder.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Accediendo...';
 
-            // Petición al backend para validar
+        try {
             const credenciales = {
-                correo: inputCorreo.value,
+                correo: inputCorreo.value.trim(),
                 contrasena: inputContraseña.value
             };
 
@@ -73,52 +61,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await respuesta.json();
 
-            if (!respuesta.ok || !data.valido) {
-                // Si "valido" = false, muestro el mensaje que devuelva el servidor
-                mostrarError(data.mensaje || 'Error al validar credenciales');
-            } else {
-                // Si "valido" = true, el servidor debe mandar "rol"
-                if (recordarCheckbox.checked) {
-                    // Guardar en localStorage
-                    localStorage.setItem('correoRecordado', inputCorreo.value);
-                    localStorage.setItem('contraseñaRecordada', inputContraseña.value);
-                } else {
-                    // Limpiar localStorage
-                    localStorage.removeItem('correoRecordado');
-                    localStorage.removeItem('contraseñaRecordada');
-                }
+            if (!respuesta.ok || data.valido === false) {
+                mostrarError(data.mensaje || 'Credenciales incorrectas');
+                return;
+            }
 
-                // Redirigir según el rol
-                if (data.rol === 'ENCARGADO') {
-                    window.location.href = '/Gestion-de-reservas.html';
-                } else if (data.rol === 'ADMIN') {
+            // Guardar/limpiar "Recordar"
+            if (recordarCheckbox.checked) {
+                localStorage.setItem('correoRecordado', inputCorreo.value.trim());
+                localStorage.setItem('contraseñaRecordada', inputContraseña.value);
+            } else {
+                localStorage.removeItem('correoRecordado');
+                localStorage.removeItem('contraseñaRecordada');
+            }
+
+            // Redirigir según rol
+            switch (data.rol) {
+                case 'ADMIN':
                     window.location.href = '/pantalla-admin.html';
-                } else {
-                    
+                    break;
+                case 'ENCARGADO':
+                    window.location.href = '/Gestion-de-reservas.html';
+                    break;
+                case 'CLIENTE':
+                    window.location.href = '/dashboard-cliente.html';
+                    break;
+                default:
                     mostrarError('Rol no reconocido');
-                }
             }
 
         } catch (error) {
             console.error('Error:', error);
             mostrarError('Error de conexión con el servidor');
         } finally {
-            if (textoBoton) textoBoton.style.display = 'block';
-            if (indicadorCarga) indicadorCarga.style.display = 'none';
+            botonAcceder.disabled = false;
+            botonAcceder.innerHTML = textoBoton;
         }
     });
 
     function mostrarError(mensaje) {
         mensajeLogin.textContent = mensaje;
-        mensajeLogin.classList.add('alert', 'alert-danger');
-        mensajeLogin.style.display = 'block'; 
+        mensajeLogin.className = 'alert alert-danger mt-3';
+        mensajeLogin.style.display = 'block';
+        mensajeLogin.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // Botón "Iniciar sesión con Google"
-    if (botonGoogle) {
-        botonGoogle.addEventListener('click', () => {
-           
-            alert('Función de inicio de sesión con Google en desarrollo');
-        });
-    }
+    // Inicio sesión con Google (placeholder)
+    botonGoogle?.addEventListener('click', () => {
+        alert('Inicio de sesión con Google en desarrollo');
+    });
 });

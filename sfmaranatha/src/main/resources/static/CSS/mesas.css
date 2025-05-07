@@ -1,8 +1,197 @@
+/* Estilo general del sitio */
 body {
-    background-color: #d63031;
-    color: #fdd835;
+    background-color: #f8f8f8;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-button.btn-warning {
+/* Colores principales del restaurante */
+:root {
+    --primary: #d63031;
+    --primary-dark: #b02123;
+    --primary-light: #ff6b6b;
+    --accent: #fdd835;
+    --accent-dark: #f9a825;
+    --accent-light: #ffeb3b;
+    --white: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-600: #6c757d;
+    --gray-800: #343a40;
+    --black: #000000;
+}
+
+/* Estilos para headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary);
+}
+
+/* Personalización de contenedores */
+.container {
+    max-width: 1200px;
+}
+
+/* Tarjetas de mesas */
+.mesa-card {
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mesa-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mesa-img-container {
+    text-align: center;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.mesa-img-container img {
+    max-height: 150px;
+    object-fit: contain;
+}
+
+/* Estilos de botones */
+.btn-reservar {
+    background-color: var(--accent);
+    color: var(--gray-800);
+    border: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
     width: 100%;
+}
+
+.btn-reservar:hover {
+    background-color: var(--accent-dark);
+    transform: scale(1.03);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary-dark);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--gray-600);
+    border-color: var(--gray-600);
+}
+
+/* Estilos para cards */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+    padding: 12px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Estilos para formularios */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.25rem rgba(253, 216, 53, 0.25);
+}
+
+/* Navegación por pestañas */
+.nav-tabs .nav-link {
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary);
+    font-weight: 600;
+    border-bottom: 3px solid var(--primary);
+}
+
+/* Menú de platos */
+.menu-item {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: var(--gray-100);
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: var(--gray-200);
+}
+
+.menu-item .form-check-label {
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Estilos para métodos de pago */
+.method-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.method-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.img-payment {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin: 10px 0;
+}
+
+/* Colores del restaurante para elementos específicos */
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.text-accent {
+    color: var(--accent) !important;
+}
+
+/* Estilo para lista de platos seleccionados */
+#listaPlatos {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+    .mesa-card {
+        margin-bottom: 20px;
+    }
 }

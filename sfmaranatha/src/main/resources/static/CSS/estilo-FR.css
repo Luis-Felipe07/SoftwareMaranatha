@@ -1,206 +1,206 @@
 :root {
-    --primary-color: #5e72e4;
-    --secondary-color: #f5f6fa;
-    --text-color: #333;
-    --border-color: #e9ecef;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --success-color: #2dce89;
-    --warning-color: #fb6340;
-    --danger-color: #f5365c;
-    --info-color: #11cdef;
+  --rojo-maranatha: #d32f2f; /* Rojo primario */
+  --rojo-maranatha-dark: #b71c1c; /* Rojo oscuro */
+  --amarillo-maranatha: #fbc02d; /* Amarillo primario */
+  --amarillo-maranatha-dark: #f9a825; /* Amarillo oscuro */
+  --blanco: #ffffff;
+  --gris-claro: #f8f9fa;
+  --gris-medio: #e9ecef;
+  --gris-oscuro: #6c757d;
+  --texto-oscuro: #343a40;
+  --sombra-suave: rgba(0, 0, 0, 0.1);
+  --sombra-media: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  /* Un fondo degradado sutil */
+  background: linear-gradient(135deg, #fff1f2, #fffbe6);
+  font-family: 'Poppins', sans-serif; /* Fuente más moderna */
+  color: var(--texto-oscuro);
+  line-height: 1.6;
+}
+
+.form-container {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.form-card-maranatha {
+  border: none;
+  border-radius: 15px; /* Bordes más redondeados */
+  box-shadow: 0 10px 25px var(--sombra-media);
+  overflow: hidden; /* Para que el header redondeado funcione */
+  background-color: var(--blanco);
+}
+
+.form-card-maranatha .card-header {
+  background: linear-gradient(135deg, var(--rojo-maranatha), var(--rojo-maranatha-dark));
+  color: var(--blanco);
+  padding: 1.5rem 1rem;
+  border-bottom: 4px solid var(--amarillo-maranatha);
+  border-radius: 15px 15px 0 0; /* Redondeo solo arriba */
+}
+
+.form-card-maranatha .card-header h2 {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  font-size: 1.75rem; /* Tamaño ajustado */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+.form-card-maranatha .card-header h2 .fas {
+  color: var(--amarillo-maranatha); /* Icono en amarillo */
+  margin-right: 0.5rem;
+}
+
+
+.form-card-maranatha .card-header .subtitle {
+  opacity: 0.9;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.form-card-maranatha .card-body {
+  padding: 2rem; /* Más padding interno */
+}
+
+/* Estilos para labels y iconos dentro */
+.form-floating > label {
+  color: var(--gris-oscuro);
+  font-size: 0.9rem; /* Ligeramente más pequeño */
+}
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select:focus ~ label,
+.form-floating > .form-select:not(:placeholder-shown) ~ label {
+  color: var(--rojo-maranatha); /* Label rojo al enfocar/llenar */
+}
+
+.icon-rojo {
+  color: var(--rojo-maranatha); /* Iconos rojos */
+  margin-right: 0.4rem;
+}
+
+
+/* Estilos para inputs y selects */
+.form-control, .form-select {
+  border-radius: 8px; /* Bordes redondeados */
+  border: 1px solid var(--gris-medio);
+  padding: 0.75rem 1rem; /* Padding ajustado */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff; /* Asegurar fondo blanco */
+}
+
+/* Estilo al enfocar */
+.form-control:focus, .form-select:focus {
+  border-color: var(--amarillo-maranatha);
+  box-shadow: 0 0 0 0.25rem rgba(251, 192, 45, 0.2); /* Sombra amarilla suave */
+  background-color: #fff;
+}
+
+/* Estilos específicos para form-floating */
+.form-floating > .form-control,
+.form-floating > .form-select {
+  height: calc(3.5rem + 2px); /* Altura estándar Bootstrap 5 */
+  line-height: 1.25;
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+}
+.form-floating > label {
+  padding: 1rem 1rem; /* Ajustar padding del label */
+}
+
+/* Botón de registro */
+.btn-registrar-maranatha {
+  background: linear-gradient(135deg, var(--amarillo-maranatha), var(--amarillo-maranatha-dark));
+  color: var(--texto-oscuro); /* Texto oscuro para mejor contraste en amarillo */
+  border: none;
+  border-radius: 50px; /* Botón tipo píldora */
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px var(--sombra-suave);
+}
+
+.btn-registrar-maranatha:hover {
+  background: linear-gradient(135deg, var(--amarillo-maranatha-dark), var(--amarillo-maranatha));
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px var(--sombra-media);
+  color: var(--texto-oscuro);
+}
+
+.btn-registrar-maranatha:active {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px var(--sombra-suave);
+}
+
+/* Enlace de login */
+.link-login-maranatha {
+  color: var(--rojo-maranatha);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link-login-maranatha:hover {
+  color: var(--rojo-maranatha-dark);
+  text-decoration: underline;
+}
+
+/* Estilos para mensajes de alerta */
+.alert {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: none; /* Quitar borde por defecto */
+}
+.alert-success {
+  background-color: #e9f7ef; /* Fondo verde claro */
+  color: #155724; /* Texto verde oscuro */
+}
+.alert-danger {
+  background-color: #fdecea; /* Fondo rojo claro */
+  color: #721c24; /* Texto rojo oscuro */
+}
+.alert-warning {
+   background-color: #fff8e1; /* Fondo amarillo claro */
+   color: #856404; /* Texto amarillo oscuro */
+}
+
+/* Adaptación responsiva */
+@media (max-width: 767px) {
+  .form-card-maranatha .card-body {
+      padding: 1.5rem;
   }
-  
-  body {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
-    min-height: 100vh;
+  .form-card-maranatha .card-header h2 {
+     font-size: 1.5rem;
   }
-  
-  .container {
-    padding: 40px 15px;
-  }
-  
-  .card {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 15px 35px var(--shadow-color);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background-color: white;
-  }
-  
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  }
-  
-  .card-header {
-    background: linear-gradient(to right, var(--primary-color), #825ee4);
-    color: white;
-    padding: 25px 20px;
-    border-bottom: none;
-  }
-  
-  .card-header h2 {
-    font-weight: 600;
-    margin-bottom: 5px;
-    font-size: 2rem;
-  }
-  
-  .card-header .subtitle {
-    opacity: 0.8;
-    margin-bottom: 0;
-    font-size: 1rem;
-  }
-  
-  .card-body {
-    padding: 30px;
-  }
-  
-  label {
-    font-weight: 500;
-    font-size: 0.875rem;
-    color: #525f7f;
-    margin-bottom: 8px;
-  }
-  
-  .form-control {
-    border-radius: 8px;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    transition: all 0.2s ease;
-    height: auto;
-  }
-  
-  .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.15);
-  }
-  
-  .input-group-text {
-    background-color: #f8f9fe;
-    border: 1px solid var(--border-color);
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    color: #8898aa;
-  }
-  
-  .input-group .form-control {
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-  }
-  
-  .toggle-password {
-    border: 1px solid var(--border-color);
-    border-left: none;
-    background-color: #f8f9fe;
-    color: #8898aa;
-    border-radius: 0 8px 8px 0;
-    transition: all 0.2s ease;
-  }
-  
-  .toggle-password:hover {
-    background-color: #eaecf4;
-  }
-  
-  .custom-select {
-    height: auto;
-    padding: 12px;
-    background-color: white;
-    border-radius: 8px;
-  }
-  
-  .progress {
-    height: 5px;
-    border-radius: 10px;
-    margin-top: 8px;
-  }
-  
-  .progress-bar {
-    transition: width 0.3s ease;
-  }
-  
-  .bg-danger {
-    background-color: var(--danger-color) !important;
-  }
-  
-  .bg-warning {
-    background-color: var(--warning-color) !important;
-  }
-  
-  .bg-info {
-    background-color: var(--info-color) !important;
-  }
-  
-  .bg-success {
-    background-color: var(--success-color) !important;
-  }
-  
-  .form-text {
-    color: #8898aa;
-    font-size: 0.75rem;
-    margin-top: 5px;
-  }
-  
-  .btn-primary {
-    background: linear-gradient(to right, var(--primary-color), #825ee4);
-    border: none;
-    border-radius: 30px;
-    padding: 12px 20px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(94, 114, 228, 0.3);
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 14px rgba(94, 114, 228, 0.4);
-  }
-  
-  .btn-primary:active, .btn-primary:focus {
-    outline: none;
-    box-shadow: 0 7px 14px rgba(94, 114, 228, 0.4), 0 0 0 0.2rem rgba(94, 114, 228, 0.5);
-  }
-  
-  .login-link {
-    color: var(--primary-color);
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-  
-  .login-link:hover {
-    color: #825ee4;
-    text-decoration: none;
-  }
-  
-  .alert {
-    border-radius: 8px;
-    border: none;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-  
-  .password-strength {
-    margin-top: 8px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  @media (max-width: 768px) {
-    .card {
-      margin: 0 10px;
-    }
-    
-    .card-header h2 {
-      font-size: 1.75rem;
-    }
-    
-    .card-body {
-      padding: 20px;
-    }
-  }
+}
+
+/* Estilos para validación de Bootstrap 5 */
+.was-validated .form-control:invalid, .form-control.is-invalid {
+  border-color: var(--rojo-maranatha-dark);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23b71c1c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23b71c1c' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+  padding-right: calc(1.5em + 1.5rem); /* Asegurar espacio para el icono */
+}
+.was-validated .form-control:invalid:focus, .form-control.is-invalid:focus {
+   box-shadow: 0 0 0 0.25rem rgba(183, 28, 28, 0.25);
+}
+.invalid-feedback {
+  color: var(--rojo-maranatha-dark);
+  font-size: 0.8rem;
+}
+
+.was-validated .form-select:invalid, .form-select.is-invalid {
+  border-color: var(--rojo-maranatha-dark);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b71c1c' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"), url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23b71c1c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23b71c1c' stroke='none'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center, center right 2.25rem;
+  background-size: 16px 12px, 1rem 1rem;
+  padding-right: calc(0.75em + 3.25rem); /* Ajustar padding */
+}
+.was-validated .form-select:invalid:focus, .form-select.is-invalid:focus {
+   box-shadow: 0 0 0 0.25rem rgba(183, 28, 28, 0.25);
+}

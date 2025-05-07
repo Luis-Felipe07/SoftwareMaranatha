@@ -1,0 +1,320 @@
+
+:root {
+    --rojo-maranatha: #e63946;
+    --amarillo-maranatha: #ffb703;
+    --rojo-claro: #f8d7da;
+    --amarillo-claro: #fff3cd;
+    --gris-oscuro: #333333;
+    --blanco: #ffffff;
+    --gris-claro: #f5f5f5;
+}
+
+/* Estilos generales del cuerpo */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gris-claro);
+    color: var(--gris-oscuro);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Defino la estructura para que el footer quede siempre abajo */
+main {
+    flex: 1;
+}
+
+/* Estilos del encabezado */
+.header {
+    background-color: var(--blanco);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    max-height: 60px;
+    width: auto;
+}
+
+.titulo-principal {
+    color: var(--rojo-maranatha);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+#nombreUsuario {
+    font-weight: 500;
+}
+
+.btn-perfil {
+    background-color: transparent;
+    border: none;
+    color: var(--rojo-maranatha);
+    font-size: 1.5rem;
+    padding: 0;
+    transition: transform 0.3s;
+}
+
+.btn-perfil:hover {
+    transform: scale(1.1);
+    color: var(--amarillo-maranatha);
+}
+
+/* Panel de bienvenida */
+.panel-bienvenida {
+    background: linear-gradient(135deg, var(--rojo-claro), var(--amarillo-claro));
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.titulo-bienvenida {
+    color: var(--rojo-maranatha);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subtitulo-bienvenida {
+    color: var(--gris-oscuro);
+    font-size: 1.1rem;
+}
+
+.resumen-actividad {
+    margin-top: 20px;
+}
+
+.dato-resumen {
+    text-align: center;
+    padding: 10px;
+}
+
+.dato-resumen i {
+    font-size: 1.8rem;
+    color: var(--rojo-maranatha);
+    margin-bottom: 5px;
+}
+
+.dato-resumen .numero {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gris-oscuro);
+}
+
+.dato-resumen p {
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+.dato-resumen .detalle {
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+}
+
+/* Pregunta y botones de acción */
+.pregunta-accion {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pregunta-accion h3 {
+    color: var(--rojo-maranatha);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.botones-accion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-accion {
+    background-color: var(--rojo-maranatha);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+.btn-accion:hover {
+    background-color: var(--amarillo-maranatha);
+    color: var(--gris-oscuro);
+    transform: translateY(-2px);
+}
+
+.btn-accion i {
+    margin-right: 8px;
+}
+
+/* Título de sección */
+.seccion-titulo {
+    color: var(--gris-oscuro);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--amarillo-maranatha);
+    display: inline-block;
+}
+
+/* Tarjetas de acceso rápido */
+.tarjeta-acceso {
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.tarjeta-acceso:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.icono-tarjeta {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icono-tarjeta i {
+    color: white;
+    font-size: 1.3rem;
+}
+
+.tarjeta-acceso .card-body {
+    padding-top: 25px;
+}
+
+.tarjeta-acceso .card-title {
+    color: var(--gris-oscuro);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.tarjeta-acceso .card-text {
+    color: #666666;
+    margin-bottom: 20px;
+    min-height: 50px;
+}
+
+.btn-primario {
+    background-color: var(--rojo-maranatha);
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.btn-primario:hover {
+    background-color: var(--amarillo-maranatha);
+    color: var(--gris-oscuro);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
+    padding: 30px 0;
+    margin-top: auto;
+}
+
+.footer h4 {
+    color: var(--amarillo-maranatha);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.redes-sociales {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.red-social {
+    color: var(--blanco);
+    font-size: 1.5rem;
+    transition: color 0.3s;
+}
+
+.red-social:hover {
+    color: var(--amarillo-maranatha);
+}
+
+.derechos {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+    .titulo-principal {
+        font-size: 1.4rem;
+    }
+    
+    .panel-bienvenida .row {
+        flex-direction: column;
+    }
+    
+    .pregunta-accion {
+        margin-top: 20px;
+    }
+    
+    .redes-sociales {
+        justify-content: center;
+    }
+    
+    .footer .text-end {
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .header .row > div {
+        text-align: center !important;
+    }
+    
+    .usuario-info {
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .dato-resumen {
+        margin-bottom: 15px;
+    }
+}

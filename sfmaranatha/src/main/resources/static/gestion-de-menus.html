@@ -3,146 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú del Día</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Restaurante Maranatha - Menú del Día</title>
+    <!-- Enlaces a bibliotecas externas -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/gestion-menu.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row">
-            <!-- Sección de Menús -->
-            <div class="col-lg-9">
-                <h1 class="text-center text-warning">MENÚS DEL DÍA</h1>
-                <div class="row mt-4">
-                    <!-- Carne Asada -->
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <img src="IMG/carne asada.jpg" class="card-img-top" alt="Carne Asada">
-                            <div class="card-body">
-                                <h5 class="card-title">CARNE ASADA</h5>
-                                <p class="card-text">7000 COP</p>
-                                <input type="number" min="1" value="1" class="form-control mb-2">
-                                <button class="btn btn-warning w-100 add-to-cart" data-name="Carne Asada" data-price="7000">
-                                    <i class="bi bi-cart"></i> Añadir
-                                </button>
-                            </div>
-                        </div>
+    <!-- Header con logo -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-text">
+                        <span class="logo-r">R</span>
+                        <span class="logo-m">M</span>
                     </div>
-                    <!-- Bandeja Paisa -->
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <img src="IMG/bandeja paisa.jpg" class="card-img-top" alt="Bandeja Paisa">
-                            <div class="card-body">
-                                <h5 class="card-title">Bandeja Paisa</h5>
-                                <p class="card-text">20000 COP <br> (Si compras 3, la 4ta es gratis)</p>
-                                <input type="number" min="1" value="1" class="form-control mb-2">
-                                <button class="btn btn-warning w-100 add-to-cart" data-name="Bandeja Paisa" data-price="20000">
-                                    <i class="bi bi-cart"></i> Añadir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Hígado Encebollado -->
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <img src="IMG/higado encebollado.jpg" class="card-img-top" alt="Hígado Encebollado">
-                            <div class="card-body">
-                                <h5 class="card-title">Hígado Encebollado</h5>
-                                <p class="card-text">12000 COP</p>
-                                <input type="number" min="1" value="1" class="form-control mb-2">
-                                <button class="btn btn-warning w-100 add-to-cart" data-name="Hígado Encebollado" data-price="12000">
-                                    <i class="bi bi-cart"></i> Añadir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Formulario de Pedido -->
-            <div class="col-lg-3">
-                <div id="formularioPedidoContainer" class="bg-light p-4 d-none">
-                    <h3 class="text-danger">Confirme su pedido</h3>
-                    <p>Complete su orden aquí:</p>
-                    <!-- Formulario para Pedido a Domicilio -->
-                    <form id="pedidoForm">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre Completo*</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo Electrónico*</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono o Celular*</label>
-                            <input type="tel" class="form-control" id="telefono" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección para envío*</label>
-                            <input type="text" class="form-control" id="direccion" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="barrio" class="form-label">Barrio*</label>
-                            <input type="text" class="form-control" id="barrio" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="metodoPago" class="form-label">Método de pago*</label>
-                            <select class="form-control" id="metodoPago" required>
-                                <option value="efectivo">efectivo</option>
-                                <option value="pse">pse</option>
-                                <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
-                                <option value="Nequi">Nequi</option>
-                                <option value="Daviplata">Daviplata</option>
-                                <option value="Bancolombia">Bancolombia</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-100">Completar Orden</button>
-                    </form>
-
-                    <!-- Formulario para Pedido en Restaurante -->
-                    <form id="pedidoForm2">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre Completo*</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo Electrónico*</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono o Celular*</label>
-                            <input type="tel" class="form-control" id="telefono" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="horaReserva" class="form-label">Seleccionar Hora*</label>
-                            <input type="time" class="form-control" id="horaReserva" min="11:00" max="22:00" required>
-                            <small class="text-muted">Horario disponible: 11:00 AM - 10:00 PM</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="metodoPago" class="form-label">Método de pago*</label>
-                            <select class="form-control" id="metodoPago" required>
-                                <option value="efectivo">efectivo</option>
-                                <option value="pse">pse</option>
-                                <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
-                                <option value="Nequi">Nequi</option>
-                                <option value="Daviplata">Daviplata</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-100">Completar Orden</button>
-                    </form>
-
-                    <!-- Botón para cancelar el pedido se mostrará cuando se cree un pedido-->
-                    <button id="cancelarPedido" class="btn btn-secondary w-100 mt-2" style="display:none;">Cancelar Pedido</button>
+                    <h1 class="restaurant-name">RESTAURANTE MARANATHA</h1>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container main-content">
+        <div class="row">
+            <!-- Sección de Menús -->
+            <div class="col-lg-8">
+                <div class="menu-section">
+                    <h2 class="section-title text-center">MENÚ DEL DÍA</h2>
+                    <p class="section-subtitle text-center">Seleccione sus platos favoritos</p>
+                    
+                    <div class="row mt-4">
+                        <!-- Carne Asada -->
+                        <div class="col-md-4 mb-4">
+                            <div class="menu-card">
+                                <div class="menu-card-image">
+                                    <img src="IMG/carne asada.jpg" alt="Carne Asada">
+                                    <div class="menu-card-overlay">
+                                        <div class="menu-card-price">$7.000</div>
+                                    </div>
+                                </div>
+                                <div class="menu-card-body">
+                                    <h3 class="menu-card-title">Carne Asada</h3>
+                                    <p class="menu-card-desc">Deliciosa carne asada a la parrilla con acompañantes.</p>
+                                    <div class="menu-card-actions">
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn decrement">-</button>
+                                            <input type="number" min="1" value="1" class="quantity-input">
+                                            <button class="quantity-btn increment">+</button>
+                                        </div>
+                                        <button class="btn btn-add add-to-cart" data-name="Carne Asada" data-price="7000">
+                                            <i class="bi bi-cart-plus"></i> Añadir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bandeja Paisa -->
+                        <div class="col-md-4 mb-4">
+                            <div class="menu-card">
+                                <div class="menu-card-image">
+                                    <img src="IMG/bandeja paisa.jpg" alt="Bandeja Paisa">
+                                    <div class="menu-card-overlay">
+                                        <div class="menu-card-price">$20.000</div>
+                                    </div>
+                                    <div class="menu-card-badge">Promoción: 3x4</div>
+                                </div>
+                                <div class="menu-card-body">
+                                    <h3 class="menu-card-title">Bandeja Paisa</h3>
+                                    <p class="menu-card-desc">Tradicional plato con frijoles, carne molida, chicharrón y huevo.</p>
+                                    <div class="menu-card-actions">
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn decrement">-</button>
+                                            <input type="number" min="1" value="1" class="quantity-input">
+                                            <button class="quantity-btn increment">+</button>
+                                        </div>
+                                        <button class="btn btn-add add-to-cart" data-name="Bandeja Paisa" data-price="20000">
+                                            <i class="bi bi-cart-plus"></i> Añadir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hígado Encebollado -->
+                        <div class="col-md-4 mb-4">
+                            <div class="menu-card">
+                                <div class="menu-card-image">
+                                    <img src="IMG/higado encebollado.jpg" alt="Hígado Encebollado">
+                                    <div class="menu-card-overlay">
+                                        <div class="menu-card-price">$12.000</div>
+                                    </div>
+                                </div>
+                                <div class="menu-card-body">
+                                    <h3 class="menu-card-title">Hígado Encebollado</h3>
+                                    <p class="menu-card-desc">Hígado salteado con cebolla y especias, servido con arroz.</p>
+                                    <div class="menu-card-actions">
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn decrement">-</button>
+                                            <input type="number" min="1" value="1" class="quantity-input">
+                                            <button class="quantity-btn increment">+</button>
+                                        </div>
+                                        <button class="btn btn-add add-to-cart" data-name="Hígado Encebollado" data-price="12000">
+                                            <i class="bi bi-cart-plus"></i> Añadir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de carrito y checkout -->
+            <div class="col-lg-4">
+                <div class="cart-section">
+                    <h3 class="cart-title">Tu pedido</h3>
+                    
+                    <!-- Resumen del carrito -->
+                    <div id="cart-summary" class="cart-summary">
+                        <div class="empty-cart-message">
+                            <i class="bi bi-cart"></i>
+                            <p>Tu carrito está vacío</p>
+                        </div>
+                        <div id="cart-items" class="cart-items">
+                            <!-- Aquí se mostrarán los items del carrito dinámicamente -->
+                        </div>
+                        <div class="cart-total">
+                            <span>Total:</span>
+                            <span id="cart-total-amount">$0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón de checkout -->
+                    <button id="ir-A-pago" class="btn btn-checkout">
+                        <i class="bi bi-bag-check"></i> Continuar con el pedido
+                    </button>
+                    
+                    <!-- Formulario de Pedido (oculto inicialmente) -->
+                    <div id="formularioPedidoContainer" class="order-form d-none">
+                        <h3 class="form-title">Confirme su pedido</h3>
+                        <p class="form-subtitle">Complete su orden aquí:</p>
+                        
+                        <!-- Formulario para Pedido a Domicilio -->
+                        <form id="pedidoForm" class="checkout-form">
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre Completo*</label>
+                                <input type="text" class="form-control" id="nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo Electrónico*</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">Teléfono o Celular*</label>
+                                <input type="tel" class="form-control" id="telefono" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="direccion" class="form-label">Dirección para envío*</label>
+                                <input type="text" class="form-control" id="direccion" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="barrio" class="form-label">Barrio*</label>
+                                <input type="text" class="form-control" id="barrio" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="metodoPago" class="form-label">Método de pago*</label>
+                                <select class="form-control" id="metodoPago" required>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="pse">PSE</option>
+                                    <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                                    <option value="Nequi">Nequi</option>
+                                    <option value="Daviplata">Daviplata</option>
+                                    <option value="Bancolombia">Bancolombia</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-submit">Completar Orden</button>
+                        </form>
+
+                        <!-- Formulario para Pedido en Restaurante -->
+                        <form id="pedidoForm2" class="checkout-form">
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre Completo*</label>
+                                <input type="text" class="form-control" id="nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo Electrónico*</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">Teléfono o Celular*</label>
+                                <input type="tel" class="form-control" id="telefono" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="horaReserva" class="form-label">Seleccionar Hora*</label>
+                                <input type="time" class="form-control" id="horaReserva" min="11:00" max="22:00" required>
+                                <small class="form-text text-muted">Horario disponible: 11:00 AM - 10:00 PM</small>
+                            </div>
+                            <!-- Nuevo campo para saber si es primera visita -->
+                            <div class="mb-3">
+                                <label class="form-label">¿Estas haciendo el pedio desde nuestro local y es tu primera visita?*</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="primeraVisita" id="primeraVisitaSi" value="si" required>
+                                    <label class="form-check-label" for="primeraVisitaSi">
+                                        Sí, es mi primera vez
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="primeraVisita" id="primeraVisitaNo" value="no">
+                                    <label class="form-check-label" for="primeraVisitaNo">
+                                        No, ya he visitado antes
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="metodoPago" class="form-label">Método de pago*</label>
+                                <select class="form-control" id="metodoPago" required>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="pse">PSE</option>
+                                    <option value="Ahorro-a-La-Mano">Ahorro a la mano</option>
+                                    <option value="Nequi">Nequi</option>
+                                    <option value="Daviplata">Daviplata</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-submit">Completar Orden</button>
+                        </form>
+
+                        <!-- Botón para cancelar el pedido se mostrará cuando se cree un pedido-->
+                        <button id="cancelarPedido" class="btn btn-cancel mt-2" style="display:none;">Cancelar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Restaurante Maranatha - Todos los derechos reservados</p>
+        </div>
+    </footer>
 
     <!-- Modal para selección de tipo de pedido -->
     <div class="modal fade" id="opcionModal" tabindex="-1" aria-labelledby="opcionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="opcionModalLabel">¿Cómo desea proceder con su pedido?</h5>
@@ -150,20 +259,26 @@
                 </div>
                 <div class="modal-body">
                     <p>Por favor, elija si desea comer en el restaurante o solicitar un pedido a domicilio:</p>
-                    <button id="comerRestaurante" class="btn btn-amarillo-personalizado w-100 mb-2">Comer en el Restaurante</button>
-                    <button id="pedidoDomicilio" class="btn btn-rojo-personalizado w-100">Pedido a Domicilio</button>
+                    <button id="comerRestaurante" class="btn btn-outline-primary w-100 mb-3">
+                        <i class="bi bi-shop"></i> Comer en el Restaurante
+                    </button>
+                    <button id="pedidoDomicilio" class="btn btn-primary w-100">
+                        <i class="bi bi-bicycle"></i> Pedido a Domicilio
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Botón flotante para ir al pago -->
+    <!-- Botón flotante para carrito (móvil) -->
     <div id="Boton-Flotante">
-        <button id="ir-A-pago" class="btn btn-warning rounded-circle">
+        <button id="mobile-cart-btn" class="btn btn-floating">
             <i class="bi bi-cart"></i>
+            <span id="mobile-cart-count" class="cart-count">0</span>
         </button>
     </div>
 
+    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="JS/gestion-de-menus.js"></script>
 </body>
