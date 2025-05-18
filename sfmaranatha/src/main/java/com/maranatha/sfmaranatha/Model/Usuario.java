@@ -1,10 +1,14 @@
 package com.maranatha.sfmaranatha.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
 public class Usuario {
 
     @Id
@@ -31,7 +35,7 @@ public class Usuario {
     private String direccion;
 
     @Column(nullable = false)
-    private String contrasena;
+    private String contrasena; // Considerar no serializar la contraseña nunca
 
     @Column(name = "fue_directamente_en_el_restaurante")
     private Boolean fueDirecto;
@@ -45,11 +49,16 @@ public class Usuario {
     @Column(name = "tipo_usuario", columnDefinition = "ENUM('ENCARGADO','ADMIN','CLIENTE')", nullable = false)
     private String tipoUsuario;
 
-    public Usuario() {
-        // Constructor vacío para JPA
-    }
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("usuario-reservas") // Lado "padre" de la relación Usuario-Reserva
+    private List<Reserva> reservas;
 
-    // Constructor completo (sin id)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("usuario-pedidos") // Lado "padre" de la relación Usuario-Pedido
+    private List<Pedido> pedidos;
+
+    public Usuario() {}
+
     public Usuario(String nombre, String apellido, String tipoDocumento, String numeroDocumento,
                    String telefono, String direccion, String contrasena,
                    Boolean fueDirecto, LocalDateTime fechaRegistro,
@@ -67,7 +76,13 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-    // Getters y Setters
+    // Getters y Setters (sin cambios, pero asegúrate de que 'contrasena' no se envíe en JSONs sensibles)
+    // Puedes añadir @JsonIgnore al getter de contrasena si nunca la quieres en el JSON.
+    // Ejemplo:
+    // @com.fasterxml.jackson.annotation.JsonIgnore
+    // public String getContrasena() { return contrasena; }
+
+
     public Integer getIdUsuario() {
         return idUsuario;
     }
@@ -139,5 +154,17 @@ public class Usuario {
     }
     public void setTipoUsuario(String tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 }

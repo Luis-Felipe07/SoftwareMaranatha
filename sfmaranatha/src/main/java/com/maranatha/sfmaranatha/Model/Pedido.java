@@ -1,136 +1,193 @@
 package com.maranatha.sfmaranatha.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "pedidos")
+@Table(name = "pedido")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
 public class Pedido {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_pedido")
+    private Long idPedido;
 
-    private String nombreCliente;
-    private String correo;
-    private String telefono;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonBackReference("usuario-pedidos") // Referencia al lado "padre" en Usuario
+    private Usuario usuario;
 
-    @Enumerated(EnumType.STRING)
-    private TipoPedido tipoPedido; 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_reserva") // Puede ser null
+    @JsonBackReference("reserva-pedidos") // Referencia al lado "padre" en Reserva
+    private Reserva reserva;
 
-    
-    private String direccion;
-
-    
-    private String horaReserva;
-    
-    private String metodoPago;
-    
-    
-    @Lob
-    private String detallePedido;
-    
-    private Double montoTotal;
-    
-    @Enumerated(EnumType.STRING)
-    private EstadoPedido estadoPedido = EstadoPedido.PENDIENTE;
-    
+    @Column(name = "fecha_pedido", nullable = false)
     private LocalDateTime fechaPedido = LocalDateTime.now();
 
-    public enum TipoPedido {
-        DOMICILIO,
-        RESTAURANTE
-    }
-    
-    public enum EstadoPedido {
-        PENDIENTE,
-        ENTREGADO,
-        CANCELADO
+    @Column(length = 50, nullable = false)
+    private String estado;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal total;
+
+    @Column(name = "nombre_cliente", length = 100)
+    private String nombreCliente;
+
+    @Column(name = "correo_cliente", length = 100)
+    private String correoCliente;
+
+    @Column(name = "telefono_cliente", length = 20)
+    private String telefonoCliente;
+
+    @Column(name = "direccion_entrega", length = 255)
+    private String direccionEntrega;
+
+    @Column(name = "hora_entrega_restaurante", length = 50)
+    private String horaEntregaRestaurante;
+
+    @Column(name = "metodo_pago", length = 50)
+    private String metodoPago;
+
+    @Lob
+    private String descripcion;
+
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Si Pago tiene una referencia a Pedido, podría necesitar @JsonManagedReference aquí y @JsonBackReference en Pago
+    // Por ahora, asumiendo que Pago no tiene una referencia serializable de vuelta a Pedido o que no se serializa Pago desde Pedido directamente.
+    private Pago pago;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("pedido-items") // Lado "padre" de la relación Pedido-PedidoPlato
+    private List<PedidoPlato> items;
+
+    public Pedido() {}
+
+    // Getters y Setters (sin cambios)
+
+    public Long getIdPedido() {
+        return idPedido;
     }
 
-    // Constructores
-    public Pedido() {
+    public void setIdPedido(Long idPedido) {
+        this.idPedido = idPedido;
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public Usuario getUsuario() {
+        return usuario;
     }
-    
-    public String getNombreCliente() {
-        return nombreCliente;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
+
+    public Reserva getReserva() {
+        return reserva;
     }
-    
-    public String getCorreo() {
-        return correo;
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
     }
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-    
-    public String getTelefono() {
-        return telefono;
-    }
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-    
-    public TipoPedido getTipoPedido() {
-        return tipoPedido;
-    }
-    public void setTipoPedido(TipoPedido tipoPedido) {
-        this.tipoPedido = tipoPedido;
-    }
-    
-    public String getDireccion() {
-        return direccion;
-    }
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-    
-    public String getHoraReserva() {
-        return horaReserva;
-    }
-    public void setHoraReserva(String horaReserva) {
-        this.horaReserva = horaReserva;
-    }
-    
-    public String getMetodoPago() {
-        return metodoPago;
-    }
-    public void setMetodoPago(String metodoPago) {
-        this.metodoPago = metodoPago;
-    }
-    
-    public String getDetallePedido() {
-        return detallePedido;
-    }
-    public void setDetallePedido(String detallePedido) {
-        this.detallePedido = detallePedido;
-    }
-    
-    public Double getMontoTotal() {
-        return montoTotal;
-    }
-    public void setMontoTotal(Double montoTotal) {
-        this.montoTotal = montoTotal;
-    }
-    
-    public EstadoPedido getEstadoPedido() {
-        return estadoPedido;
-    }
-    public void setEstadoPedido(EstadoPedido estadoPedido) {
-        this.estadoPedido = estadoPedido;
-    }
-    
+
     public LocalDateTime getFechaPedido() {
         return fechaPedido;
     }
+
     public void setFechaPedido(LocalDateTime fechaPedido) {
         this.fechaPedido = fechaPedido;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getCorreoCliente() {
+        return correoCliente;
+    }
+
+    public void setCorreoCliente(String correoCliente) {
+        this.correoCliente = correoCliente;
+    }
+
+    public String getTelefonoCliente() {
+        return telefonoCliente;
+    }
+
+    public void setTelefonoCliente(String telefonoCliente) {
+        this.telefonoCliente = telefonoCliente;
+    }
+
+    public String getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
+    public String getHoraEntregaRestaurante() {
+        return horaEntregaRestaurante;
+    }
+
+    public void setHoraEntregaRestaurante(String horaEntregaRestaurante) {
+        this.horaEntregaRestaurante = horaEntregaRestaurante;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Pago getPago() {
+        return pago;
+    }
+
+    public void setPago(Pago pago) {
+        this.pago = pago;
+    }
+
+    public List<PedidoPlato> getItems() {
+        return items;
+    }
+
+    public void setItems(List<PedidoPlato> items) {
+        this.items = items;
     }
 }

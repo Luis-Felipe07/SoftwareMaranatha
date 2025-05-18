@@ -11,12 +11,14 @@ public class RegistroUsuarioDTO {
     private String direccion;
     private String contrasena;
     private String tipoUsuario;
+    private Boolean fueDirecto; // Nuevo campo
 
     public RegistroUsuarioDTO() {
         // Constructor vacío
     }
 
-    // Getters y Setters
+    // Getters y Setters para todos los campos
+
     public String getNombre() {
         return nombre;
     }
@@ -70,5 +72,11 @@ public class RegistroUsuarioDTO {
     }
     public void setTipoUsuario(String tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+    public Boolean getFueDirecto() {
+        return fueDirecto;
+    }
+    public void setFueDirecto(Boolean fueDirecto) {
+        this.fueDirecto = fueDirecto;
     }
 }
