@@ -3,7 +3,7 @@ package com.maranatha.sfmaranatha.dto;
 public class RespuestaRegistroDTO {
     private String mensaje;
     private String redirectUrl;
-    private Integer usuarioId; // Nuevo campo para devolver el ID del usuario registrado
+    private Integer usuarioId; 
 
     public RespuestaRegistroDTO() {}
 

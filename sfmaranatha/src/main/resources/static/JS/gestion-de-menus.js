@@ -1,12 +1,11 @@
-// Hola, soy el script que maneja la página de gestión de menús y pedidos.
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Mis variables globales
+    
     let carrito = [];
     let total = 0;
-    let usuarioLogueado = null; // Aquí guardaré los datos del usuario si está logueado.
-    // 'usuarioIdActualParaPedido' ya no es tan necesario globalmente si siempre usamos 'usuarioLogueado.idUsuario'
+    let usuarioLogueado = null; 
 
-    // Elementos del DOM
+    
     const carritoVacioMensaje = document.querySelector('.empty-cart-message');
     const carritoItemsContenedor = document.getElementById('cart-items');
     const carritoTotalMonto = document.getElementById('cart-total-amount');
@@ -27,12 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     async function inicializarPagina() {
         await verificarSesionUsuario(); 
         await cargarYRenderizarPlatos();
-        // Recupero el carrito si el usuario vuelve del login
+        
         recuperarCarritoTemporal(); 
     }
 
     /**
-     * Yo pregunto al backend si hay un usuario con sesión activa.
+     * pregunto al backend si hay un usuario con sesión activa.
      */
     async function verificarSesionUsuario() {
         try {
@@ -57,13 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Yo recupero el carrito de sessionStorage si el usuario fue redirigido al login y volvió.
+     *  recupero el carrito de sessionStorage si el usuario fue redirigido al login y volvió.
      */
     function recuperarCarritoTemporal() {
         const carritoGuardado = sessionStorage.getItem('carritoTemporal');
         if (carritoGuardado) {
             carrito = JSON.parse(carritoGuardado);
-            sessionStorage.removeItem('carritoTemporal'); // Limpio para no reusarlo accidentalmente
+            sessionStorage.removeItem('carritoTemporal'); 
             if (carrito.length > 0) {
                 actualizarVisualizacionCarrito();
                 console.log("Carrito recuperado de sessionStorage", carrito);
@@ -71,11 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Carga y renderizado de platos (sin cambios respecto a la versión anterior que te di) ---
+    
     async function cargarYRenderizarPlatos() {
-        // ... (esta función ya te la di completa y correcta en la respuesta anterior, asegúrate de tenerla aquí)
-        // Incluye la llamada a verificarSesionUsuario() si no la haces en inicializarPagina() antes.
-        // Por ahora, asumo que inicializarPagina() ya llamó a verificarSesionUsuario().
+        
 
         const idMenuDelDia = 1; 
         if (!contenedorPlatosDinamicos) {
@@ -101,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     function renderizarPlatosEnHTML(platos) {
-        // ... (esta función ya te la di completa y correcta, asegúrate de tenerla aquí)
+        
         if (!contenedorPlatosDinamicos) return;
         contenedorPlatosDinamicos.innerHTML = ''; 
 
@@ -142,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         asignarEventosAddToCart();
     }
     function asignarEventosControlesCantidad() {
-        // ... (esta función ya te la di completa y correcta, asegúrate de tenerla aquí)
+        
          document.querySelectorAll('#contenedorPlatosDinamicos .increment').forEach(button => {
             const newButton = button.cloneNode(true); 
             button.parentNode.replaceChild(newButton, button);
@@ -163,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     function asignarEventosAddToCart() {
-        // ... (esta función ya te la di completa y correcta, asegúrate de tenerla aquí)
+        
         document.querySelectorAll('#contenedorPlatosDinamicos .add-to-cart').forEach(button => {
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
@@ -190,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     function actualizarVisualizacionCarrito() {
-        // ... (esta función ya te la di completa y correcta, asegúrate de tenerla aquí)
+        
         carritoItemsContenedor.innerHTML = '';
         total = 0;
         if (carrito.length === 0) {
@@ -225,14 +222,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    // --- FIN Carga y renderizado de platos ---
+    
 
 
     /**
-     * Cuando el cliente quiere pagar, ahora primero verifico si está logueado.
+     * Cuando el cliente quiere pagar primero verifico si está logueado.
      * Si no lo está, lo mando a iniciar sesión.
      */
-    irAPagoBtn.addEventListener('click', async function() { // Hago esta función async para poder usar await adentro
+    irAPagoBtn.addEventListener('click', async function() { 
         if (carrito.length === 0) {
             alert('Añade algo al carrito primero, ¿vale?');
             return;
@@ -247,24 +244,21 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.setItem('carritoTemporal', JSON.stringify(carrito));
             // Lo redirijo al login, y le digo que vuelva aquí.
             window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-            return; // Detengo la ejecución aquí.
+            return; 
         }
 
         // Si llegamos aquí, es porque el usuario SÍ está logueado.
-        opcionPedidoModal.show(); // Muestro el modal para elegir tipo de pedido.
+        opcionPedidoModal.show(); 
     });
 
     mobileCartBtn.addEventListener('click', function() {
         document.querySelector('.cart-section').scrollIntoView({ behavior: 'smooth' });
     });
 
-    /**
-     * Manejador para "Pedido a Domicilio".
-     * Como el chequeo de login se hizo antes de mostrar el modal, aquí ya sé que 'usuarioLogueado' tiene datos.
-     */
+   
     document.getElementById('pedidoDomicilio').addEventListener('click', function() {
         opcionPedidoModal.hide();
-        // Como ahora es obligatorio estar logueado, directamente muestro el formulario para logueados.
+       
         prepararFormulario('domicilioLogueado', true);
     });
 
@@ -277,13 +271,13 @@ document.addEventListener('DOMContentLoaded', function() {
         opcionPedidoModal.hide();
         if (usuarioLogueado && (usuarioLogueado.tipoUsuario === 'ENCARGADO' || usuarioLogueado.tipoUsuario === 'ADMIN')) {
             prepararFormulario('restauranteEncargado', true); 
-        } else { // Si está logueado y no es encargado/admin, es un cliente.
+        } else { 
             prepararFormulario('restauranteLogueado', true); 
         }
     });
     
     /**
-     * Yo preparo y muestro el formulario correcto según el tipo y si se debe mostrar.
+     *  preparo y muestro el formulario correcto según el tipo y si se debe mostrar.
      */
     function prepararFormulario(tipo, mostrar) {
         irAPagoBtn.style.display = mostrar ? 'none' : 'block';
@@ -294,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mostrar) {
             formularioPedidoContenedorGlobal.classList.remove('d-none');
             switch (tipo) {
-                case 'domicilioLogueado': // Ya no hay 'domicilioNoLogueado' para auto-servicio
+                case 'domicilioLogueado': 
                     pedidoFormDomicilio.style.display = 'block';
                     actualizarFormularioDomicilioLogueado();
                     break;
@@ -302,12 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     pedidoFormRestaurante.style.display = 'block';
                     actualizarFormularioRestauranteLogueado();
                     break;
-                // 'restauranteNoLogueado' ya no se alcanzaría para clientes si el login es obligatorio primero.
-                // Se mantiene por si algún flujo interno lo necesita o para futura referencia, pero la lógica principal de 'irAPagoBtn' lo previene.
-                // case 'restauranteNoLogueado': 
-                //     pedidoFormRestaurante.style.display = 'block';
-                //     actualizarFormularioRestauranteNoLogueado(); 
-                //     break;
+                
                 case 'restauranteEncargado':
                     pedidoFormRestaurante.style.display = 'block';
                     actualizarFormularioRestauranteParaEncargado();
@@ -319,13 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- FORMULARIOS DINÁMICOS ---
-    // (Las funciones actualizarFormularioDomicilioLogueado, actualizarFormularioRestauranteLogueado, 
-    //  y actualizarFormularioRestauranteParaEncargado siguen siendo relevantes.
-    //  actualizarFormularioRestauranteNoLogueado y generarCamposComunesUsuario para no logueados
-    //  ya no serían llamadas directamente por el cliente si el login es obligatorio antes del modal)
+    
 
     function actualizarFormularioDomicilioLogueado() {
-        // ... (igual que en la respuesta anterior, usa los datos de 'usuarioLogueado')
+        
         pedidoFormDomicilio.innerHTML = `
             <p>¡Hola de nuevo, <strong>${usuarioLogueado.nombre || ''} ${usuarioLogueado.apellido || ''}</strong>!</p>
             <p>Confirmemos tu pedido a domicilio:</p>
@@ -354,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function actualizarFormularioRestauranteLogueado() {
-        // ... (igual que en la respuesta anterior, usa 'usuarioLogueado')
+        
          pedidoFormRestaurante.innerHTML = `
             <p>¡Hola de nuevo, <strong>${usuarioLogueado.nombre || ''} ${usuarioLogueado.apellido || ''}</strong>!</p>
             <p>Confirma los detalles para tu pedido en el restaurante:</p>
@@ -379,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function actualizarFormularioRestauranteParaEncargado() {
-        // ... (igual que en la respuesta anterior)
+        
         pedidoFormRestaurante.innerHTML = `
             <p class="form-subtitle">Registrando pedido para cliente en local (por ${usuarioLogueado.tipoUsuario})</p>
             <div class="mb-3">
@@ -411,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /**
-     * Yo proceso el pedido cuando un CLIENTE (ya logueado) lo hace, sea domicilio o restaurante.
+     * proceso el pedido cuando un CLIENTE (ya logueado) lo hace, sea domicilio o restaurante.
      */
     async function procesarPedidoCliente(event) {
         event.preventDefault();
@@ -437,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Yo proceso el pedido cuando un ENCARGADO lo crea para un INVITADO en el restaurante.
+     *  proceso el pedido cuando un ENCARGADO lo crea para un INVITADO en el restaurante.
      */
     async function procesarPedidoRestauranteEncargado(event) {
         event.preventDefault();
@@ -461,10 +447,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Yo soy el encargado final de enviar el pedido al backend.
+     * enviar el pedido al backend.
      */
     function enviarPedidoAlBackend(payload, tipoPedidoDesc) {
-        // ... (igual que en la respuesta anterior)
+        
         console.log("Yo voy a enviar esto al backend:", payload);
         fetch('/api/pedidos/nuevo', { 
             method: 'POST',
@@ -489,18 +475,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Después de un pedido exitoso, yo limpio todo.
+     * Después de un pedido exitoso limpio todo.
      */
     function limpiarCarritoYFormularios() {
-        // ... (igual que en la respuesta anterior)
+       
         carrito = [];
         actualizarVisualizacionCarrito();
         prepararFormulario(null, false); 
         pedidoFormDomicilio.reset(); 
         pedidoFormRestaurante.reset();
-        // usuarioIdActualParaPedido ya no es necesario globalmente, se usa usuarioLogueado.idUsuario
+        
     }
 
-    // ¡Listo! Empiezo por verificar la sesión y cargar los platos.
+    
     inicializarPagina();
 });

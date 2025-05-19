@@ -1,7 +1,4 @@
-/**
- * Variables globales para el manejo de reservas y pedidos
- * Aquí almacenaré toda la información necesaria de la reserva actual
- */
+
 let mesaSeleccionada = null;
 let platosSeleccionados = [];
 let precioTotal = 0;
@@ -9,11 +6,11 @@ let usuarioActual = null;
 let menuItems = { entradas: [], principales: [], postres: [], bebidas: [] };
 
 /**
- * Función para inicializar la página cuando carga el DOM
+ 
  * Configuro los valores mínimos para las fechas y eventos iniciales
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifico si el usuario está autenticado
+   
     verificarAutenticacion();
 
     // Establezco la fecha mínima como hoy
@@ -32,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * Función para verificar si el usuario está autenticado
- * Consulta al backend y muestra/oculta secciones según corresponda
+ 
  */
 function verificarAutenticacion() {
     // Realizo la petición al endpoint de verificación de sesión
@@ -41,7 +38,7 @@ function verificarAutenticacion() {
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: 'include' // Para enviar cookies de sesión
+        credentials: 'include' 
     })
     .then(response => {
         if (!response.ok) {
@@ -75,7 +72,7 @@ function verificarAutenticacion() {
 
 /**
  * Función para cerrar la sesión del usuario
- * Llama al endpoint de logout y recarga la página
+ 
  */
 function cerrarSesion() {
     fetch('/api/usuario/logout', {
@@ -97,7 +94,7 @@ function cerrarSesion() {
 
 /**
  * Función para cargar los platos del menú desde el backend
- * Los categoriza y almacena para mostrarlos cuando se seleccione el pedido adelantado
+ * 
  */
 function cargarMenuPlatos() {
     fetch('/api/platos', {
@@ -120,7 +117,7 @@ function cargarMenuPlatos() {
         menuItems.postres = platos.filter(plato => plato.id_menu === 3);
         menuItems.bebidas = platos.filter(plato => plato.id_menu === 4);
         
-        // Tengo los platos cargados y listos para ser mostrados cuando sea necesario
+        // Tengo los platos cargados 
         console.log('Menú cargado exitosamente');
     })
     .catch(error => {
@@ -130,23 +127,23 @@ function cargarMenuPlatos() {
 
 /**
  * Función para mostrar los platos en la interfaz según su categoría
- * Se ejecuta cuando el usuario activa la sección de pedidos
+ * 
  */
 function mostrarPlatos() {
-    // Muestro entradas
+   
     mostrarPlatosPorCategoria('listaEntradas', menuItems.entradas);
-    // Muestro platos principales
+    
     mostrarPlatosPorCategoria('listaPlatos', menuItems.principales);
-    // Muestro postres
+    
     mostrarPlatosPorCategoria('listaPostres', menuItems.postres);
-    // Muestro bebidas
+   
     mostrarPlatosPorCategoria('listaBebidas', menuItems.bebidas);
 }
 
 /**
  * Función auxiliar para mostrar platos de una categoría en su contenedor
- * @param {String} containerId - ID del contenedor donde mostrar los platos
- * @param {Array} platos - Lista de platos a mostrar
+ * @param {String} 
+ * @param {Array} 
  */
 function mostrarPlatosPorCategoria(containerId, platos) {
     const container = document.getElementById(containerId);
@@ -222,13 +219,13 @@ function seleccionarMesa(numeroMesa) {
         // La mesa está disponible, procedo con la selección
         mesaSeleccionada = numeroMesa;
         
-        // Muestro el número de mesa en el formulario
+        
         document.getElementById('mesaNumero').textContent = numeroMesa;
         
-        // Muestro el formulario de reserva
+        
         document.getElementById('formReserva').classList.remove('d-none');
         
-        // Pre-completo los datos del usuario que ya tengo
+        
         document.getElementById('telefono').value = usuarioActual.telefono || '';
         
         // Hago scroll al formulario
@@ -252,37 +249,37 @@ function toggleSeccionPedidos() {
     
     if (checkbox.checked) {
         seccionPedidos.classList.remove('d-none');
-        // Cargo los platos en la interfaz
+        
         mostrarPlatos();
     } else {
         seccionPedidos.classList.add('d-none');
-        // Limpio los platos seleccionados
+        
         limpiarPedidos();
     }
 }
 
 /**
  * Función para limpiar los pedidos seleccionados
- * Reseteo todos los checkboxes y la lista de platos
+ * 
  */
 function limpiarPedidos() {
-    // Desmarco todos los checkboxes
+    
     const itemsPedido = document.querySelectorAll('.item-pedido');
     itemsPedido.forEach(item => {
         item.checked = false;
     });
     
-    // Reseteo la lista de platos seleccionados
+    
     platosSeleccionados = [];
     precioTotal = 0;
     
-    // Actualizo la visualización de platos seleccionados
+    
     actualizarVisualizacionPlatos();
 }
 
 /**
  * Función para actualizar la lista de platos cuando se selecciona o deselecciona un ítem
- * @param {Event} event - Evento del checkbox
+ * @param {Event} 
  */
 function actualizarListaPlatos(event) {
     const checkbox = event.target;
@@ -308,7 +305,7 @@ function actualizarListaPlatos(event) {
 
 /**
  * Función para actualizar la visualización de los platos seleccionados
- * Muestra los platos en la lista y calcula el precio total
+ * 
  */
 function actualizarVisualizacionPlatos() {
     const listaPlatos = document.getElementById('listaPlatosSeleccionados');
@@ -320,7 +317,7 @@ function actualizarVisualizacionPlatos() {
     precioTotal = 0;
     
     if (platosSeleccionados.length === 0) {
-        // Si no hay platos seleccionados, muestro un mensaje
+       
         listaPlatos.innerHTML = '<li class="list-group-item text-center">No hay platos seleccionados</li>';
     } else {
         // Añado cada plato a la lista con su precio
@@ -354,10 +351,10 @@ function actualizarVisualizacionPlatos() {
 
 /**
  * Función para cancelar la reserva actual
- * Resetea todos los campos y oculta el formulario
+ * 
  */
 function cancelarReserva() {
-    // Oculto el formulario de reserva
+    
     document.getElementById('formReserva').classList.add('d-none');
     
     // Reseteo la mesa seleccionada
@@ -381,10 +378,10 @@ function cancelarReserva() {
 
 /**
  * Función para continuar al proceso de pago
- * Valida los datos del formulario y muestra el modal de pago
+ * 
  */
 function continuarAPago() {
-    // Verifico que todos los campos requeridos estén completos
+   
     const telefono = document.getElementById('telefono').value;
     const numPersonas = document.getElementById('numPersonas').value;
     const fecha = document.getElementById('fecha').value;
@@ -436,8 +433,8 @@ function continuarAPago() {
 
 /**
  * Función para formatear la fecha en formato legible
- * @param {String} fechaISO - Fecha en formato ISO (YYYY-MM-DD)
- * @returns {String} - Fecha formateada (DD/MM/YYYY)
+ * @param {String} 
+ * @returns {String} 
  */
 function formatearFecha(fechaISO) {
     const fecha = new Date(fechaISO);
@@ -450,10 +447,10 @@ function formatearFecha(fechaISO) {
 
 /**
  * Función para confirmar la reserva final
- * Envía los datos al backend y muestra la confirmación
+ * 
  */
 function confirmarReserva() {
-    // Verifico que se haya seleccionado un método de pago
+    
     const metodoPago = document.querySelector('input[name="metodoPago"]:checked');
     
     if (!metodoPago) {
@@ -472,7 +469,7 @@ function confirmarReserva() {
         metodo_pago: metodoPago.value,
         platos: platosSeleccionados.map(plato => ({
             id_plato: plato.id,
-            cantidad: 1 // Por ahora solo permito seleccionar una unidad por plato
+            cantidad: 1 
         }))
     };
     
@@ -492,15 +489,15 @@ function confirmarReserva() {
         return response.json();
     })
     .then(data => {
-        // Cierro el modal de pago
+        
         const modalPago = bootstrap.Modal.getInstance(document.getElementById('modalPago'));
         modalPago.hide();
         
-        // Genero un número de confirmación (real o simulado)
+        
         const numeroConfirmacion = data.id_reserva || generarNumeroConfirmacion();
         document.getElementById('numeroConfirmacion').textContent = numeroConfirmacion;
         
-        // Muestro el modal de confirmación
+        
         const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
         modalConfirmacion.show();
     })
@@ -512,17 +509,17 @@ function confirmarReserva() {
 
 /**
  * Función para generar un número de confirmación simulado
- * @returns {String} - Número de confirmación
+ * @returns {String} 
  */
 function generarNumeroConfirmacion() {
-    // Genero un número aleatorio de 8 dígitos
+    
     const aleatorio = Math.floor(10000000 + Math.random() * 90000000);
     return `RES-${aleatorio}`;
 }
 
 /**
  * Función para finalizar el proceso después de la reserva exitosa
- * Resetea todo y redirige al inicio
+ * 
  */
 function finalizarProceso() {
     // Reseteo todas las variables
@@ -587,7 +584,6 @@ function actualizarDisponibilidadMesas() {
     });
 }
 
-// Actualizo la disponibilidad de mesas cada 5 minutos
-// Esto permite mantener la interfaz actualizada sin necesidad de recargar la página
+
 setInterval(actualizarDisponibilidadMesas, 5 * 60 * 1000);
     

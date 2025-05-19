@@ -1,13 +1,13 @@
 package com.maranatha.sfmaranatha.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference; // Importar anotación
+import com.fasterxml.jackson.annotation.JsonBackReference; 
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
- * Yo defino la entidad intermedia PedidoPlato
+ *  defino la entidad intermedia PedidoPlato
  * para la relación N-M entre Pedido y Plato.
  */
 @Entity
@@ -64,16 +64,16 @@ public class PedidoPlato {
     @EmbeddedId
     private PedidoPlatoKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // fetch = FetchType.LAZY es buena práctica
+    @ManyToOne(fetch = FetchType.LAZY) 
     @MapsId("pedidoId") 
     @JoinColumn(name = "id_pedido", nullable = false)
-    @JsonBackReference // Indica que este es el lado "hijo" y no se debe serializar de nuevo el Pedido completo para evitar bucles.
+    @JsonBackReference 
     private Pedido pedido;
 
-    @ManyToOne(fetch = FetchType.LAZY) // fetch = FetchType.LAZY es buena práctica
+    @ManyToOne(fetch = FetchType.LAZY) 
     @MapsId("platoId")  
     @JoinColumn(name = "id_plato", nullable = false)
-    private Plato plato; // Plato se serializará normalmente aquí (a menos que Plato tenga referencia a PedidoPlato)
+    private Plato plato;
 
     @Column(nullable = false)
     private Integer cantidad;

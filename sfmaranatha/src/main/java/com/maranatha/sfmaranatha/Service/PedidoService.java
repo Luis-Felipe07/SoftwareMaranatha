@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class PedidoService {
 
-    // Mis herramientas (repositorios y otros servicios que necesito)
+    
     @Autowired
     private UsuarioRepository miRepositorioDeUsuarios;
     @Autowired
@@ -28,20 +28,13 @@ public class PedidoService {
     @Autowired
     private UsuarioService miServicioDeUsuarios; // Lo uso para crear usuarios "invitados"
 
-    /**
-     *  me encargo de crear un nuevo pedido.
-     * Primero, veo quién está haciendo el pedido:
-     * - Si es un encargado para un invitado, creo un usuario "invitado" especial.
-     * - Si no, uso el ID del solicitante (que debería ser un cliente ya existente o uno que se registra mínimamente).
-     * Luego, armo el pedido con sus platos, calculo el total y lo guardo todo.
-     */
+    
     @Transactional
     public Pedido crearPedido(PedidoRequestDTO datosDelPedido) {
         Usuario usuarioFinalDelPedido; // Este es el usuario que quedará asociado al pedido en la BD.
 
         if (datosDelPedido.isParaInvitadoPorEncargado()) {
-            // Un encargado está creando el pedido para un nuevo invitado.
-            // Primero, verifico que quien lo pide sea realmente un encargado o admin.
+            
             if (datosDelPedido.getSolicitanteUsuarioId() == null) {
                  throw new RuntimeException("Para crear un pedido para un invitado, necesito saber qué encargado lo está haciendo.");
             }
@@ -56,7 +49,7 @@ public class PedidoService {
         } else {
             // Este es un pedido normal hecho por un cliente.
             if (datosDelPedido.getSolicitanteUsuarioId() == null) {
-                // El frontend debería haberme enviado el ID del cliente.
+                
                 throw new RuntimeException("El ID del usuario solicitante es necesario para procesar este pedido.");
             }
             usuarioFinalDelPedido = miRepositorioDeUsuarios.findById(datosDelPedido.getSolicitanteUsuarioId())
@@ -72,10 +65,10 @@ public class PedidoService {
 
         // Ahora sí, creo el objeto Pedido.
         Pedido nuevoPedido = new Pedido();
-        nuevoPedido.setUsuario(usuarioFinalDelPedido); // Asocio el pedido al usuario correcto.
+        nuevoPedido.setUsuario(usuarioFinalDelPedido); 
         nuevoPedido.setReserva(reservaAsociada);
-        nuevoPedido.setEstado("PENDIENTE"); // Los pedidos nuevos siempre empiezan como PENDIENTE.
-        nuevoPedido.setFechaPedido(LocalDateTime.now()); // Pongo la fecha y hora de este momento.
+        nuevoPedido.setEstado("PENDIENTE"); 
+        nuevoPedido.setFechaPedido(LocalDateTime.now()); 
 
         // Tomo los datos del cliente del objeto Usuario para guardarlos en el pedido.
         String apellidoCliente = (usuarioFinalDelPedido.getApellido() != null && usuarioFinalDelPedido.getApellido().equals(".")) 
@@ -102,14 +95,14 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("El plato con ID " + itemDto.getPlatoId() + " no existe."));
     
             PedidoPlato unaLinea = new PedidoPlato(); // Mi constructor de PedidoPlato ya inicializa la clave PedidoPlatoKey.
-            unaLinea.setPedido(nuevoPedido); // Asocio esta línea al pedido que estoy creando.
+            unaLinea.setPedido(nuevoPedido); 
             unaLinea.setPlato(platoDelItem);
             unaLinea.setCantidad(itemDto.getCantidad());
-            unaLinea.setPrecioUnitario(platoDelItem.getPrecio()); // Guardo el precio del plato en este momento.
+            unaLinea.setPrecioUnitario(platoDelItem.getPrecio()); 
             return unaLinea;
         }).collect(Collectors.toList());
     
-        nuevoPedido.setItems(lineasDelPedido); // Asigno todas las líneas al pedido.
+        nuevoPedido.setItems(lineasDelPedido); 
     
         // Calculo el total sumando el precio de cada línea.
         BigDecimal totalDelPedido = lineasDelPedido.stream()
@@ -117,19 +110,19 @@ public class PedidoService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         nuevoPedido.setTotal(totalDelPedido); 
     
-        // Guardo el pedido. Gracias a la configuración de cascada, las líneas (PedidoPlato) también se guardarán.
+        
         return miRepositorioDePedidos.save(nuevoPedido); 
     }
     
     /**
-     * Yo verifico si un tipo de usuario es ENCARGADO o ADMIN.
+     *  verifico si un tipo de usuario es ENCARGADO o ADMIN.
      */
     private boolean esEncargadoOAdmin(String tipoUsuario) {
         return "ENCARGADO".equalsIgnoreCase(tipoUsuario) || "ADMIN".equalsIgnoreCase(tipoUsuario);
     }
 
     /**
-     * Yo me encargo de cancelar un pedido.
+     *  cancelar un pedido.
      * Pero primero verifico que quien lo pide sea el dueño o un trabajador con permiso,
      * y que el pedido todavía esté "PENDIENTE".
      */
@@ -142,7 +135,7 @@ public class PedidoService {
         // Verifico si el usuario autenticado es el dueño del pedido
         if (pedidoParaCancelar.getUsuario() != null && pedidoParaCancelar.getUsuario().getIdUsuario().equals(idUsuarioAutenticado)) {
             tienePermiso = true;
-        } else if (esEncargadoOAdmin(rolUsuarioAutenticado)) { // O si es un ENCARGADO o ADMIN
+        } else if (esEncargadoOAdmin(rolUsuarioAutenticado)) { 
             tienePermiso = true;
         }
 

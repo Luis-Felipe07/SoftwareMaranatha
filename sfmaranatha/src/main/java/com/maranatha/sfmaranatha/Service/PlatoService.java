@@ -18,16 +18,16 @@ public class PlatoService {
     /**
     *  me encargo de buscar todos los platos de un menú específico
     * y los transformo a PlatoDTO para enviarlos al frontend.
-    * Para esto, yo utilizo el método 'findByMenu_IdMenu' que debe estar definido
+    * Para esto,  utilizo el método 'findByMenu_IdMenu' que debe estar definido
     * en mi PlatoRepository.
     */
     public List<PlatoDTO> obtenerPlatosPorIdMenu(Integer idMenu) {
         
         //  utilizo directamente el método del repositorio para obtener los platos filtrados.
-        // Esto es mucho más eficiente que traer todos los platos y filtrarlos en Java.
+        
         List<Plato> platosDelMenu = miRepositorioDePlatos.findByMenu_IdMenu(idMenu);
 
-        // Luego, yo transformo la lista de entidades Plato a una lista de PlatoDTO.
+        // transformo la lista de entidades Plato a una lista de PlatoDTO.
         return platosDelMenu.stream()
             .map(plato -> new PlatoDTO(
                 plato.getIdPlato(),

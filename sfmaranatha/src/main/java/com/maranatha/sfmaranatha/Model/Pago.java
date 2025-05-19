@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Yo represento el pago asociado a un Pedido.
+ * pago asociado a un Pedido.
  */
 @Entity
 @Table(name = "pago")

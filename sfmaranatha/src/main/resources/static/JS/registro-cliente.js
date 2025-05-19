@@ -1,7 +1,4 @@
-/**
- * Archivo JavaScript para el formulario de registro de clientes
- * del Restaurante Maranatha
- */
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const formRegistro = document.getElementById('formRegistroCliente');
@@ -10,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordStrength = document.getElementById('passwordStrength');
     const mensajeRegistro = document.getElementById('mensajeRegistro');
     
-    // Ahora apunta al endpoint de usuarios
+    // apunta al endpoint de usuarios
     const URL_API = '/api/usuarios/registrar';
     
     function evaluarFortalezaContrasena(password) {
@@ -129,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 telefono:      document.getElementById('telefono').value.trim(),
                 direccion:     document.getElementById('direccion').value.trim(),
                 contrasena:    inputClave.value,
-                tipoUsuario:   'CLIENTE'  // fuerza rol cliente
+                tipoUsuario:   'CLIENTE'  
             };
             
             await enviarDatosRegistro(datosCliente);
@@ -139,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inputConfirmarClave.addEventListener('input', actualizarIndicadorFortaleza);
     }
     
-    // Toggle password (si tienes íconos)
+    // Toggle password 
     document.querySelectorAll('.toggle-password').forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.getElementById(btn.dataset.target);

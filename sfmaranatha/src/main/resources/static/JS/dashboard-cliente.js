@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configuro los eventos de los botones del dashboard
     configurarEventosDashboard();
 
-    // Carga inicial de datos de muestra para el resumen del dashboard (puedes reemplazarlo con datos reales)
-    // cargarDatosResumenDashboard(); // Comentado si prefieres cargar datos reales aquí también
+    
 });
 
 /**
@@ -20,14 +19,11 @@ async function verificarAutenticacionYcargarDatosUsuario() {
 
     if (!token || !nombreUsuarioGuardado) {
         console.log('Usuario no autenticado o falta nombre, redirigiendo al login...');
-        // Descomentar en producción:
-        // window.location.href = '/login.html';
-        // Para demostración, si no hay token, simulamos uno y recargamos para que la lógica de abajo funcione
-        // En un caso real, el login.js se encargaría de esto.
+        
         if (!token) {
             localStorage.setItem('token', 'demo-token-simulado');
             localStorage.setItem('nombreUsuario', 'Usuario Demo');
-            // location.reload(); // Podría causar un bucle si el login no está bien
+            
             console.warn("Token simulado. Asegúrate que el flujo de login guarde 'token' y 'nombreUsuario'.");
             document.getElementById('nombreUsuario').textContent = `Bienvenido, Usuario Demo`;
         }
@@ -38,22 +34,20 @@ async function verificarAutenticacionYcargarDatosUsuario() {
     document.getElementById('nombreUsuario').textContent = `Bienvenido, ${nombreUsuarioGuardado}`;
 
     // Intentar cargar datos reales del resumen del dashboard desde el backend
-    // (Esta es una funcionalidad adicional que podrías implementar)
+   
     try {
-        const response = await fetch('/api/usuarios/sesion-actual'); // Reutilizamos este endpoint
+        const response = await fetch('/api/usuarios/sesion-actual'); 
         if (response.ok) {
             const data = await response.json();
             if (data.autenticado) {
                 // Actualizar el nombre por si cambió o para mayor consistencia
                 document.getElementById('nombreUsuario').textContent = `Bienvenido, ${data.nombre}`;
-                localStorage.setItem('nombreUsuario', data.nombre); // Actualizar localStorage
+                localStorage.setItem('nombreUsuario', data.nombre); 
                 if (data.idUsuario) localStorage.setItem('idUsuario', data.idUsuario);
 
 
-                // Aquí podrías llamar a una función que cargue el resumen del dashboard
-                // Por ejemplo: cargarResumenActividad(data.idUsuario);
-                // Y también podrías cargar los pedidos y reservas recientes aquí para el resumen inicial
-                cargarDatosResumenDashboard(data); // Pasamos los datos del usuario
+                
+                cargarDatosResumenDashboard(data); // Paso los datos del usuario
             }
         } else {
             console.warn("No se pudo obtener datos de sesión actual para el resumen, usando datos de muestra.");
@@ -69,12 +63,12 @@ async function verificarAutenticacionYcargarDatosUsuario() {
 /**
  * Carga los datos de resumen del dashboard.
  * Intenta obtener datos reales y usa de muestra como fallback.
- * @param {Object} datosUsuario - Datos del usuario obtenidos de /api/usuarios/sesion-actual (opcional)
+ * @param {Object}
  */
 async function cargarDatosResumenDashboard(datosUsuario) {
-    // Si tenemos datos del usuario, podríamos hacer llamadas específicas para el resumen.
-    // Por ahora, usamos la lógica de muestra o placeholders.
-    // Ejemplo: podrías tener endpoints como /api/pedidos/resumen-cliente o /api/reservas/proxima
+    // Si tengo datos del usuario, podría hacer llamadas específicas para el resumen.
+    // Por ahora, uso la lógica de muestra o placeholders.
+  
 
     // Datos de muestra para el panel de resumen
     document.getElementById('totalPedidos').textContent = datosUsuario?.totalPedidos || 7; // Ejemplo
@@ -100,7 +94,7 @@ function configurarEventosDashboard() {
             cerrarSesion();
         });
     }
-    // Puedes añadir más event listeners para otros botones del dashboard aquí
+   
 }
 
 /**
@@ -117,9 +111,9 @@ function cerrarSesion() {
 
 
 /**
- * Formatea una cadena de fecha ISO (o un objeto Date) a un formato legible.
- * @param {string | Date} dateString - La fecha en formato ISO o como objeto Date.
- * @returns {string} Fecha formateada (ej: "17/05/2025 18:30").
+ * Formateo una cadena de fecha ISO (o un objeto Date) a un formato legible.
+ * @param {string | Date} 
+ * @returns {string} 
  */
 function formatDateTime(dateString) {
     if (!dateString) return 'Fecha no disponible';
@@ -128,7 +122,7 @@ function formatDateTime(dateString) {
         if (isNaN(date)) return 'Fecha inválida';
 
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-indexados
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
         const year = date.getFullYear();
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -141,9 +135,9 @@ function formatDateTime(dateString) {
 }
 
 /**
- * Formatea un número como moneda (COP).
- * @param {number} amount - El monto a formatear.
- * @returns {string} Monto formateado (ej: "$12.500").
+ * Formateo un número como moneda (COP).
+ * @param {number} 
+ * @returns {string} 
  */
 function formatCurrency(amount) {
     if (typeof amount !== 'number') {
@@ -153,7 +147,7 @@ function formatCurrency(amount) {
 }
 
 /**
- * Carga y muestra los pedidos del usuario autenticado.
+ * Cargo y muestro los pedidos del usuario autenticado.
  */
 async function cargarDatosPedidos() {
     const tablaPedidosBody = document.getElementById('tablaPedidos');
@@ -168,14 +162,14 @@ async function cargarDatosPedidos() {
     // Muestra un indicador de carga
     tablaPedidosBody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando tus pedidos... <span class="spinner-border spinner-border-sm"></span></td></tr>';
     noPedidosDiv.style.display = 'none';
-    seccionPedidos.style.display = 'block'; // Asegurarse que la sección es visible
+    seccionPedidos.style.display = 'block'; 
 
     try {
         const response = await fetch('/api/pedidos/mis-pedidos');
         if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
                 mostrarMensajeAlerta("Debes iniciar sesión para ver tus pedidos.", "warning", tablaPedidosBody, 6);
-                // Opcionalmente, redirigir al login:
+                
                 // window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
             } else {
                 const errorData = await response.json().catch(() => ({ mensaje: "Error desconocido del servidor" }));
@@ -187,7 +181,7 @@ async function cargarDatosPedidos() {
         const pedidos = await response.json();
 
         if (pedidos && pedidos.length > 0) {
-            tablaPedidosBody.innerHTML = ''; // Limpiar mensaje de carga
+            tablaPedidosBody.innerHTML = ''; 
             pedidos.forEach(pedido => {
                 const tr = document.createElement('tr');
 
@@ -201,7 +195,7 @@ async function cargarDatosPedidos() {
                 }
 
                 // Determinar clase de estado para el badge
-                let claseEstado = 'bg-secondary'; // Default
+                let claseEstado = 'bg-secondary'; 
                 if (pedido.estado) {
                     switch (pedido.estado.toUpperCase()) {
                         case 'PENDIENTE': claseEstado = 'bg-warning text-dark'; break;
@@ -256,17 +250,17 @@ async function cargarDatosPedidos() {
     } catch (error) {
         console.error('Error al cargar pedidos:', error);
         mostrarMensajeAlerta(`Error al cargar pedidos: ${error.message}`, "danger", tablaPedidosBody, 6);
-        noPedidosDiv.style.display = 'none'; // Ocultar el mensaje de "no hay pedidos" si hay un error
+        noPedidosDiv.style.display = 'none'; 
     }
 }
 
 
 /**
  * Muestra un mensaje de alerta dentro de una tabla.
- * @param {string} mensaje - El mensaje a mostrar.
- * @param {string} tipo - El tipo de alerta de Bootstrap (e.g., 'danger', 'warning', 'success').
- * @param {HTMLElement} tbodyElement - El elemento tbody de la tabla.
- * @param {number} colspan - El número de columnas que debe abarcar el mensaje.
+ * @param {string} 
+ * @param {string} 
+ * @param {HTMLElement} 
+ * @param {number} 
  */
 function mostrarMensajeAlerta(mensaje, tipo, tbodyElement, colspan) {
     if (tbodyElement) {
@@ -277,7 +271,7 @@ function mostrarMensajeAlerta(mensaje, tipo, tbodyElement, colspan) {
 
 /**
  * Solicita la cancelación de un pedido.
- * @param {string | number} idPedido - El ID del pedido a cancelar.
+ * @param {string | number} 
  */
 async function solicitarCancelacionPedido(idPedido) {
     if (!confirm(`¿Estás seguro de que deseas cancelar el pedido #${idPedido}? Esta acción no se puede deshacer.`)) {
@@ -296,7 +290,7 @@ async function solicitarCancelacionPedido(idPedido) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
-                // Spring Security maneja la autenticación/autorización vía Principal (sesión/cookie)
+                // Spring Security maneja la autenticación/autorización vía Principal 
             }
         });
 
@@ -351,27 +345,26 @@ function mostrarReservas() {
 
 
 /**
- * Carga los datos de las reservas desde el servidor (simulado por ahora)
+ * Carga los datos de las reservas desde el servidor simulado por ahora
  */
 function cargarDatosReservas() {
     const tablaReservas = document.getElementById('tablaReservas');
     const noReservas = document.getElementById('noReservas');
 
-    // En una aplicación real, aquí haría una petición AJAX al servidor
-    // para obtener las reservas del cliente
+   
 
     // Datos de muestra (simulando respuesta del servidor)
     const reservasMuestra = [
         {
             id: 'R-00578',
-            fecha: '18/05/2025', // Ajustado para ejemplo
+            fecha: '18/05/2025', 
             hora: '20:00',
             personas: '4',
             estado: 'CONFIRMADA'
         },
         {
             id: 'R-00579',
-            fecha: '25/05/2025', // Ajustado para ejemplo
+            fecha: '25/05/2025', 
             hora: '19:30',
             personas: '2',
             estado: 'PENDIENTE'
@@ -418,10 +411,10 @@ function cargarDatosReservas() {
 
 
 /**
- * Oculta todas las secciones dinámicas (pedidos, reservas, etc.).
+ * Oculta todas las secciones dinámicas pedidos, reservas, etc.
  */
 function ocultarSeccionesDinamicas() {
-    const secciones = ['seccionPedidos', 'seccionReservas']; // Añade IDs de otras secciones aquí
+    const secciones = ['seccionPedidos', 'seccionReservas']; 
     secciones.forEach(id => {
         const elemento = document.getElementById(id);
         if (elemento) {

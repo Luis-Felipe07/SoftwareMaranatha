@@ -44,7 +44,7 @@ public class PedidoPlatoKey implements Serializable {
         this.platoId = platoId;
     }
 
-    // equals() y hashCode() para que JPA reconozca la clave compuesta
+    
 
     @Override
     public boolean equals(Object o) {

@@ -1,24 +1,24 @@
 package com.maranatha.sfmaranatha.Controllers;
 
 import com.maranatha.sfmaranatha.Model.Pedido;
-import com.maranatha.sfmaranatha.Model.Usuario; // Necesito Usuario para obtener sus datos
-import com.maranatha.sfmaranatha.Repository.PedidoRepository; // Para consultar todos o por estado
+import com.maranatha.sfmaranatha.Model.Usuario;
+import com.maranatha.sfmaranatha.Repository.PedidoRepository; 
 import com.maranatha.sfmaranatha.Service.PedidoService;
-import com.maranatha.sfmaranatha.Service.UsuarioService; // Para buscar el usuario autenticado
+import com.maranatha.sfmaranatha.Service.UsuarioService; 
 import com.maranatha.sfmaranatha.dto.PedidoRequestDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus; // Para el estado UNAUTHORIZED y FORBIDDEN
+import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// import java.math.BigDecimal; // No lo uso directamente aquí ahora
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors; // Para el filtro manual en obtenerMisPedidos
+import java.util.stream.Collectors; 
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -26,17 +26,17 @@ import java.util.stream.Collectors; // Para el filtro manual en obtenerMisPedido
 public class PedidoController {
 
     @Autowired
-    private PedidoRepository miRepositorioDePedidos; // Lo uso para consultas generales
+    private PedidoRepository miRepositorioDePedidos; 
 
     @Autowired
-    private PedidoService miServicioDePedidos; // Mi lógica principal de pedidos está aquí
+    private PedidoService miServicioDePedidos; 
 
     @Autowired
-    private UsuarioService miServicioDeUsuarios; // Lo necesito para obtener info del usuario autenticado
+    private UsuarioService miServicioDeUsuarios; 
 
     /**
-     * Yo creo un nuevo pedido usando el DTO moderno (PedidoRequestDTO).
-     * Este es el endpoint que debería usar tu frontend ahora.
+     *  creo un nuevo pedido usando el DTO moderno PedidoRequestDTO.
+     * 
      */
     @PostMapping("/nuevo")
     @Operation(summary = "Crear un nuevo pedido con DTO",
@@ -54,18 +54,16 @@ public class PedidoController {
         } catch (SecurityException se) {
             // Si el servicio lanza una SecurityException (ej. encargado no válido)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("exito", false, "mensaje", se.getMessage()));
-        } catch (RuntimeException e) { // Capturo RuntimeException para errores de negocio o datos
-            // Logueo el error en el servidor para mi diagnóstico
-            // e.printStackTrace(); 
+        } catch (RuntimeException e) { 
+             
             return ResponseEntity.badRequest().body(Map.of("exito", false, "mensaje", "Error al guardar el pedido: " + e.getMessage()));
-        } catch (Exception e) { // Captura general para otros errores inesperados
-            // e.printStackTrace();
+        } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("exito", false, "mensaje", "Ocurrió un error inesperado procesando tu pedido."));
         }
     }
 
     /**
-     * Yo consulto todos los pedidos del sistema.
+     * consulto todos los pedidos del sistema.
      * Opcionalmente, puedo filtrar por un estado específico si me lo pasan como parámetro.
      * Este endpoint es más para un administrador.
      */
@@ -80,7 +78,7 @@ public class PedidoController {
             } else {
                 pedidos = miRepositorioDePedidos.findAll();
             }
-            // Aquí podrías mapear a un PedidoDTO si no quieres exponer toda la entidad.
+            
             return ResponseEntity.ok(pedidos);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -91,8 +89,8 @@ public class PedidoController {
     }
 
     /**
-     * Yo devuelvo todos los pedidos que ha realizado el usuario que está actualmente autenticado.
-     * También puedo filtrar por estado si me lo piden.
+     * devuelvo todos los pedidos que ha realizado el usuario que está actualmente autenticado.
+     * También puedo filtrar por estado .
      */
     @GetMapping("/mis-pedidos")
     @Operation(summary = "Consultar mis pedidos (Cliente)",
@@ -140,9 +138,7 @@ public class PedidoController {
 
 
     /**
-     * Yo me encargo de cancelar un pedido si me dan su ID.
-     * Pero solo si el pedido está "PENDIENTE" y quien lo pide tiene permiso.
-     * El usuario debe estar autenticado para usarme.
+     * me encargo de cancelar un pedido si me dan su ID.
      */
     @PutMapping("/cancelar/{id}")
     @Operation(summary = "Cancelar un pedido existente",
@@ -178,39 +174,29 @@ public class PedidoController {
         }
     }
 
-    // Mantengo el endpoint original de /crear por si alguna parte antigua del sistema lo usa,
-    // pero recomiendo migrar todo a /nuevo con PedidoRequestDTO.
+    
     /**
-     * Yo creo un nuevo pedido a partir de un payload genérico (Map).
-     * Este es un método más antiguo, es mejor usar el endpoint /nuevo con PedidoRequestDTO.
+     *  creo un nuevo pedido a partir de un payload genérico (Map).
      */
     @PostMapping("/crear")
     @Operation(summary = "Crear un nuevo pedido (método genérico/antiguo)",
                description = "Yo creo un pedido a partir de un mapa de datos. Se recomienda usar el endpoint '/nuevo'.")
     public ResponseEntity<?> crearPedidoConMap(@RequestBody Map<String, Object> payload) {
-        // La lógica aquí es más manual y propensa a errores que usando un DTO.
-        // Deberías adaptarla o idealmente eliminarla y usar solo /nuevo.
-        // Por ahora, la dejo como estaba en tu código original, pero ten cuidado.
+        
         try {
-            // Esta lógica necesitaría una revisión profunda para alinearse con el nuevo flujo de usuarios.
-            // Por ejemplo, ¿de dónde saco el usuarioId para asociar este pedido?
-            // Si no se pasa, no puedo crear un Pedido porque la relación con Usuario es NOT NULL.
-            // Por ahora, voy a asumir que este endpoint ya no se usa o se adaptará por separado.
-            // Si se usa, necesitaría recibir un 'usuarioId' o datos para crear/buscar un usuario.
+            
 
             // Simulación de error si no hay forma de obtener el usuario:
             if (!payload.containsKey("usuarioId") && !payload.containsKey("correoCliente")) { // Ejemplo
-                 return ResponseEntity.badRequest().body(Map.of("exito", false, "mensaje", "Falta información del usuario para crear el pedido por este método."));
+                return ResponseEntity.badRequest().body(Map.of("exito", false, "mensaje", "Falta información del usuario para crear el pedido por este método."));
             }
 
-            // ... (lógica original de tu método crearPedido con Map) ...
-            // Esta parte es solo un placeholder de tu lógica original, necesitaría ser adaptada:
+        
             Pedido pedido = new Pedido();
             pedido.setNombreCliente((String) payload.get("nombreCliente"));
-            // ... y así sucesivamente.
+            
 
-            // Pedido nuevoPedido = miRepositorioDePedidos.save(pedido); // Guardarías el pedido
-            // return ResponseEntity.ok(Map.of("exito", true, "mensaje", "Pedido guardado (Map)", "pedidoId", nuevoPedido.getIdPedido()));
+        
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(Map.of("exito", false, "mensaje", "El endpoint /crear necesita ser adaptado para el nuevo flujo de usuarios. Usa /api/pedidos/nuevo."));
 
         } catch (Exception e) {

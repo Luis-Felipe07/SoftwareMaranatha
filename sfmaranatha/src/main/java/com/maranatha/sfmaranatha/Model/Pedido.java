@@ -1,7 +1,7 @@
 package com.maranatha.sfmaranatha.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pedido")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Pedido {
 
     @Id
@@ -25,7 +25,7 @@ public class Pedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reserva") // Puede ser null
-    @JsonBackReference("reserva-pedidos") // Referencia al lado "padre" en Reserva
+    @JsonBackReference("reserva-pedidos") 
     private Reserva reserva;
 
     @Column(name = "fecha_pedido", nullable = false)
@@ -59,8 +59,7 @@ public class Pedido {
     private String descripcion;
 
     @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // Si Pago tiene una referencia a Pedido, podría necesitar @JsonManagedReference aquí y @JsonBackReference en Pago
-    // Por ahora, asumiendo que Pago no tiene una referencia serializable de vuelta a Pedido o que no se serializa Pago desde Pedido directamente.
+    
     private Pago pago;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

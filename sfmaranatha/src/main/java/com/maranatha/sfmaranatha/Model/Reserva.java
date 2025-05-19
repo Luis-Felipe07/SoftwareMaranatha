@@ -1,7 +1,7 @@
 package com.maranatha.sfmaranatha.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "reserva")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Reserva {
 
     @Id
@@ -20,7 +20,7 @@ public class Reserva {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonBackReference("usuario-reservas") // Referencia al lado "padre" en Usuario
+    @JsonBackReference("usuario-reservas") 
     private Usuario usuario;
 
     @Column(name = "fecha_reserva", nullable = false)
@@ -47,7 +47,7 @@ public class Reserva {
 
     public Reserva() {}
 
-    // Getters y Setters (sin cambios)
+    // Getters y Setters 
 
     public Long getIdReserva() {
         return idReserva;

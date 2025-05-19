@@ -1,6 +1,6 @@
 package com.maranatha.sfmaranatha.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuario")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Usuario {
 
     @Id
@@ -35,7 +35,7 @@ public class Usuario {
     private String direccion;
 
     @Column(nullable = false)
-    private String contrasena; // Considerar no serializar la contraseña nunca
+    private String contrasena; // no serializar la contraseña nunca
 
     @Column(name = "fue_directamente_en_el_restaurante")
     private Boolean fueDirecto;
@@ -76,11 +76,7 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-    // Getters y Setters (sin cambios, pero asegúrate de que 'contrasena' no se envíe en JSONs sensibles)
-    // Puedes añadir @JsonIgnore al getter de contrasena si nunca la quieres en el JSON.
-    // Ejemplo:
-    // @com.fasterxml.jackson.annotation.JsonIgnore
-    // public String getContrasena() { return contrasena; }
+    // Getters y Setters 
 
 
     public Integer getIdUsuario() {

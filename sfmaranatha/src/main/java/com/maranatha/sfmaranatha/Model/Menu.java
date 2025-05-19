@@ -1,13 +1,13 @@
 package com.maranatha.sfmaranatha.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "menu")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Menu {
 
     @Id
@@ -21,13 +21,13 @@ public class Menu {
     @Column(name = "id_restaurante", nullable = false)
     private Integer idRestaurante;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Buena práctica usar LAZY
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY) 
     @JsonManagedReference("menu-platos") // Lado "padre" de la relación Menu-Plato
     private List<Plato> platos;
 
     public Menu() {}
 
-    // Getters y setters (sin cambios)
+    // Getters y setters 
     public Integer getIdMenu() { return idMenu; }
     public void setIdMenu(Integer idMenu) { this.idMenu = idMenu; }
     public String getNombreMenu() { return nombreMenu; }

@@ -11,7 +11,7 @@ public class RegistroUsuarioDTO {
     private String direccion;
     private String contrasena;
     private String tipoUsuario;
-    private Boolean fueDirecto; // Nuevo campo
+    private Boolean fueDirecto; 
 
     public RegistroUsuarioDTO() {
         // Constructor vacío

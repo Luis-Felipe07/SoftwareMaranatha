@@ -1,7 +1,7 @@
 package com.maranatha.sfmaranatha.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importar
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "plato")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // AÑADIDO para evitar errores con proxies LAZY
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Plato {
 
     @Id
@@ -19,7 +19,7 @@ public class Plato {
     @Column(name = "id_plato")
     private Integer idPlato;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Buena práctica usar LAZY
+    @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "id_menu", nullable = false)
     @JsonBackReference("menu-platos") // Referencia al lado "padre" en Menu
     private Menu menu;
@@ -38,7 +38,7 @@ public class Plato {
 
     public Plato() {}
 
-    // Getters y Setters (sin cambios)
+    // Getters y Setters 
 
     public Integer getIdPlato() {
         return idPlato;
