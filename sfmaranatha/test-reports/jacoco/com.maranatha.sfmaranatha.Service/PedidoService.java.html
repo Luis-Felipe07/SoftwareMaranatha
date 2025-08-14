@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PedidoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Service</a> &gt; <span class="el_source">PedidoService.java</span></div><h1>PedidoService.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Service;
+
+import com.maranatha.sfmaranatha.Model.*;
+import com.maranatha.sfmaranatha.Repository.*;
+import com.maranatha.sfmaranatha.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+<span class="nc" id="L17">public class PedidoService {</span>
+
+    @Autowired
+    private UsuarioRepository miRepositorioDeUsuarios;
+    @Autowired
+    private ReservaRepository miRepositorioDeReservas;
+    @Autowired
+    private PlatoRepository miRepositorioDePlatos;
+    @Autowired
+    private PedidoRepository miRepositorioDePedidos;
+    @Autowired
+    private UsuarioService miServicioDeUsuarios;
+
+    @Transactional
+    public Pedido crearPedido(PedidoRequestDTO datosDelPedido) {
+        Usuario usuarioFinalDelPedido;
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (datosDelPedido.isParaInvitadoPorEncargado()) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (datosDelPedido.getSolicitanteUsuarioId() == null) {</span>
+<span class="nc" id="L36">                throw new RuntimeException(&quot;Para crear un pedido para un invitado, necesito saber qué encargado lo está haciendo.&quot;);</span>
+            }
+<span class="nc" id="L38">            Optional&lt;Usuario&gt; solicitanteOpt = miRepositorioDeUsuarios.findById(datosDelPedido.getSolicitanteUsuarioId());</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (solicitanteOpt.isEmpty() || </span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">                !esEncargadoOAdmin(solicitanteOpt.get().getTipoUsuario())) {</span>
+<span class="nc" id="L41">                throw new SecurityException(&quot;Acción no permitida: Solo un encargado o administrador puede crear pedidos para invitados de esta forma.&quot;);</span>
+            }
+<span class="nc" id="L43">            usuarioFinalDelPedido = miServicioDeUsuarios.crearUsuarioInvitadoLocal(datosDelPedido.getNombreInvitadoOpcional());</span>
+<span class="nc" id="L44">        } else {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            if (datosDelPedido.getSolicitanteUsuarioId() == null) {</span>
+<span class="nc" id="L46">                throw new RuntimeException(&quot;El ID del usuario solicitante es necesario para procesar este pedido.&quot;);</span>
+            }
+<span class="nc" id="L48">            usuarioFinalDelPedido = miRepositorioDeUsuarios.findById(datosDelPedido.getSolicitanteUsuarioId())</span>
+<span class="nc" id="L49">                .orElseThrow(() -&gt; new RuntimeException(&quot;No encontré al usuario solicitante con el ID: &quot; + datosDelPedido.getSolicitanteUsuarioId()));</span>
+        }
+
+<span class="nc" id="L52">        Reserva reservaAsociada = null;</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (datosDelPedido.getReservaId() != null) {</span>
+<span class="nc" id="L54">            reservaAsociada = miRepositorioDeReservas.findById(datosDelPedido.getReservaId().longValue())</span>
+<span class="nc" id="L55">                .orElseThrow(() -&gt; new RuntimeException(&quot;La reserva que me indicaste no es válida&quot;));</span>
+        }
+
+<span class="nc" id="L58">        Pedido nuevoPedido = new Pedido();</span>
+<span class="nc" id="L59">        nuevoPedido.setUsuario(usuarioFinalDelPedido);</span>
+<span class="nc" id="L60">        nuevoPedido.setReserva(reservaAsociada);</span>
+<span class="nc" id="L61">        nuevoPedido.setEstado(&quot;PENDIENTE&quot;);</span>
+<span class="nc" id="L62">        nuevoPedido.setFechaPedido(LocalDateTime.now());</span>
+
+<span class="nc bnc" id="L64" title="All 4 branches missed.">        String apellidoCliente = (usuarioFinalDelPedido.getApellido() != null &amp;&amp; usuarioFinalDelPedido.getApellido().equals(&quot;.&quot;)) </span>
+<span class="nc" id="L65">                               ? &quot;&quot; </span>
+<span class="nc" id="L66">                               : usuarioFinalDelPedido.getApellido();</span>
+<span class="nc" id="L67">        nuevoPedido.setNombreCliente((usuarioFinalDelPedido.getNombre() + &quot; &quot; + apellidoCliente).trim());</span>
+<span class="nc" id="L68">        nuevoPedido.setCorreoCliente(usuarioFinalDelPedido.getCorreo());</span>
+<span class="nc" id="L69">        nuevoPedido.setTelefonoCliente(usuarioFinalDelPedido.getTelefono());</span>
+        
+<span class="nc" id="L71">        nuevoPedido.setMetodoPago(datosDelPedido.getMetodoPago());</span>
+<span class="nc" id="L72">        nuevoPedido.setDescripcion(datosDelPedido.getDescripcion());</span>
+
+<span class="nc bnc" id="L74" title="All 4 branches missed.">        if (datosDelPedido.getDireccionEntrega() != null &amp;&amp; !datosDelPedido.getDireccionEntrega().isEmpty()) {</span>
+<span class="nc" id="L75">            nuevoPedido.setDireccionEntrega(datosDelPedido.getDireccionEntrega());</span>
+        }
+<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (datosDelPedido.getHoraEntregaRestaurante() != null &amp;&amp; !datosDelPedido.getHoraEntregaRestaurante().isEmpty()) {</span>
+<span class="nc" id="L78">            nuevoPedido.setHoraEntregaRestaurante(datosDelPedido.getHoraEntregaRestaurante());</span>
+        }
+        
+<span class="nc" id="L81">        List&lt;PedidoPlato&gt; lineasDelPedido = datosDelPedido.getItems().stream().map(itemDto -&gt; {</span>
+<span class="nc" id="L82">            Plato platoDelItem = miRepositorioDePlatos.findById(itemDto.getPlatoId())</span>
+<span class="nc" id="L83">                .orElseThrow(() -&gt; new RuntimeException(&quot;El plato con ID &quot; + itemDto.getPlatoId() + &quot; no existe.&quot;));</span>
+    
+<span class="nc" id="L85">            PedidoPlato unaLinea = new PedidoPlato();</span>
+<span class="nc" id="L86">            unaLinea.setPedido(nuevoPedido);</span>
+<span class="nc" id="L87">            unaLinea.setPlato(platoDelItem);</span>
+<span class="nc" id="L88">            unaLinea.setCantidad(itemDto.getCantidad());</span>
+<span class="nc" id="L89">            unaLinea.setPrecioUnitario(platoDelItem.getPrecio());</span>
+<span class="nc" id="L90">            return unaLinea;</span>
+<span class="nc" id="L91">        }).collect(Collectors.toList());</span>
+    
+<span class="nc" id="L93">        nuevoPedido.setItems(lineasDelPedido);</span>
+    
+<span class="nc" id="L95">        BigDecimal totalDelPedido = lineasDelPedido.stream()</span>
+<span class="nc" id="L96">            .map(linea -&gt; linea.getPrecioUnitario().multiply(BigDecimal.valueOf(linea.getCantidad())))</span>
+<span class="nc" id="L97">            .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+<span class="nc" id="L98">        nuevoPedido.setTotal(totalDelPedido);</span>
+    
+<span class="nc" id="L100">        return miRepositorioDePedidos.save(nuevoPedido);</span>
+    }
+
+    /**
+     * Actualizo el estado de un pedido.
+     */
+    @Transactional
+    public Pedido actualizarEstadoPedido(Long idPedido, String nuevoEstado) throws Exception {
+<span class="nc" id="L108">        Pedido pedido = miRepositorioDePedidos.findById(idPedido)</span>
+<span class="nc" id="L109">            .orElseThrow(() -&gt; new Exception(&quot;No encontré el pedido con ID: &quot; + idPedido));</span>
+
+        // Valido los estados permitidos
+<span class="nc bnc" id="L112" title="All 6 branches missed.">        if (!nuevoEstado.equals(&quot;ENTREGADO&quot;) &amp;&amp; !nuevoEstado.equals(&quot;CANCELADO&quot;) &amp;&amp; !nuevoEstado.equals(&quot;PENDIENTE&quot;)) {</span>
+<span class="nc" id="L113">            throw new Exception(&quot;Estado no válido. Los estados permitidos son: PENDIENTE, ENTREGADO, CANCELADO&quot;);</span>
+        }
+
+        // Solo permito cambios desde PENDIENTE
+<span class="nc bnc" id="L117" title="All 4 branches missed.">        if (!pedido.getEstado().equals(&quot;PENDIENTE&quot;) &amp;&amp; !nuevoEstado.equals(&quot;PENDIENTE&quot;)) {</span>
+<span class="nc" id="L118">            throw new Exception(&quot;Solo se pueden actualizar pedidos en estado PENDIENTE&quot;);</span>
+        }
+
+<span class="nc" id="L121">        pedido.setEstado(nuevoEstado);</span>
+<span class="nc" id="L122">        return miRepositorioDePedidos.save(pedido);</span>
+    }
+
+    /**
+     * Convierto un Pedido a PedidoDetalladoDTO para incluir información de los items.
+     */
+    public PedidoDetalladoDTO convertirAPedidoDetallado(Pedido pedido) {
+<span class="nc" id="L129">        List&lt;PedidoDetalladoDTO.ItemPedidoDTO&gt; itemsDTO = pedido.getItems().stream()</span>
+<span class="nc" id="L130">            .map(item -&gt; new PedidoDetalladoDTO.ItemPedidoDTO(</span>
+<span class="nc" id="L131">                item.getPlato().getNombrePlato(),</span>
+<span class="nc" id="L132">                item.getCantidad(),</span>
+<span class="nc" id="L133">                item.getPrecioUnitario()</span>
+            ))
+<span class="nc" id="L135">            .collect(Collectors.toList());</span>
+
+<span class="nc" id="L137">        return new PedidoDetalladoDTO(</span>
+<span class="nc" id="L138">            pedido.getIdPedido(),</span>
+<span class="nc" id="L139">            pedido.getNombreCliente(),</span>
+<span class="nc" id="L140">            pedido.getTotal(),</span>
+<span class="nc" id="L141">            pedido.getMetodoPago(),</span>
+<span class="nc" id="L142">            pedido.getEstado(),</span>
+<span class="nc" id="L143">            pedido.getFechaPedido(),</span>
+<span class="nc" id="L144">            pedido.getDireccionEntrega(),</span>
+<span class="nc" id="L145">            pedido.getHoraEntregaRestaurante(),</span>
+            itemsDTO
+        );
+    }
+    
+    private boolean esEncargadoOAdmin(String tipoUsuario) {
+<span class="nc bnc" id="L151" title="All 4 branches missed.">        return &quot;ENCARGADO&quot;.equalsIgnoreCase(tipoUsuario) || &quot;ADMIN&quot;.equalsIgnoreCase(tipoUsuario);</span>
+    }
+
+    @Transactional
+    public Pedido cancelarPedido(Long idDelPedidoACancelar, Integer idUsuarioAutenticado, String rolUsuarioAutenticado) throws Exception {
+<span class="nc" id="L156">        Pedido pedidoParaCancelar = miRepositorioDePedidos.findById(idDelPedidoACancelar)</span>
+<span class="nc" id="L157">            .orElseThrow(() -&gt; new Exception(&quot;No encontré el pedido que quieres cancelar (ID: &quot; + idDelPedidoACancelar + &quot;).&quot;));</span>
+
+<span class="nc" id="L159">        boolean tienePermiso = false;</span>
+<span class="nc bnc" id="L160" title="All 4 branches missed.">        if (pedidoParaCancelar.getUsuario() != null &amp;&amp; pedidoParaCancelar.getUsuario().getIdUsuario().equals(idUsuarioAutenticado)) {</span>
+<span class="nc" id="L161">            tienePermiso = true;</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        } else if (esEncargadoOAdmin(rolUsuarioAutenticado)) {</span>
+<span class="nc" id="L163">            tienePermiso = true;</span>
+        }
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (!tienePermiso) {</span>
+<span class="nc" id="L167">            throw new SecurityException(&quot;Lo siento, pero no tienes permiso para cancelar este pedido.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (!&quot;PENDIENTE&quot;.equalsIgnoreCase(pedidoParaCancelar.getEstado())) {</span>
+<span class="nc" id="L171">            throw new Exception(&quot;No puedo cancelar este pedido. Su estado actual es: &quot; + pedidoParaCancelar.getEstado() + &quot;. Solo puedo cancelar los que están PENDIENTES.&quot;);</span>
+        }
+
+<span class="nc" id="L174">        pedidoParaCancelar.setEstado(&quot;CANCELADO&quot;);</span>
+<span class="nc" id="L175">        return miRepositorioDePedidos.save(pedidoParaCancelar);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

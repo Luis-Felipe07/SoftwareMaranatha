@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlatoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Controllers</a> &gt; <span class="el_source">PlatoController.java</span></div><h1>PlatoController.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Controllers;
+
+import com.maranatha.sfmaranatha.Service.PlatoService;
+import com.maranatha.sfmaranatha.dto.PlatoDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping(&quot;/api/platos&quot;)
+@Tag(name = &quot;Platos&quot;, description = &quot;Yo gestiono la información de los platos del restaurante.&quot;)
+<span class="nc" id="L26">public class PlatoController {</span>
+
+    @Autowired
+    private PlatoService miServicioDePlatos;
+    
+    @Value(&quot;${app.upload.dir:./uploads}&quot;)
+    private String uploadDir;
+
+    /**
+     * Devuelvo una lista de platos que pertenecen a un menú específico.
+     */
+    @GetMapping(&quot;/menu/{idMenu}&quot;)
+    @Operation(summary = &quot;Obtener platos por ID de Menú&quot;,
+               description = &quot;Yo devuelvo todos los platos asociados a un ID de menú específico.&quot;)
+    public ResponseEntity&lt;List&lt;PlatoDTO&gt;&gt; obtenerPlatosPorMenu(@PathVariable Integer idMenu) {
+<span class="nc" id="L41">        List&lt;PlatoDTO&gt; platos = miServicioDePlatos.obtenerPlatosPorIdMenu(idMenu);</span>
+<span class="nc bnc" id="L42" title="All 4 branches missed.">        if (platos == null || platos.isEmpty()) {</span>
+<span class="nc" id="L43">            return ResponseEntity.ok(Collections.emptyList());</span>
+        }
+<span class="nc" id="L45">        return ResponseEntity.ok(platos);</span>
+    }
+    
+    /**
+     * Obtengo todos los platos del sistema.
+     */
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los platos&quot;,
+               description = &quot;Devuelvo todos los platos disponibles en el sistema.&quot;)
+    public ResponseEntity&lt;List&lt;PlatoDTO&gt;&gt; obtenerTodosLosPlatos() {
+<span class="nc" id="L55">        List&lt;PlatoDTO&gt; platos = miServicioDePlatos.obtenerTodosLosPlatos();</span>
+<span class="nc" id="L56">        return ResponseEntity.ok(platos);</span>
+    }
+    
+    /**
+     * Obtengo un plato específico por su ID.
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener plato por ID&quot;,
+               description = &quot;Devuelvo la información de un plato específico.&quot;)
+    public ResponseEntity&lt;?&gt; obtenerPlatoPorId(@PathVariable Integer id) {
+        try {
+<span class="nc" id="L67">            PlatoDTO plato = miServicioDePlatos.obtenerPlatoPorId(id);</span>
+<span class="nc" id="L68">            return ResponseEntity.ok(plato);</span>
+<span class="nc" id="L69">        } catch (Exception e) {</span>
+<span class="nc" id="L70">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+    
+    /**
+     * Creo un nuevo plato con imagen.
+     */
+    @PostMapping(consumes = &quot;multipart/form-data&quot;)
+    @Operation(summary = &quot;Crear nuevo plato&quot;,
+               description = &quot;Creo un nuevo plato con todos sus datos e imagen.&quot;)
+    public ResponseEntity&lt;?&gt; crearPlato(
+            @RequestParam(&quot;nombrePlato&quot;) String nombrePlato,
+            @RequestParam(&quot;precio&quot;) BigDecimal precio,
+            @RequestParam(&quot;descripcion&quot;) String descripcion,
+            @RequestParam(&quot;idMenu&quot;) Integer idMenu,
+            @RequestParam(value = &quot;imagen&quot;, required = false) MultipartFile imagen) {
+        
+        try {
+<span class="nc" id="L88">            String imagenUrl = null;</span>
+            
+            // Procesar imagen si se proporciona
+<span class="nc bnc" id="L91" title="All 4 branches missed.">            if (imagen != null &amp;&amp; !imagen.isEmpty()) {</span>
+<span class="nc" id="L92">                imagenUrl = guardarImagen(imagen);</span>
+            }
+            
+<span class="nc" id="L95">            PlatoDTO nuevoPlato = new PlatoDTO();</span>
+<span class="nc" id="L96">            nuevoPlato.setNombrePlato(nombrePlato);</span>
+<span class="nc" id="L97">            nuevoPlato.setPrecio(precio);</span>
+<span class="nc" id="L98">            nuevoPlato.setDescripcion(descripcion);</span>
+<span class="nc" id="L99">            nuevoPlato.setImagenUrl(imagenUrl);</span>
+            
+<span class="nc" id="L101">            PlatoDTO platoCreado = miServicioDePlatos.crearPlato(nuevoPlato, idMenu);</span>
+            
+<span class="nc" id="L103">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L104">                &quot;exito&quot;, true,</span>
+                &quot;mensaje&quot;, &quot;Plato creado exitosamente&quot;,
+                &quot;plato&quot;, platoCreado
+            ));
+<span class="nc" id="L108">        } catch (Exception e) {</span>
+<span class="nc" id="L109">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L110">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L111">                &quot;mensaje&quot;, &quot;Error al crear el plato: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+    
+    /**
+     * Actualizo un plato existente.
+     */
+    @PutMapping(value = &quot;/{id}&quot;, consumes = &quot;multipart/form-data&quot;)
+    @Operation(summary = &quot;Actualizar plato&quot;,
+               description = &quot;Actualizo la información de un plato existente.&quot;)
+    public ResponseEntity&lt;?&gt; actualizarPlato(
+            @PathVariable Integer id,
+            @RequestParam(&quot;nombrePlato&quot;) String nombrePlato,
+            @RequestParam(&quot;precio&quot;) BigDecimal precio,
+            @RequestParam(&quot;descripcion&quot;) String descripcion,
+            @RequestParam(&quot;idMenu&quot;) Integer idMenu,
+            @RequestParam(value = &quot;imagen&quot;, required = false) MultipartFile imagen) {
+        
+        try {
+<span class="nc" id="L131">            PlatoDTO platoActualizado = new PlatoDTO();</span>
+<span class="nc" id="L132">            platoActualizado.setIdPlato(id);</span>
+<span class="nc" id="L133">            platoActualizado.setNombrePlato(nombrePlato);</span>
+<span class="nc" id="L134">            platoActualizado.setPrecio(precio);</span>
+<span class="nc" id="L135">            platoActualizado.setDescripcion(descripcion);</span>
+            
+            // Si se proporciona nueva imagen, la guardamos
+<span class="nc bnc" id="L138" title="All 4 branches missed.">            if (imagen != null &amp;&amp; !imagen.isEmpty()) {</span>
+<span class="nc" id="L139">                String nuevaImagenUrl = guardarImagen(imagen);</span>
+<span class="nc" id="L140">                platoActualizado.setImagenUrl(nuevaImagenUrl);</span>
+            }
+            
+<span class="nc" id="L143">            PlatoDTO resultado = miServicioDePlatos.actualizarPlato(id, platoActualizado, idMenu);</span>
+            
+<span class="nc" id="L145">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L146">                &quot;exito&quot;, true,</span>
+                &quot;mensaje&quot;, &quot;Plato actualizado exitosamente&quot;,
+                &quot;plato&quot;, resultado
+            ));
+<span class="nc" id="L150">        } catch (Exception e) {</span>
+<span class="nc" id="L151">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L152">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L153">                &quot;mensaje&quot;, &quot;Error al actualizar el plato: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+    
+    /**
+     * Elimino un plato.
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Eliminar plato&quot;,
+               description = &quot;Elimino un plato del sistema.&quot;)
+    public ResponseEntity&lt;?&gt; eliminarPlato(@PathVariable Integer id) {
+        try {
+<span class="nc" id="L166">            miServicioDePlatos.eliminarPlato(id);</span>
+<span class="nc" id="L167">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L168">                &quot;exito&quot;, true,</span>
+                &quot;mensaje&quot;, &quot;Plato eliminado exitosamente&quot;
+            ));
+<span class="nc" id="L171">        } catch (Exception e) {</span>
+<span class="nc" id="L172">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L173">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L174">                &quot;mensaje&quot;, &quot;Error al eliminar el plato: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+    
+    /**
+     * Método auxiliar para guardar imágenes.
+     */
+    private String guardarImagen(MultipartFile imagen) throws IOException {
+        // Crear directorio si no existe
+<span class="nc" id="L184">        Path uploadPath = Paths.get(uploadDir);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (!Files.exists(uploadPath)) {</span>
+<span class="nc" id="L186">            Files.createDirectories(uploadPath);</span>
+        }
+        
+        // Generar nombre único para la imagen
+<span class="nc" id="L190">        String nombreOriginal = imagen.getOriginalFilename();</span>
+<span class="nc" id="L191">        String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf(&quot;.&quot;));</span>
+<span class="nc" id="L192">        String nombreUnico = UUID.randomUUID().toString() + extension;</span>
+        
+        // Guardar archivo
+<span class="nc" id="L195">        Path filePath = uploadPath.resolve(nombreUnico);</span>
+<span class="nc" id="L196">        Files.write(filePath, imagen.getBytes());</span>
+        
+        // Retornar URL relativa
+<span class="nc" id="L199">        return &quot;/uploads/&quot; + nombreUnico;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

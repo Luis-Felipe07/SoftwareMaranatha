@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Mesa.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Model</a> &gt; <span class="el_source">Mesa.java</span></div><h1>Mesa.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = &quot;mesas&quot;)  
+public class Mesa {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int numero;
+
+    
+    private String estado;
+
+<span class="nc" id="L18">    public Mesa() {</span>
+<span class="nc" id="L19">    }</span>
+
+<span class="nc" id="L21">    public Mesa(int numero, String estado) {</span>
+<span class="nc" id="L22">        this.numero = numero;</span>
+<span class="nc" id="L23">        this.estado = estado;</span>
+<span class="nc" id="L24">    }</span>
+
+    // Getters y Setters
+    public Long getId() {
+<span class="nc" id="L28">        return id;</span>
+    }
+
+    public int getNumero() {
+<span class="nc" id="L32">        return numero;</span>
+    }
+
+    public void setNumero(int numero) {
+<span class="nc" id="L36">        this.numero = numero;</span>
+<span class="nc" id="L37">    }</span>
+
+    public String getEstado() {
+<span class="nc" id="L40">        return estado;</span>
+    }
+
+    public void setEstado(String estado) {
+<span class="nc" id="L44">        this.estado = estado;</span>
+<span class="nc" id="L45">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

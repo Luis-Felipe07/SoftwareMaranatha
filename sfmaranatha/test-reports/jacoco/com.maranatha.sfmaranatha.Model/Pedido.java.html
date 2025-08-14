@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pedido.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Model</a> &gt; <span class="el_source">Pedido.java</span></div><h1>Pedido.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;pedido&quot;)
+@JsonIgnoreProperties({&quot;hibernateLazyInitializer&quot;, &quot;handler&quot;}) 
+public class Pedido {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;id_pedido&quot;)
+    private Long idPedido;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_usuario&quot;, nullable = false)
+    @JsonBackReference(&quot;usuario-pedidos&quot;) // Referencia al lado &quot;padre&quot; en Usuario
+    private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;id_reserva&quot;) // Puede ser null
+    @JsonBackReference(&quot;reserva-pedidos&quot;) 
+    private Reserva reserva;
+
+<span class="nc" id="L31">    @Column(name = &quot;fecha_pedido&quot;, nullable = false)</span>
+<span class="nc" id="L32">    private LocalDateTime fechaPedido = LocalDateTime.now();</span>
+
+    @Column(length = 50, nullable = false)
+    private String estado;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal total;
+
+    @Column(name = &quot;nombre_cliente&quot;, length = 100)
+    private String nombreCliente;
+
+    @Column(name = &quot;correo_cliente&quot;, length = 100)
+    private String correoCliente;
+
+    @Column(name = &quot;telefono_cliente&quot;, length = 20)
+    private String telefonoCliente;
+
+    @Column(name = &quot;direccion_entrega&quot;, length = 255)
+    private String direccionEntrega;
+
+    @Column(name = &quot;hora_entrega_restaurante&quot;, length = 50)
+    private String horaEntregaRestaurante;
+
+    @Column(name = &quot;metodo_pago&quot;, length = 50)
+    private String metodoPago;
+
+    @Lob
+    private String descripcion;
+
+    @OneToOne(mappedBy = &quot;pedido&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    
+    private Pago pago;
+
+    @OneToMany(mappedBy = &quot;pedido&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(&quot;pedido-items&quot;) // Lado &quot;padre&quot; de la relación Pedido-PedidoPlato
+    private List&lt;PedidoPlato&gt; items;
+
+<span class="nc" id="L69">    public Pedido() {}</span>
+
+    // Getters y Setters (sin cambios)
+
+    public Long getIdPedido() {
+<span class="nc" id="L74">        return idPedido;</span>
+    }
+
+    public void setIdPedido(Long idPedido) {
+<span class="nc" id="L78">        this.idPedido = idPedido;</span>
+<span class="nc" id="L79">    }</span>
+
+    public Usuario getUsuario() {
+<span class="nc" id="L82">        return usuario;</span>
+    }
+
+    public void setUsuario(Usuario usuario) {
+<span class="nc" id="L86">        this.usuario = usuario;</span>
+<span class="nc" id="L87">    }</span>
+
+    public Reserva getReserva() {
+<span class="nc" id="L90">        return reserva;</span>
+    }
+
+    public void setReserva(Reserva reserva) {
+<span class="nc" id="L94">        this.reserva = reserva;</span>
+<span class="nc" id="L95">    }</span>
+
+    public LocalDateTime getFechaPedido() {
+<span class="nc" id="L98">        return fechaPedido;</span>
+    }
+
+    public void setFechaPedido(LocalDateTime fechaPedido) {
+<span class="nc" id="L102">        this.fechaPedido = fechaPedido;</span>
+<span class="nc" id="L103">    }</span>
+
+    public String getEstado() {
+<span class="nc" id="L106">        return estado;</span>
+    }
+
+    public void setEstado(String estado) {
+<span class="nc" id="L110">        this.estado = estado;</span>
+<span class="nc" id="L111">    }</span>
+
+    public BigDecimal getTotal() {
+<span class="nc" id="L114">        return total;</span>
+    }
+
+    public void setTotal(BigDecimal total) {
+<span class="nc" id="L118">        this.total = total;</span>
+<span class="nc" id="L119">    }</span>
+
+    public String getNombreCliente() {
+<span class="nc" id="L122">        return nombreCliente;</span>
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+<span class="nc" id="L126">        this.nombreCliente = nombreCliente;</span>
+<span class="nc" id="L127">    }</span>
+
+    public String getCorreoCliente() {
+<span class="nc" id="L130">        return correoCliente;</span>
+    }
+
+    public void setCorreoCliente(String correoCliente) {
+<span class="nc" id="L134">        this.correoCliente = correoCliente;</span>
+<span class="nc" id="L135">    }</span>
+
+    public String getTelefonoCliente() {
+<span class="nc" id="L138">        return telefonoCliente;</span>
+    }
+
+    public void setTelefonoCliente(String telefonoCliente) {
+<span class="nc" id="L142">        this.telefonoCliente = telefonoCliente;</span>
+<span class="nc" id="L143">    }</span>
+
+    public String getDireccionEntrega() {
+<span class="nc" id="L146">        return direccionEntrega;</span>
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+<span class="nc" id="L150">        this.direccionEntrega = direccionEntrega;</span>
+<span class="nc" id="L151">    }</span>
+
+    public String getHoraEntregaRestaurante() {
+<span class="nc" id="L154">        return horaEntregaRestaurante;</span>
+    }
+
+    public void setHoraEntregaRestaurante(String horaEntregaRestaurante) {
+<span class="nc" id="L158">        this.horaEntregaRestaurante = horaEntregaRestaurante;</span>
+<span class="nc" id="L159">    }</span>
+
+    public String getMetodoPago() {
+<span class="nc" id="L162">        return metodoPago;</span>
+    }
+
+    public void setMetodoPago(String metodoPago) {
+<span class="nc" id="L166">        this.metodoPago = metodoPago;</span>
+<span class="nc" id="L167">    }</span>
+
+    public String getDescripcion() {
+<span class="nc" id="L170">        return descripcion;</span>
+    }
+
+    public void setDescripcion(String descripcion) {
+<span class="nc" id="L174">        this.descripcion = descripcion;</span>
+<span class="nc" id="L175">    }</span>
+
+    public Pago getPago() {
+<span class="nc" id="L178">        return pago;</span>
+    }
+
+    public void setPago(Pago pago) {
+<span class="nc" id="L182">        this.pago = pago;</span>
+<span class="nc" id="L183">    }</span>
+
+    public List&lt;PedidoPlato&gt; getItems() {
+<span class="nc" id="L186">        return items;</span>
+    }
+
+    public void setItems(List&lt;PedidoPlato&gt; items) {
+<span class="nc" id="L190">        this.items = items;</span>
+<span class="nc" id="L191">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

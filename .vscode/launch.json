@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SfmaranathaApplication<sfmaranatha>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.maranatha.sfmaranatha.SfmaranathaApplication",
+            "projectName": "sfmaranatha",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

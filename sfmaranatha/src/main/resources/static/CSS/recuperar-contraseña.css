@@ -1,114 +1,118 @@
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --rojo-maranatha: #d62828;
+  --rojo-maranatha-dark: #b71c1c;
+  --amarillo-maranatha: #ffc107;
+  --amarillo-maranatha-dark: #f9a825;
+  --blanco: #ffffff;
+  --gris-claro: #f8f9fa;
+  --gris-medio: #e9ecef;
+  --texto-oscuro: #343a40;
+  --verde-exito: #198754; /* Color de éxito de Bootstrap 5 */
+  --azul-info: #0dcaf0; /* Color de info de Bootstrap 5 */
 }
 
-/* Fondo general y tipografía */
 body {
-    background: url('/IMG/fondo.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: Arial, sans-serif;
-    color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--gris-claro) 0%, var(--gris-medio) 100%);
+  color: var(--texto-oscuro);
 }
 
-/* Contenedor principal  */
-.custom-bg {
-    margin: 40px auto;
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.9);  /* Fondo blanco con opacidad para mejor legibilidad */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+/* =================================================================
+   ESTILOS PERSONALIZADOS DE COMPONENTES
+   ================================================================= */
+
+/* Gradientes para Header y Footer */
+.header-gradient {
+  background: linear-gradient(135deg, var(--rojo-maranatha) 0%, var(--rojo-maranatha-dark) 100%);
+}
+.footer-gradient {
+  background: linear-gradient(135deg, var(--texto-oscuro) 0%, #495057 100%);
 }
 
-/* Cabecera de la card */
-.card-header {
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    background: linear-gradient(45deg, #1cd037, #38ef54);
-    border-radius: 10px 10px 0 0;
-    padding: 15px;
-    color: #fff;
-    text-align: center;
+/* Logo personalizado */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--amarillo-maranatha);
+  padding: 8px;
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+.logo-text:hover {
+    transform: scale(1.1);
+}
+.logo-r, .logo-m {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--rojo-maranatha-dark);
+  line-height: 1;
 }
 
-/* Estilos para los campos de formulario */
-.form-control {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 15px;
+/* Animación y color de ícono de recuperación */
+.recovery-icon {
+  animation: pulse 2s infinite ease-in-out;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
 
-.form-control:focus {
-    border-color: #ff416c;
-    box-shadow: 0 0 5px rgba(255, 65, 108, 0.5);
-    outline: none;
+/* Alerta de información personalizada */
+.alert-info-custom {
+  background-color: rgba(13, 202, 240, 0.1); 
+  border-left: 4px solid var(--azul-info);
+  color: var(--texto-oscuro);
+}
+.alert-info-custom i {
+  color: var(--azul-info);
 }
 
-/* Botón para guardar cambios */
-.guardar {
-    padding: 12px 25px;
-    color: #fcfffc;
-    background-color: #21ca3d;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    width: 100%;
-    cursor: pointer;
+/* Anulación del color del "focus" de Bootstrap para que coincida con la marca */
+.form-control:focus, .btn-outline-secondary:focus {
+  border-color: var(--amarillo-maranatha);
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.5);
 }
 
-.guardar {
-    background-color: #21ca3d;
-    transform: translateY(-2px);
+/* Indicador de fortaleza de contraseña (funcionalidad personalizada) */
+.strength-bar {
+  height: 5px;
+  background-color: var(--gris-medio);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.4s ease-in-out;
+  border-radius: 5px;
+}
+/* Clases de fortaleza que serían añadidas por JS */
+.strength-fill.weak   { width: 25%; background-color: var(--rojo-maranatha); }
+.strength-fill.fair   { width: 50%; background-color: var(--amarillo-maranatha-dark); }
+.strength-fill.good   { width: 75%; background-color: var(--azul-info); }
+.strength-fill.strong { width: 100%; background-color: var(--verde-exito); }
+
+/* Indicador de coincidencia de contraseñas */
+.password-match.match {
+  color: var(--verde-exito);
+  font-weight: 500;
+}
+.password-match.no-match {
+  color: var(--rojo-maranatha);
+  font-weight: 500;
 }
 
-/* Estilos para alertas y mensajes */
-.alert {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
+/* Colores personalizados para enlaces */
+.link-rojo {
+    color: var(--rojo-maranatha);
+    transition: color 0.3s ease;
 }
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* Etiquetas  */
-label {
-    font-weight: bold;
-    color: #333;
-}
-
-/* Espaciado interno de la card */
-.card-body {
-    padding: 20px;
-}
-
-/* Adaptabilidad para pantallas pequeñas */
-@media (max-width: 576px) {
-    .custom-bg {
-        margin: 20px;
-        padding: 15px;
-    }
-    .card-header {
-        font-size: 1.5rem;
-        padding: 10px;
-    }
+.link-rojo:hover {
+    color: var(--rojo-maranatha-dark);
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+<span class="nc" id="L13">public class SecurityConfig implements WebMvcConfigurer {</span>
+    
+    @Value(&quot;${app.upload.dir:./uploads}&quot;)
+    private String uploadDir;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+<span class="nc" id="L20">        http</span>
+<span class="nc" id="L21">            .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="nc" id="L22">                .requestMatchers(</span>
+                    &quot;/&quot;,
+                    &quot;/login&quot;,
+                    &quot;/CSS/**&quot;, 
+                    &quot;/IMG/**&quot;, 
+                    &quot;/JS/**&quot;,
+                    &quot;/*.html&quot;,
+                    &quot;/api/usuarios/**&quot;,   
+                    &quot;/api/pedidos/**&quot;,
+                    &quot;/api/platos/**&quot;,
+                    &quot;/api/mesas/**&quot;,
+                    &quot;/uploads/**&quot;
+<span class="nc" id="L34">                ).permitAll()</span>
+<span class="nc" id="L35">                .anyRequest().permitAll()</span>
+            )
+<span class="nc" id="L37">            .formLogin().disable()</span>
+<span class="nc" id="L38">            .httpBasic().disable()</span>
+<span class="nc" id="L39">            .csrf().disable();</span>
+
+<span class="nc" id="L41">        return http.build();</span>
+    }
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Configurar directorio de uploads para servir imágenes
+<span class="nc" id="L47">        registry.addResourceHandler(&quot;/uploads/**&quot;)</span>
+<span class="nc" id="L48">                .addResourceLocations(&quot;file:&quot; + uploadDir + &quot;/&quot;);</span>
+        
+        // Configurar recursos estáticos
+<span class="nc" id="L51">        registry.addResourceHandler(&quot;/CSS/**&quot;)</span>
+<span class="nc" id="L52">                .addResourceLocations(&quot;classpath:/static/CSS/&quot;);</span>
+        
+<span class="nc" id="L54">        registry.addResourceHandler(&quot;/JS/**&quot;)</span>
+<span class="nc" id="L55">                .addResourceLocations(&quot;classpath:/static/JS/&quot;);</span>
+        
+<span class="nc" id="L57">        registry.addResourceHandler(&quot;/IMG/**&quot;)</span>
+<span class="nc" id="L58">                .addResourceLocations(&quot;classpath:/static/IMG/&quot;);</span>
+<span class="nc" id="L59">    }</span>
+    
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // Configurar las vistas estáticas
+<span class="nc" id="L64">        registry.addViewController(&quot;/&quot;).setViewName(&quot;forward:/primera-pagina.html&quot;);</span>
+<span class="nc" id="L65">        registry.addViewController(&quot;/login&quot;).setViewName(&quot;forward:/login.html&quot;);</span>
+<span class="nc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

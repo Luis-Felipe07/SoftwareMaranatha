@@ -3,14 +3,14 @@ let mesaSeleccionada = null;
 let platosSeleccionados = [];
 let precioTotal = 0;
 let usuarioActual = null;
-let menuItems = { entradas: [], principales: [], postres: [], bebidas: [] };
+let menuItems = { menuDelDia: [], menuEspecial: [], postres: [], bebidas: [] };
+let todosLosMenus = [];
 
 /**
- 
  * Configuro los valores mínimos para las fechas y eventos iniciales
  */
 document.addEventListener('DOMContentLoaded', () => {
-   
+    // Verifico autenticación
     verificarAutenticacion();
 
     // Establezco la fecha mínima como hoy
@@ -25,15 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Evento para el checkbox de pedido adelantado
     document.getElementById('pedidoAdelantado').addEventListener('change', toggleSeccionPedidos);
+    
+    // Cargar todos los menús disponibles
+    cargarTodosLosMenus();
+    
+    // Actualizar disponibilidad de mesas al cargar
+    actualizarDisponibilidadMesas();
 });
 
 /**
  * Función para verificar si el usuario está autenticado
- 
  */
 function verificarAutenticacion() {
     // Realizo la petición al endpoint de verificación de sesión
-    fetch('/api/usuario/sesion', {
+    fetch('/api/usuarios/sesion-actual', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -47,18 +52,22 @@ function verificarAutenticacion() {
         return response.json();
     })
     .then(data => {
+        // Verifico si realmente está autenticado
+        if (!data.autenticado) {
+            throw new Error('No autenticado');
+        }
+        
         // Guardo los datos del usuario autenticado
         usuarioActual = data;
         
         // Muestro sección de usuario y oculto mensaje de no autenticado
         document.getElementById('infoUsuario').classList.remove('d-none');
-        document.getElementById('nombreUsuario').textContent = data.nombres;
-        document.getElementById('correoUsuario').textContent = data.correo;
+        document.getElementById('nombreUsuario').textContent = data.nombre || 'Usuario';
+        document.getElementById('correoUsuario').textContent = data.correo || '';
         document.getElementById('mensajeNoAutenticado').classList.add('d-none');
         document.getElementById('seccionMesas').classList.remove('d-none');
         
-        // Cargo el menú de platos para tenerlos disponibles
-        cargarMenuPlatos();
+        // Los menús ya se cargan al inicio, no necesario cargar aquí
     })
     .catch(error => {
         console.error('Error de autenticación:', error);
@@ -72,78 +81,129 @@ function verificarAutenticacion() {
 
 /**
  * Función para cerrar la sesión del usuario
- 
  */
 function cerrarSesion() {
-    fetch('/api/usuario/logout', {
-        method: 'POST',
-        credentials: 'include'
+    // Limpiar localStorage y sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Redirigir al login
+    window.location.href = '/login';
+}
+
+/**
+ * Función para cargar todos los menús desde el backend
+ */
+function cargarTodosLosMenus() {
+    fetch('/api/menus', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error al cerrar sesión');
+            throw new Error('Error al cargar los menús');
         }
-        // Recargo la página para reiniciar el estado
-        window.location.reload();
+        return response.json();
+    })
+    .then(menus => {
+        todosLosMenus = menus;
+        console.log('Menús cargados:', menus);
+        
+        // Limpiar menuItems
+        menuItems = { menuDelDia: [], menuEspecial: [], postres: [], bebidas: [] };
+        
+        // Cargar platos para cada menú
+        const promesasMenus = menus.map(menu => cargarPlatosDeMenu(menu));
+        
+        return Promise.all(promesasMenus);
+    })
+    .then(() => {
+        console.log('Todos los menús cargados exitosamente', menuItems);
     })
     .catch(error => {
-        console.error('Error al cerrar sesión:', error);
-        alert('Hubo un problema al cerrar la sesión. Intente nuevamente.');
+        console.error('Error al cargar los menús:', error);
+        // Si hay error, usar datos de ejemplo
+        cargarDatosDeEjemplo();
     });
 }
 
 /**
- * Función para cargar los platos del menú desde el backend
- * 
+ * Función para cargar los platos de un menú específico
  */
-function cargarMenuPlatos() {
-    fetch('/api/platos', {
+function cargarPlatosDeMenu(menu) {
+    return fetch(`/api/platos/menu/${menu.idMenu}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        credentials: 'include'
+        }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error al cargar el menú');
+            throw new Error(`Error al cargar platos del menú ${menu.nombreMenu}`);
         }
         return response.json();
     })
     .then(platos => {
-        // Clasifico los platos por categoría
-        menuItems.entradas = platos.filter(plato => plato.id_menu === 1);
-        menuItems.principales = platos.filter(plato => plato.id_menu === 2);
-        menuItems.postres = platos.filter(plato => plato.id_menu === 3);
-        menuItems.bebidas = platos.filter(plato => plato.id_menu === 4);
+        // Clasificar platos según el nombre del menú
+        const nombreMenu = menu.nombreMenu.toLowerCase();
         
-        // Tengo los platos cargados 
-        console.log('Menú cargado exitosamente');
+        if (nombreMenu.includes('día') || nombreMenu.includes('dia')) {
+            menuItems.menuDelDia = platos;
+        } else if (nombreMenu.includes('especial')) {
+            menuItems.menuEspecial = platos;
+        } else if (nombreMenu.includes('postre')) {
+            menuItems.postres = platos;
+        } else if (nombreMenu.includes('bebida')) {
+            menuItems.bebidas = platos;
+        }
+        
+        console.log(`Platos cargados para ${menu.nombreMenu}:`, platos);
     })
     .catch(error => {
-        console.error('Error al cargar el menú de platos:', error);
+        console.error(`Error al cargar platos de ${menu.nombreMenu}:`, error);
     });
 }
 
 /**
+ * Función para cargar datos de ejemplo si falla la carga del servidor
+ */
+function cargarDatosDeEjemplo() {
+    menuItems = {
+        menuDelDia: [
+            { idPlato: 1, nombrePlato: 'Bandeja Paisa', precio: 25000 },
+            { idPlato: 2, nombrePlato: 'Ajiaco Santafereño', precio: 18000 }
+        ],
+        menuEspecial: [
+            { idPlato: 6, nombrePlato: 'Salmón a la Parrilla', precio: 35000 },
+            { idPlato: 7, nombrePlato: 'Lomo de Res', precio: 40000 }
+        ],
+        postres: [
+            { idPlato: 11, nombrePlato: 'Flan de Caramelo', precio: 8000 },
+            { idPlato: 12, nombrePlato: 'Tres Leches', precio: 9000 }
+        ],
+        bebidas: [
+            { idPlato: 16, nombrePlato: 'Jugo Natural', precio: 6000 },
+            { idPlato: 17, nombrePlato: 'Limonada de Coco', precio: 7000 }
+        ]
+    };
+}
+
+/**
  * Función para mostrar los platos en la interfaz según su categoría
- * 
  */
 function mostrarPlatos() {
-   
-    mostrarPlatosPorCategoria('listaEntradas', menuItems.entradas);
-    
-    mostrarPlatosPorCategoria('listaPlatos', menuItems.principales);
-    
+    mostrarPlatosPorCategoria('listaMenuDelDia', menuItems.menuDelDia);
+    mostrarPlatosPorCategoria('listaMenuEspecial', menuItems.menuEspecial);
     mostrarPlatosPorCategoria('listaPostres', menuItems.postres);
-   
     mostrarPlatosPorCategoria('listaBebidas', menuItems.bebidas);
 }
 
 /**
  * Función auxiliar para mostrar platos de una categoría en su contenedor
- * @param {String} 
- * @param {Array} 
+ * @param {String} containerId - ID del contenedor donde mostrar los platos
+ * @param {Array} platos - Array de platos a mostrar
  */
 function mostrarPlatosPorCategoria(containerId, platos) {
     const container = document.getElementById(containerId);
@@ -159,18 +219,18 @@ function mostrarPlatosPorCategoria(containerId, platos) {
     // Añado cada plato al contenedor
     platos.forEach(plato => {
         const col = document.createElement('div');
-        col.className = 'col-md-6';
+        col.className = 'col-md-6 mb-2';
         
         col.innerHTML = `
-            <div class="menu-item">
+            <div class="menu-item p-2 border rounded">
                 <div class="form-check">
                     <input class="form-check-input item-pedido" type="checkbox" 
-                           value="${plato.id_plato}" 
-                           id="plato_${plato.id_plato}" 
-                           data-nombre="${plato.nombre_plato}" 
+                           value="${plato.idPlato}" 
+                           id="plato_${plato.idPlato}" 
+                           data-nombre="${plato.nombrePlato}" 
                            data-precio="${plato.precio}">
-                    <label class="form-check-label" for="plato_${plato.id_plato}">
-                        ${plato.nombre_plato} - $${plato.precio.toLocaleString()}
+                    <label class="form-check-label" for="plato_${plato.idPlato}">
+                        <strong>${plato.nombrePlato}</strong> - $${plato.precio.toLocaleString('es-CO')}
                     </label>
                 </div>
             </div>
@@ -219,14 +279,16 @@ function seleccionarMesa(numeroMesa) {
         // La mesa está disponible, procedo con la selección
         mesaSeleccionada = numeroMesa;
         
-        
+        // Actualizo el número de mesa en el formulario
         document.getElementById('mesaNumero').textContent = numeroMesa;
         
-        
+        // Muestro el formulario de reserva
         document.getElementById('formReserva').classList.remove('d-none');
         
-        
-        document.getElementById('telefono').value = usuarioActual.telefono || '';
+        // Prellenar el teléfono si está disponible
+        if (usuarioActual.telefono) {
+            document.getElementById('telefono').value = usuarioActual.telefono;
+        }
         
         // Hago scroll al formulario
         document.getElementById('formReserva').scrollIntoView({
@@ -249,37 +311,36 @@ function toggleSeccionPedidos() {
     
     if (checkbox.checked) {
         seccionPedidos.classList.remove('d-none');
-        
+        // Cargo y muestro los platos
         mostrarPlatos();
     } else {
         seccionPedidos.classList.add('d-none');
-        
+        // Limpio los pedidos seleccionados
         limpiarPedidos();
     }
 }
 
 /**
  * Función para limpiar los pedidos seleccionados
- * 
  */
 function limpiarPedidos() {
-    
+    // Desmarco todos los checkboxes
     const itemsPedido = document.querySelectorAll('.item-pedido');
     itemsPedido.forEach(item => {
         item.checked = false;
     });
     
-    
+    // Limpio las variables
     platosSeleccionados = [];
     precioTotal = 0;
     
-    
+    // Actualizo la visualización
     actualizarVisualizacionPlatos();
 }
 
 /**
  * Función para actualizar la lista de platos cuando se selecciona o deselecciona un ítem
- * @param {Event} 
+ * @param {Event} event - Evento del checkbox
  */
 function actualizarListaPlatos(event) {
     const checkbox = event.target;
@@ -305,7 +366,6 @@ function actualizarListaPlatos(event) {
 
 /**
  * Función para actualizar la visualización de los platos seleccionados
- * 
  */
 function actualizarVisualizacionPlatos() {
     const listaPlatos = document.getElementById('listaPlatosSeleccionados');
@@ -317,7 +377,6 @@ function actualizarVisualizacionPlatos() {
     precioTotal = 0;
     
     if (platosSeleccionados.length === 0) {
-       
         listaPlatos.innerHTML = '<li class="list-group-item text-center">No hay platos seleccionados</li>';
     } else {
         // Añado cada plato a la lista con su precio
@@ -327,7 +386,7 @@ function actualizarVisualizacionPlatos() {
             
             item.innerHTML = `
                 ${plato.nombre}
-                <span class="badge bg-primary rounded-pill">$${plato.precio.toLocaleString()}</span>
+                <span class="badge bg-primary rounded-pill">$${plato.precio.toLocaleString('es-CO')}</span>
             `;
             
             listaPlatos.appendChild(item);
@@ -342,7 +401,7 @@ function actualizarVisualizacionPlatos() {
         
         totalItem.innerHTML = `
             Total
-            <span class="badge bg-success rounded-pill">$${precioTotal.toLocaleString()}</span>
+            <span class="badge bg-success rounded-pill">$${precioTotal.toLocaleString('es-CO')}</span>
         `;
         
         listaPlatos.appendChild(totalItem);
@@ -351,10 +410,9 @@ function actualizarVisualizacionPlatos() {
 
 /**
  * Función para cancelar la reserva actual
- * 
  */
 function cancelarReserva() {
-    
+    // Oculto el formulario de reserva
     document.getElementById('formReserva').classList.add('d-none');
     
     // Reseteo la mesa seleccionada
@@ -378,10 +436,9 @@ function cancelarReserva() {
 
 /**
  * Función para continuar al proceso de pago
- * 
  */
 function continuarAPago() {
-   
+    // Valido los campos requeridos
     const telefono = document.getElementById('telefono').value;
     const numPersonas = document.getElementById('numPersonas').value;
     const fecha = document.getElementById('fecha').value;
@@ -393,7 +450,7 @@ function continuarAPago() {
     }
     
     // Preparo el resumen para mostrar en el modal
-    document.getElementById('resumenNombre').textContent = usuarioActual.nombres + ' ' + usuarioActual.apellidos;
+    document.getElementById('resumenNombre').textContent = usuarioActual.nombre + ' ' + (usuarioActual.apellido || '');
     document.getElementById('resumenTelefono').textContent = telefono;
     document.getElementById('resumenMesa').textContent = mesaSeleccionada;
     document.getElementById('resumenFecha').textContent = formatearFecha(fecha);
@@ -414,12 +471,12 @@ function continuarAPago() {
         
         platosSeleccionados.forEach(plato => {
             const item = document.createElement('li');
-            item.innerHTML = `${plato.nombre} - $${plato.precio.toLocaleString()}`;
+            item.innerHTML = `${plato.nombre} - $${plato.precio.toLocaleString('es-CO')}`;
             resumenPlatos.appendChild(item);
         });
         
         // Muestro el total
-        document.getElementById('resumenTotal').textContent = precioTotal.toLocaleString();
+        document.getElementById('resumenTotal').textContent = precioTotal.toLocaleString('es-CO');
     } else {
         // Oculto la lista de pedidos y muestro mensaje de que no hay pedido
         document.getElementById('resumenSinPedido').classList.remove('d-none');
@@ -433,24 +490,25 @@ function continuarAPago() {
 
 /**
  * Función para formatear la fecha en formato legible
- * @param {String} 
- * @returns {String} 
+ * @param {String} fechaISO - Fecha en formato ISO
+ * @returns {String} Fecha formateada
  */
 function formatearFecha(fechaISO) {
-    const fecha = new Date(fechaISO);
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const anio = fecha.getFullYear();
-    
-    return `${dia}/${mes}/${anio}`;
+    const fecha = new Date(fechaISO + 'T00:00:00');
+    const opciones = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return fecha.toLocaleDateString('es-CO', opciones);
 }
 
 /**
  * Función para confirmar la reserva final
- * 
  */
 function confirmarReserva() {
-    
+    // Verifico que se haya seleccionado un método de pago
     const metodoPago = document.querySelector('input[name="metodoPago"]:checked');
     
     if (!metodoPago) {
@@ -460,18 +518,22 @@ function confirmarReserva() {
     
     // Preparo los datos de la reserva
     const datosReserva = {
-        id_usuario: usuarioActual.id_usuario,
-        id_mesa: mesaSeleccionada,
+        idUsuario: usuarioActual.idUsuario,
+        numeroMesa: mesaSeleccionada,
         telefono: document.getElementById('telefono').value,
-        personas: parseInt(document.getElementById('numPersonas').value),
-        fecha: document.getElementById('fecha').value,
-        hora: document.getElementById('hora').value,
-        metodo_pago: metodoPago.value,
+        numeroPersonas: parseInt(document.getElementById('numPersonas').value),
+        fechaReserva: document.getElementById('fecha').value,
+        horaReserva: document.getElementById('hora').value + ':00',
+        estado: 'CONFIRMADA',
+        idRestaurante: 1,
+        metodoPago: metodoPago.value,
         platos: platosSeleccionados.map(plato => ({
-            id_plato: plato.id,
-            cantidad: 1 
+            platoId: plato.id,
+            cantidad: 1
         }))
     };
+    
+    console.log('Enviando reserva:', datosReserva); // Para debug
     
     // Envío la reserva al backend
     fetch('/api/reservas', {
@@ -484,42 +546,68 @@ function confirmarReserva() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error al procesar la reserva');
+            return response.json().then(err => Promise.reject(err));
         }
         return response.json();
     })
     .then(data => {
-        
-        const modalPago = bootstrap.Modal.getInstance(document.getElementById('modalPago'));
-        modalPago.hide();
-        
-        
-        const numeroConfirmacion = data.id_reserva || generarNumeroConfirmacion();
-        document.getElementById('numeroConfirmacion').textContent = numeroConfirmacion;
-        
-        
-        const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-        modalConfirmacion.show();
+        if (data.exito) {
+            // Cierro el modal de pago
+            const modalPago = bootstrap.Modal.getInstance(document.getElementById('modalPago'));
+            modalPago.hide();
+            
+            // Muestro el número de confirmación
+            document.getElementById('numeroConfirmacion').textContent = data.numeroConfirmacion || data.idReserva;
+            
+            // Abro el modal de confirmación
+            const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+            modalConfirmacion.show();
+        } else {
+            alert(data.mensaje || 'Error al procesar la reserva');
+        }
     })
     .catch(error => {
         console.error('Error al procesar la reserva:', error);
-        alert('Hubo un problema al procesar su reserva. Intente nuevamente.');
+        alert(error.mensaje || 'Hubo un problema al procesar su reserva. Intente nuevamente.');
+    });
+}
+
+/**
+ * Función para ocupar una mesa después de confirmar la reserva
+ * @param {Number} numeroMesa - Número de la mesa a ocupar
+ */
+function ocuparMesa(numeroMesa) {
+    fetch(`/api/mesas/${numeroMesa}/ocupar`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.exito) {
+            console.log('Mesa ocupada exitosamente');
+            // Actualizar la disponibilidad visual
+            actualizarDisponibilidadMesas();
+        }
+    })
+    .catch(error => {
+        console.error('Error al ocupar la mesa:', error);
     });
 }
 
 /**
  * Función para generar un número de confirmación simulado
- * @returns {String} 
+ * @returns {String} Número de confirmación
  */
 function generarNumeroConfirmacion() {
-    
     const aleatorio = Math.floor(10000000 + Math.random() * 90000000);
     return `RES-${aleatorio}`;
 }
 
 /**
  * Función para finalizar el proceso después de la reserva exitosa
- * 
  */
 function finalizarProceso() {
     // Reseteo todas las variables
@@ -539,8 +627,8 @@ function finalizarProceso() {
         behavior: 'smooth'
     });
     
-    // Recargo la información de mesas para actualizar disponibilidad
-    verificarAutenticacion();
+    // Actualizo la disponibilidad de mesas
+    actualizarDisponibilidadMesas();
 }
 
 /**
@@ -584,6 +672,5 @@ function actualizarDisponibilidadMesas() {
     });
 }
 
-
-setInterval(actualizarDisponibilidadMesas, 5 * 60 * 1000);
-    
+// Actualizar disponibilidad cada 30 segundos
+setInterval(actualizarDisponibilidadMesas, 30000);

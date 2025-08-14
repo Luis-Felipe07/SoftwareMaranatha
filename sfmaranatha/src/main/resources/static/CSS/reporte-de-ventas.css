@@ -1,80 +1,283 @@
+
+:root {
+    --primary-red: #d62828;
+    --secondary-red: #b71c1c;
+    --primary-yellow: #ffc107;
+    --dark-gray: #343a40;
+    --light-gray: #f8f9fa;
+    --white: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 body {
-    background-color: #ffeaa7; 
-    color: #333;
-    font-family: Arial, sans-serif;
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-  }
-  
-  /* Navbar */
-  .navbar {
-    background-color: #d62828; 
-    color: white;
-  }
-  
-  .navbar-brand {
-    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-red);
+    color: var(--white);
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    color: var(--white) !important;
     font-weight: bold;
     text-transform: uppercase;
-  }
-  
-  .navbar-brand:hover {
-    color: #ffcccc; 
-  }
-  
-  /* Contenedor Principal */
-  .container {
+    font-size: 1.3rem;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-yellow) !important;
+}
+
+/* Contenedor Principal */
+.container {
+    flex: 1;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-  }
-  
-  /* Filtros */
-  .filter-row label {
-    font-weight: bold;
-  }
-  
-  #actualizarReporte {
-    background-color: #d62828;
+}
+
+/* Cards */
+.card {
     border: none;
-  }
-  
-  #actualizarReporte:hover {
-    background-color: #b22222;
-  }
-  
-  /* Gráficos */
-  canvas {
-    max-height: 300px;
-    margin: 20px auto;
-    display: block;
-  }
-  
-  /* Botones para descargar reportes */
-  button {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: var(--light-gray);
+    border-bottom: 2px solid var(--primary-red);
+    font-weight: 600;
+}
+
+.card-title {
+    color: var(--primary-red);
+    font-weight: 600;
+}
+
+/* Cards de resumen */
+.card.text-center {
+    overflow: hidden;
+    position: relative;
+}
+
+.card.text-center .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.card.text-center i {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0.2;
+}
+
+.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+.bg-success {
+    background-color: #198754 !important;
+}
+
+.bg-info {
+    background-color: #0dcaf0 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: var(--dark-gray) !important;
+}
+
+/* Filtros */
+.filter-row label {
+    font-weight: bold;
+    color: var(--dark-gray);
+}
+
+#actualizarReporte {
+    background-color: var(--primary-red);
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#actualizarReporte:hover {
+    background-color: var(--secondary-red);
+    transform: translateY(-2px);
+}
+
+/* Botones de filtro rápido */
+.btn-outline-secondary {
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: var(--white);
+}
+
+/* Gráficos */
+canvas {
+    max-height: 400px;
+}
+
+/* Tabla de platillos */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: var(--light-gray);
+    color: var(--primary-red);
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-red);
+}
+
+.progress {
+    height: 20px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Botones para descargar reportes */
+#descargarExcel, #descargarPDF {
     margin: 10px;
-    padding: 10px 20px;
+    padding: 12px 30px;
     font-size: 16px;
     border-radius: 5px;
-  }
-  
-  #descargarExcel {
-    background-color: #28a745;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#descargarExcel {
+    background-color: #198754;
     border: none;
-    color: white;
-  }
-  
-  #descargarExcel:hover {
-    background-color: #218838;
-  }
-  
-  #descargarPDF {
-    background-color: #dc3545; 
+    color: var(--white);
+}
+
+#descargarExcel:hover {
+    background-color: #157347;
+    transform: translateY(-2px);
+}
+
+#descargarPDF {
+    background-color: #dc3545;
     border: none;
-    color: white;
-  }
-  
-  #descargarPDF:hover {
-    background-color: #c82333;
-  }
-  
+    color: var(--white);
+}
+
+#descargarPDF:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-2px);
+}
+
+/* Spinner de carga */
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-gray);
+    color: var(--white);
+    margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    #descargarExcel, #descargarPDF {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilo para números grandes */
+h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+/* Ajustes para botones del navbar */
+.btn-light {
+    background-color: var(--white);
+    color: var(--primary-red);
+    border: none;
+    font-weight: 500;
+}
+
+.btn-light:hover {
+    background-color: var(--primary-yellow);
+    color: var(--dark-gray);
+}

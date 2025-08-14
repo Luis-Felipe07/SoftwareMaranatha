@@ -3,54 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Reservas</title>
-    <!-- Bootstrap  CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Gestión de Reservas y Pedidos - Restaurante Maranatha</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS personalizado -->
     <link rel="stylesheet" href="CSS/gestion-reservas.css">
 </head>
 <body class="bg-white">
 
 <div class="container mt-4">
-    <h1 class="text-center text-warning">Gestión de Reservas</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-center text-warning">Gestión de Reservas y Pedidos</h1>
+        <div>
+            <button class="btn btn-secondary" onclick="irAPanelAdmin()">
+                <i class="bi bi-house-door"></i> Panel Admin
+            </button>
+            <button class="btn btn-danger" onclick="cerrarSesion()">
+                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
 
-    <!-- Tabs para los pedidos -->
-    <ul class="nav nav-tabs bg-danger p-2 rounded" id="pedidoTabs">
+    <!-- Tabs para pedidos y reservas -->
+    <ul class="nav nav-tabs bg-danger p-2 rounded" id="gestionTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active text-white bg-warning fw-bold" data-bs-toggle="tab" href="#pendientes">Pendientes</a>
+            <a class="nav-link active text-white bg-warning fw-bold" id="pendientes-tab" data-toggle="tab" href="#pendientes" role="tab">
+                Pedidos Pendientes <span class="badge badge-light" id="countPendientes">0</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white bg-danger fw-bold" data-bs-toggle="tab" href="#entregados">Entregados</a>
+            <a class="nav-link text-white bg-danger fw-bold" id="entregados-tab" data-toggle="tab" href="#entregados" role="tab">
+                Pedidos Entregados <span class="badge badge-light" id="countEntregados">0</span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white bg-dark fw-bold" data-bs-toggle="tab" href="#cancelados">Cancelados</a>
+            <a class="nav-link text-white bg-dark fw-bold" id="cancelados-tab" data-toggle="tab" href="#cancelados" role="tab">
+                Pedidos Cancelados <span class="badge badge-light" id="countCancelados">0</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white bg-success fw-bold" id="reservas-tab" data-toggle="tab" href="#reservas" role="tab">
+                Reservas <span class="badge badge-light" id="countReservas">0</span>
+            </a>
         </li>
     </ul>
 
-    <div class="tab-content p-3">
-        <div class="tab-pane fade show active" id="pendientes">
-            <ul id="listaPendientes" class="list-group mt-3"></ul>
+    <div class="tab-content p-3" id="gestionTabContent">
+        <div class="tab-pane fade show active" id="pendientes" role="tabpanel">
+            <div id="listaPendientes" class="pedidos-container"></div>
         </div>
-        <div class="tab-pane fade" id="entregados">
-            <ul id="listaEntregados" class="list-group mt-3"></ul>
+        <div class="tab-pane fade" id="entregados" role="tabpanel">
+            <div id="listaEntregados" class="pedidos-container"></div>
         </div>
-        <div class="tab-pane fade" id="cancelados">
-            <ul id="listaCancelados" class="list-group mt-3"></ul>
+        <div class="tab-pane fade" id="cancelados" role="tabpanel">
+            <div id="listaCancelados" class="pedidos-container"></div>
+        </div>
+        <div class="tab-pane fade" id="reservas" role="tabpanel">
+            <div id="listaReservas" class="pedidos-container"></div>
         </div>
     </div>
 
     <!-- Habilitación de Mesas -->
-    <h3 class="mt-4 text-warning">Habilitar Mesas</h3>
-    <select id="listaMesas" class="form-control bg-light border-warning"></select>
-    <button id="habilitarMesa" class="btn btn-warning mt-2 fw-bold">Habilitar</button>
-
-    <!-- Subida de Menú -->
-    <h3 class="mt-4 text-danger">Subir Nuevo Menú</h3>
-    <input type="file" id="subirImagen" class="form-control border-danger mt-2">
+    <div class="card mt-4">
+        <div class="card-header bg-warning">
+            <h3 class="mb-0"><i class="bi bi-table"></i> Habilitar Mesas</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <select id="listaMesas" class="form-control bg-light border-warning">
+                        <option value="">Seleccione una mesa para habilitar...</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button id="habilitarMesa" class="btn btn-warning btn-block fw-bold">
+                        <i class="bi bi-check-circle"></i> Habilitar Mesa
+                    </button>
+                </div>
+            </div>
+            <div id="mensajeMesa" class="mt-2"></div>
+        </div>
+    </div>
 </div>
 
-<!-- Bootstrap  JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/JS/gestion-reserva.js"></script>
+<!-- Modal para detalles del pedido -->
+<div class="modal fade" id="modalDetallePedido" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle del Pedido</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="contenidoDetallePedido">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="JS/gestion-reserva.js"></script>
 </body>
 </html>

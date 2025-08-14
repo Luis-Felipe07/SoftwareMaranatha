@@ -1,31 +1,113 @@
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    let carrito = [];
-    let total = 0;
-    let usuarioLogueado = null; 
+// Variables globales para el carrito y usuario
+let carrito = [];
+let total = 0;
+let usuarioLogueado = null;
 
+// Variables globales 
+let carritoVacioMensaje, carritoItemsContenedor, carritoTotalMonto;
+let irAPagoBtn, formularioPedidoContenedorGlobal, cancelarPedidoBtn;
+let mobileCartBtn, mobileCartCount, opcionPedidoModal, contenedorMenus;
+let pedidoFormDomicilio, pedidoFormRestaurante;
+
+// Función global para agregar platos al carrito (accesible desde onclick)
+function agregarAlCarrito(platoId, nombrePlato, precio) {
+    const quantity = 1; // Por defecto agregamos 1
     
-    const carritoVacioMensaje = document.querySelector('.empty-cart-message');
-    const carritoItemsContenedor = document.getElementById('cart-items');
-    const carritoTotalMonto = document.getElementById('cart-total-amount');
-    const irAPagoBtn = document.getElementById('ir-A-pago');
-    const formularioPedidoContenedorGlobal = document.getElementById('formularioPedidoContainer');
-    const cancelarPedidoBtn = document.getElementById('cancelarPedido');
-    const mobileCartBtn = document.getElementById('mobile-cart-btn');
-    const mobileCartCount = document.getElementById('mobile-cart-count');
-    const opcionPedidoModal = new bootstrap.Modal(document.getElementById('opcionModal'));
-    const contenedorPlatosDinamicos = document.getElementById('contenedorPlatosDinamicos');
+    if (isNaN(platoId) || isNaN(precio)) {
+        alert("Error: El plato tiene datos inválidos (ID o precio).");
+        return;
+    }
     
-    const pedidoFormDomicilio = document.getElementById('pedidoForm'); 
-    const pedidoFormRestaurante = document.getElementById('pedidoForm2'); 
+    const existingItemIndex = carrito.findIndex(item => item.id === platoId);
+    if (existingItemIndex !== -1) {
+        carrito[existingItemIndex].quantity += quantity;
+    } else {
+        carrito.push({ 
+            id: platoId, 
+            name: nombrePlato, 
+            price: precio, 
+            quantity: quantity 
+        });
+    }
+    
+    actualizarVisualizacionCarrito();
+    console.log(`Agregado al carrito: ${nombrePlato} x${quantity}`);
+    
+    // Efecto visual para feedback
+    const button = event.target.closest('.btn-add-to-cart');
+    if (button) {
+        button.classList.add('pulse');
+        setTimeout(() => { button.classList.remove('pulse'); }, 500);
+    }
+}
+
+// Función global para actualizar la visualización del carrito
+function actualizarVisualizacionCarrito() {
+    if (!carritoItemsContenedor || !carritoVacioMensaje || !carritoTotalMonto || !mobileCartCount) {
+        console.log('Elementos del DOM no están inicializados aún');
+        return;
+    }
+    
+    carritoItemsContenedor.innerHTML = '';
+    total = 0;
+    if (carrito.length === 0) {
+        carritoVacioMensaje.style.display = 'flex';
+        mobileCartCount.textContent = '0';
+    } else {
+        carritoVacioMensaje.style.display = 'none';
+        carrito.forEach((item, index) => {
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+            const itemElement = document.createElement('div');
+            itemElement.className = 'cart-item';
+            itemElement.innerHTML = `
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">${item.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}</div>
+                </div>
+                <span class="cart-item-quantity">${item.quantity}x</span>
+                <i class="bi bi-x-circle cart-item-remove" data-index="${index}"></i>`;
+            carritoItemsContenedor.appendChild(itemElement);
+        });
+        mobileCartCount.textContent = carrito.reduce((acc, item) => acc + item.quantity, 0);
+    }
+    carritoTotalMonto.textContent = total.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+    
+    // Asignar eventos a los botones de eliminar
+    document.querySelectorAll('.cart-item-remove').forEach(button => {
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        newButton.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            carrito.splice(index, 1);
+            actualizarVisualizacionCarrito();
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() { 
+    // Inicializar variables del DOM
+    carritoVacioMensaje = document.querySelector('.empty-cart-message');
+    carritoItemsContenedor = document.getElementById('cart-items');
+    carritoTotalMonto = document.getElementById('cart-total-amount');
+    irAPagoBtn = document.getElementById('ir-A-pago');
+    formularioPedidoContenedorGlobal = document.getElementById('formularioPedidoContainer');
+    cancelarPedidoBtn = document.getElementById('cancelarPedido');
+    mobileCartBtn = document.getElementById('mobile-cart-btn');
+    mobileCartCount = document.getElementById('mobile-cart-count');
+    opcionPedidoModal = new bootstrap.Modal(document.getElementById('opcionModal'));
+    contenedorMenus = document.getElementById('contenedorMenus');
+    
+    pedidoFormDomicilio = document.getElementById('pedidoForm'); 
+    pedidoFormRestaurante = document.getElementById('pedidoForm2'); 
 
     /**
-     * Cuando la página carga, verifico la sesión y cargo los platos.
+     * Cuando la página carga, verifico la sesión y cargo todos los menús.
      */
     async function inicializarPagina() {
         await verificarSesionUsuario(); 
-        await cargarYRenderizarPlatos();
+        await cargarYRenderizarTodosLosMenus();
         
         recuperarCarritoTemporal(); 
     }
@@ -71,157 +153,177 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     
-    async function cargarYRenderizarPlatos() {
-        
-
-        const idMenuDelDia = 1; 
-        if (!contenedorPlatosDinamicos) {
-            console.error("El contenedor de platos dinámicos no se encontró en el DOM.");
+    /**
+     * Cargo todos los menús disponibles y sus platos correspondientes
+     */
+    async function cargarYRenderizarTodosLosMenus() {
+        if (!contenedorMenus) {
+            console.error("El contenedor de menús no se encontró en el DOM.");
             return;
         }
-        contenedorPlatosDinamicos.innerHTML = '<div class="col-12 text-center"><p>Cargando platillos deliciosos...</p></div>';
+
+        contenedorMenus.innerHTML = '<div class="col-12 text-center"><p>Cargando menús deliciosos...</p></div>';
 
         try {
-            const response = await fetch(`/api/platos/menu/${idMenuDelDia}`);
-            if (!response.ok) {
-                let errorMsg = `Error ${response.status} al cargar los platos.`;
-                try { const errorData = await response.json(); errorMsg = errorData.message || errorData.error || errorMsg; } catch (e) {}
-                throw new Error(errorMsg);
+            // Primero obtengo todos los menús disponibles
+            const menusResponse = await fetch('/api/menus');
+            if (!menusResponse.ok) {
+                throw new Error(`Error ${menusResponse.status} al cargar los menús.`);
             }
-            const platos = await response.json();
-            renderizarPlatosEnHTML(platos);
+            const menus = await menusResponse.json();
+            
+            console.log('Menús cargados:', menus);
+
+            // Limpiar el contenedor
+            contenedorMenus.innerHTML = '';
+
+            // Para cada menú, crear una sección y cargar sus platos
+            for (const menu of menus) {
+                await crearSeccionMenu(menu);
+            }
+
         } catch (error) {
-            console.error("¡Rayos! No pude cargar los platos:", error);
-            if (contenedorPlatosDinamicos) {
-                 contenedorPlatosDinamicos.innerHTML = `<p class="text-danger text-center">No pudimos cargar los platos. Detalle: ${error.message}. Intenta recargar la página.</p>`;
-            }
+            console.error("¡Rayos! No pude cargar los menús:", error);
+            contenedorMenus.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <p>Ups! No pudimos cargar los menús en este momento.</p>
+                        <p><small>${error.message}</small></p>
+                        <button class="btn btn-outline-danger" onclick="cargarYRenderizarTodosLosMenus()">
+                            <i class="bi bi-arrow-clockwise"></i> Reintentar
+                        </button>
+                    </div>
+                </div>
+            `;
         }
     }
-    function renderizarPlatosEnHTML(platos) {
-        
-        if (!contenedorPlatosDinamicos) return;
-        contenedorPlatosDinamicos.innerHTML = ''; 
 
+    /**
+     * Crear una sección completa para un menú específico
+     */
+    async function crearSeccionMenu(menu) {
+        try {
+            // Obtener los platos del menú
+            const platosResponse = await fetch(`/api/platos/menu/${menu.idMenu}`);
+            if (!platosResponse.ok) {
+                throw new Error(`Error ${platosResponse.status} al cargar platos del menú ${menu.nombreMenu}.`);
+            }
+            const platos = await platosResponse.json();
+
+            // Solo mostrar el menú si tiene platos
+            if (platos && platos.length > 0) {
+                // Crear el HTML de la sección del menú
+                const seccionHTML = `
+                    <div class="menu-section mb-5">
+                        <h2 class="section-title text-center">${menu.nombreMenu.toUpperCase()}</h2>
+                        <p class="section-subtitle text-center">Seleccione sus platos favoritos</p>
+                        <div class="row mt-4" id="contenedor-menu-${menu.idMenu}">
+                        </div>
+                    </div>
+                `;
+
+                // Agregar la sección al contenedor principal
+                contenedorMenus.insertAdjacentHTML('beforeend', seccionHTML);
+
+                // Renderizar los platos en esta sección específica
+                const contenedorEspecifico = document.getElementById(`contenedor-menu-${menu.idMenu}`);
+                renderizarPlatosEnSeccion(platos, contenedorEspecifico);
+            } else {
+                console.log(`El menú "${menu.nombreMenu}" no tiene platos, se omite.`);
+            }
+
+        } catch (error) {
+            console.error(`Error cargando el menú "${menu.nombreMenu}":`, error);
+            
+            // Mostrar error para este menú específico
+            const errorHTML = `
+                <div class="menu-section mb-3">
+                    <h2 class="section-title text-center">${menu.nombreMenu.toUpperCase()}</h2>
+                    <div class="alert alert-warning text-center">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <p>No pudimos cargar los platos de este menú.</p>
+                    </div>
+                </div>
+            `;
+            contenedorMenus.insertAdjacentHTML('beforeend', errorHTML);
+        }
+    }
+    /**
+     * Nueva función para renderizar platos en una sección específica
+     */
+    function renderizarPlatosEnSeccion(platos, contenedor) {
+        if (!contenedor) return;
+        contenedor.innerHTML = '';
+        
         if (!platos || platos.length === 0) {
-            contenedorPlatosDinamicos.innerHTML = '<p class="text-center">No hay platos disponibles en este momento.</p>';
+            contenedor.innerHTML = '<div class="col-12 text-center"><p>No hay platos disponibles en este menú.</p></div>';
             return;
         }
+
         platos.forEach(plato => {
-            const precioFormateado = `$${parseFloat(plato.precio).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-            const imagenPorDefecto = 'IMG/default-placeholder.jpg';
-            const platoHtml = `
-                <div class="col-md-4 mb-4">
-                    <div class="menu-card">
-                        <div class="menu-card-image">
-                            <img src="${plato.imagenUrl || imagenPorDefecto}" alt="${plato.nombrePlato}" onerror="this.onerror=null;this.src='${imagenPorDefecto}';">
-                            <div class="menu-card-overlay"><div class="menu-card-price">${precioFormateado}</div></div>
-                            ${plato.nombrePlato === 'Bandeja Paisa' ? '<div class="menu-card-badge">Promoción: 3x4</div>' : ''}
-                        </div>
-                        <div class="menu-card-body">
-                            <h3 class="menu-card-title">${plato.nombrePlato}</h3>
-                            <p class="menu-card-desc">${plato.descripcion || 'Un platillo delicioso de nuestro menú.'}</p>
-                            <div class="menu-card-actions">
-                                <div class="quantity-selector">
-                                    <button class="quantity-btn decrement">-</button>
-                                    <input type="number" min="1" value="1" class="quantity-input">
-                                    <button class="quantity-btn increment">+</button>
-                                </div>
-                                <button class="btn btn-add add-to-cart" data-id="${plato.idPlato}" data-name="${plato.nombrePlato}" data-price="${plato.precio}">
-                                    <i class="bi bi-cart-plus"></i> Añadir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-            contenedorPlatosDinamicos.insertAdjacentHTML('beforeend', platoHtml);
-        });
-        asignarEventosControlesCantidad();
-        asignarEventosAddToCart();
-    }
-    function asignarEventosControlesCantidad() {
-        
-         document.querySelectorAll('#contenedorPlatosDinamicos .increment').forEach(button => {
-            const newButton = button.cloneNode(true); 
-            button.parentNode.replaceChild(newButton, button);
-            newButton.addEventListener('click', function() {
-                const input = this.closest('.quantity-selector').querySelector('.quantity-input');
-                input.value = parseInt(input.value) + 1;
-            });
-        });
-        document.querySelectorAll('#contenedorPlatosDinamicos .decrement').forEach(button => {
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            newButton.addEventListener('click', function() {
-                const input = this.closest('.quantity-selector').querySelector('.quantity-input');
-                if (parseInt(input.value) > 1) {
-                    input.value = parseInt(input.value) - 1;
-                }
-            });
+            const platoHTML = crearHTMLPlato(plato);
+            contenedor.insertAdjacentHTML('beforeend', platoHTML);
         });
     }
-    function asignarEventosAddToCart() {
-        
-        document.querySelectorAll('#contenedorPlatosDinamicos .add-to-cart').forEach(button => {
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            newButton.addEventListener('click', function() {
-                const card = this.closest('.menu-card');
-                const platoId = parseInt(this.getAttribute('data-id'));
-                const name = this.getAttribute('data-name');
-                const price = parseFloat(this.getAttribute('data-price')); 
-                const quantity = parseInt(card.querySelector('.quantity-input').value);
-                if (isNaN(platoId) || isNaN(price)) {
-                     alert("Error: El plato tiene datos inválidos (ID o precio).");
-                     return;
-                }
-                const existingItemIndex = carrito.findIndex(item => item.id === platoId);
-                if (existingItemIndex !== -1) {
-                    carrito[existingItemIndex].quantity += quantity;
-                } else {
-                    carrito.push({ id: platoId, name: name, price: price, quantity: quantity });
-                }
-                actualizarVisualizacionCarrito();
-                this.classList.add('pulse');
-                setTimeout(() => { this.classList.remove('pulse'); }, 500);
-            });
-        });
-    }
-    function actualizarVisualizacionCarrito() {
-        
-        carritoItemsContenedor.innerHTML = '';
-        total = 0;
-        if (carrito.length === 0) {
-            carritoVacioMensaje.style.display = 'flex';
-            mobileCartCount.textContent = '0';
-        } else {
-            carritoVacioMensaje.style.display = 'none';
-            carrito.forEach((item, index) => {
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
-                itemElement.innerHTML = `
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">${item.price.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}</div>
-                    </div>
-                    <span class="cart-item-quantity">${item.quantity}x</span>
-                    <i class="bi bi-x-circle cart-item-remove" data-index="${index}"></i>`;
-                carritoItemsContenedor.appendChild(itemElement);
-            });
-            mobileCartCount.textContent = carrito.reduce((acc, item) => acc + item.quantity, 0);
+
+    /**
+     * Función para mantener compatibilidad (usando la nueva función)
+     */
+    function renderizarPlatosEnHTML(platos) {
+        // Esta función se mantiene para compatibilidad, pero ya no se usa
+        const contenedorPrincipal = document.getElementById('contenedor-menu-1') || contenedorMenus;
+        if (contenedorPrincipal) {
+            renderizarPlatosEnSeccion(platos, contenedorPrincipal);
         }
-        carritoTotalMonto.textContent = total.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
-        document.querySelectorAll('.cart-item-remove').forEach(button => {
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            newButton.addEventListener('click', function() {
-                const index = parseInt(this.getAttribute('data-index'));
-                carrito.splice(index, 1);
-                actualizarVisualizacionCarrito();
-            });
-        });
     }
+
+    /**
+     * Crear el HTML de un plato individual
+     */
+    function crearHTMLPlato(plato) {
+        const precioFormateado = plato.precio ? parseFloat(plato.precio).toLocaleString('es-CO') : '0';
+        const imagenSrc = plato.imagenUrl && plato.imagenUrl.trim() !== '' 
+            ? plato.imagenUrl 
+            : '/IMG/placeholder-dish.jpg';
+
+        return `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="dish-card">
+                    <div class="dish-image-container">
+                        <img src="${imagenSrc}" 
+                             alt="${plato.nombrePlato || 'Plato'}" 
+                             class="dish-image"
+                             onerror="this.src='/IMG/placeholder-dish.jpg'">
+                    </div>
+                    <div class="dish-info">
+                        <h3 class="dish-name">${plato.nombrePlato || 'Sin nombre'}</h3>
+                        <p class="dish-description">${plato.descripcion || 'Delicioso plato preparado con los mejores ingredientes.'}</p>
+                        <div class="dish-footer">
+                            <span class="dish-price">$${precioFormateado}</span>
+                            <button class="btn-add-to-cart" 
+                                    onclick="agregarAlCarrito(${plato.idPlato}, '${(plato.nombrePlato || '').replace(/'/g, "\\'")}', ${plato.precio || 0})">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // La función agregarAlCarrito ahora es global (definida fuera del DOMContentLoaded)
+
+    // Función simplificada para compatibilidad - ya no se usa con múltiples menús
+    function asignarEventosControlesCantidad() {
+        // Esta función se mantiene vacía para evitar errores
+        console.log('asignarEventosControlesCantidad() llamada pero no es necesaria con la nueva implementación');
+    }
+    // Función simplificada - ya no es necesaria con la nueva implementación
+    function asignarEventosAddToCart() {
+        console.log('asignarEventosAddToCart() llamada pero ya no es necesaria - usando onclick directo');
+    }
+    // La función actualizarVisualizacionCarrito ahora es global
     
 
 
@@ -239,11 +341,13 @@ document.addEventListener('DOMContentLoaded', function() {
         await verificarSesionUsuario(); 
 
         if (!usuarioLogueado) {
-            alert("Para hacer un pedido, primero debes iniciar sesión o crear una cuenta.");
-            // Guardo el carrito actual en sessionStorage para recuperarlo después del login
-            sessionStorage.setItem('carritoTemporal', JSON.stringify(carrito));
-            // Lo redirijo al login, y le digo que vuelva aquí.
-            window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+            // Mostrar un modal más elegante en lugar de un alert
+            if (confirm("Para realizar un pedido necesitas iniciar sesión o crear una cuenta.\n\n¿Deseas ir a la página de inicio de sesión ahora?")) {
+                // Guardo el carrito actual en sessionStorage para recuperarlo después del login
+                sessionStorage.setItem('carritoTemporal', JSON.stringify(carrito));
+                // Lo redirijo al login, y le digo que vuelva aquí.
+                window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+            }
             return; 
         }
 

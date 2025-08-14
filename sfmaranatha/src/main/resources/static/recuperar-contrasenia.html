@@ -3,71 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recuperar o Cambiar Datos</title>
+  <title>Recuperar Contraseña - Restaurante Maranatha</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="CSS/recuperar-contraseña.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card text-white custom-bg">
-          <div class="card-header text-center">
-            <h2 class="text-uppercase">Recuperar Contraseña y Correo</h2>
+ <body class="d-flex flex-column h-100">
+
+  <header class="py-3 shadow-lg text-white header-gradient">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-3 col-md-4 text-center text-md-start">
+          <div class="d-inline-flex align-items-center">
+            <div class="logo-text">
+              <span class="logo-r">R</span>
+              <span class="logo-m">M</span>
+            </div>
           </div>
-          <div class="card-body">
-            <form id="formRecuperar">
-              <!-- Nombre Completo -->
-              <div class="form-group mt-3">
-                <label for="nombre" class="text-black">Nombre con el que se registro en el sistema</label>
-                <input type="text" id="nombre" class="form-control" placeholder="Nombre con el que se registro en el sistema" required>
+        </div>
+        <div class="col-lg-6 col-md-4 text-center">
+          <h1 class="h3 fw-bold text-uppercase text-warning m-0">Restaurante Maranatha</h1>
+        </div>
+        <div class="col-lg-3 col-md-4 text-center text-md-end mt-3 mt-md-0">
+          <a href="/login.html" class="btn btn-outline-warning rounded-pill d-inline-flex align-items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Volver al Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-auto py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 col-xl-5">
+        
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden animate__animated animate__fadeInUp">
+          
+          <div class="card-header p-4 text-center text-white border-0 header-gradient">
+            <i class="fas fa-key recovery-icon fa-3x text-warning mb-3"></i>
+            <h2 class="h3 fw-bold mb-1">Recuperar Contraseña</h2>
+            <p class="mb-0 opacity-75">Restablece tu acceso de forma segura</p>
+          </div>
+
+          <div class="card-body p-4 p-md-5">
+            <div class="alert alert-info-custom d-flex gap-3 mb-4">
+              <i class="fas fa-info-circle fa-lg mt-1"></i>
+              <div>
+                <strong class="d-block">¿Olvidaste tu contraseña?</strong>
+                Ingresa tu identificación y la nueva información para recuperar tu acceso.
+              </div>
+            </div>
+
+            <form id="formRecuperar" novalidate>
+              <div class="mb-3">
+                <label for="numeroDocumento" class="form-label fw-semibold">
+                    <i class="fas fa-id-card text-warning"></i> Número de Identificación
+                </label>
+                <input type="text" id="numeroDocumento" class="form-control form-control-lg" placeholder="Tu número de cédula" required pattern="[0-9]+" title="Solo se permiten números">
               </div>
 
-              <!-- Nuevo Correo -->
-              <div class="form-group mt-3">
-                <label for="nuevoCorreo" class="text-black">Nuevo Correo</label>
-                <input type="email" id="nuevoCorreo" class="form-control" placeholder="Escriba su nuevo correo" required>
+              <div class="mb-3">
+                <label for="nuevoCorreo" class="form-label fw-semibold">
+                    <i class="fas fa-envelope text-warning"></i> Nuevo Correo Electrónico
+                </label>
+                <input type="email" id="nuevoCorreo" class="form-control form-control-lg" placeholder="ejemplo@correo.com" required>
               </div>
 
-              <!-- Nueva Contraseña -->
-              <div class="form-group mt-3">
-                <label for="nuevaContraseña" class="text-black">Nueva Contraseña</label>
+              <div class="mb-3">
+                <label for="nuevaContraseña" class="form-label fw-semibold">
+                    <i class="fas fa-lock text-warning"></i> Nueva Contraseña
+                </label>
                 <div class="input-group">
-                  <input type="password" id="nuevaContraseña" class="form-control" required>
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="mostrarNuevaContraseña">
-                      <i class="fas fa-eye"></i>
-                    </button>
+                  <input type="password" id="nuevaContraseña" class="form-control form-control-lg" placeholder="Mínimo 8 caracteres" required minlength="8">
+                  <button class="btn btn-outline-secondary" type="button" id="mostrarNuevaContraseña">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <div class="password-strength-indicator mt-2">
+                  <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
                   </div>
+                  <small id="strengthText" class="strength-text text-muted">Fortaleza de la contraseña</small>
                 </div>
               </div>
 
-              <!-- Confirmar Contraseña -->
-              <div class="form-group mt-3">
-                <label for="confirmarNuevaContraseña" class="text-black">Confirmar Contraseña</label>
+              <div class="mb-4">
+                <label for="confirmarNuevaContraseña" class="form-label fw-semibold">
+                    <i class="fas fa-lock text-warning"></i> Confirmar Contraseña
+                </label>
                 <div class="input-group">
-                  <input type="password" id="confirmarNuevaContraseña" class="form-control" required>
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="mostrarConfirmarNuevaContraseña">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </div>
+                  <input type="password" id="confirmarNuevaContraseña" class="form-control form-control-lg" placeholder="Repite la contraseña" required minlength="8">
+                  <button class="btn btn-outline-secondary" type="button" id="mostrarConfirmarNuevaContraseña">
+                    <i class="fas fa-eye"></i>
+                  </button>
                 </div>
+                <div id="passwordMatch" class="mt-2"></div>
               </div>
 
-              <!-- Botón de Guardar -->
-              <div class="text-center mt-4">
-                <button type="submit" class=" guardar btn btn-primary w-100">Guardar Cambios</button>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-warning btn-lg fw-bold text-dark" id="btnRecuperar">
+                  <span class="btn-text"><i class="fas fa-key me-2"></i>Actualizar Contraseña</span>
+                  <div class="btn-loading d-none">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Procesando...
+                  </div>
+                </button>
               </div>
 
               <div id="mensajeRecuperar" class="mt-3"></div>
             </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+              <p class="mb-2">¿Recordaste tu contraseña? <a href="/login.html" class="fw-bold text-decoration-none link-rojo">Iniciar Sesión</a></p>
+              <p class="mb-0">¿No tienes una cuenta? <a href="/registro-cliente.html" class="fw-bold text-decoration-none link-rojo">Crear Cuenta</a></p>
+            </div>
+            
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+
+  <footer class="py-4 text-white-50 footer-gradient">
+    <div class="container text-center">
+      <p class="mb-2">© 2025 Restaurante Maranatha. Todos los derechos reservados.</p>
+      <div>
+        <a href="/redes.html" class="text-warning text-decoration-none mx-2">Contacto</a> |
+        <a href="/primera-pagina.html" class="text-warning text-decoration-none mx-2">Inicio</a> |
+        <a href="/redes.html" class="text-warning text-decoration-none mx-2">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="JS/recuperar-contrasenia.js"></script>
 </body>
 </html>

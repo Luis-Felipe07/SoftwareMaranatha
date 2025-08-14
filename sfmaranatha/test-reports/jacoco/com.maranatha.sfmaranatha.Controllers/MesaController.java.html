@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MesaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Controllers</a> &gt; <span class="el_source">MesaController.java</span></div><h1>MesaController.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.maranatha.sfmaranatha.Model.Mesa;
+import com.maranatha.sfmaranatha.Repository.MesaRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.HashMap;
+
+@RestController
+@RequestMapping(&quot;/api/mesas&quot;)
+@Tag(name = &quot;Mesas&quot;, description = &quot;Gestiono las mesas del restaurante&quot;)
+@CrossOrigin(origins = &quot;*&quot;)
+<span class="nc" id="L20">public class MesaController {</span>
+
+    @Autowired
+    private MesaRepository mesaRepository;
+
+    /**
+     * Obtener todas las mesas
+     */
+    @GetMapping
+    @Operation(summary = &quot;Obtener todas las mesas&quot;,
+               description = &quot;Devuelvo todas las mesas del restaurante&quot;)
+    public ResponseEntity&lt;List&lt;Mesa&gt;&gt; obtenerTodasLasMesas() {
+<span class="nc" id="L32">        return ResponseEntity.ok(mesaRepository.findAll());</span>
+    }
+
+    /**
+     * Obtener mesas disponibles para deshabilitar
+     */
+    @GetMapping(&quot;/disponibles&quot;)
+    @Operation(summary = &quot;Obtener mesas disponibles&quot;,
+               description = &quot;Devuelvo las mesas que están disponibles y se pueden deshabilitar&quot;)
+    public ResponseEntity&lt;List&lt;Mesa&gt;&gt; obtenerMesasDisponibles() {
+<span class="nc" id="L42">        List&lt;Mesa&gt; mesasDisponibles = mesaRepository.findByEstado(&quot;Disponible&quot;);</span>
+<span class="nc" id="L43">        return ResponseEntity.ok(mesasDisponibles);</span>
+    }
+
+    /**
+     * Verificar disponibilidad de todas las mesas
+     */
+    @GetMapping(&quot;/disponibilidad&quot;)
+    @Operation(summary = &quot;Obtener disponibilidad de mesas&quot;,
+               description = &quot;Devuelvo el estado de disponibilidad de todas las mesas&quot;)
+    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; obtenerDisponibilidadMesas() {
+<span class="nc" id="L53">        List&lt;Mesa&gt; mesas = mesaRepository.findAll();</span>
+<span class="nc" id="L54">        List&lt;Map&lt;String, Object&gt;&gt; disponibilidad = mesas.stream().map(mesa -&gt; {</span>
+<span class="nc" id="L55">            Map&lt;String, Object&gt; mesaInfo = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L56">            mesaInfo.put(&quot;numero&quot;, mesa.getNumero());</span>
+<span class="nc" id="L57">            mesaInfo.put(&quot;disponible&quot;, mesa.getEstado().equals(&quot;Disponible&quot;));</span>
+<span class="nc" id="L58">            mesaInfo.put(&quot;estado&quot;, mesa.getEstado());</span>
+<span class="nc" id="L59">            return mesaInfo;</span>
+<span class="nc" id="L60">        }).toList();</span>
+        
+<span class="nc" id="L62">        return ResponseEntity.ok(disponibilidad);</span>
+    }
+
+    /**
+     * Verificar si una mesa específica está disponible
+     */
+    @GetMapping(&quot;/{numeroMesa}/disponible&quot;)
+    @Operation(summary = &quot;Verificar disponibilidad de una mesa específica&quot;,
+               description = &quot;Verifico si una mesa específica está disponible&quot;)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; verificarDisponibilidadMesa(@PathVariable Integer numeroMesa) {
+<span class="nc" id="L72">        Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+        
+        try {
+<span class="nc" id="L75">            Mesa mesa = mesaRepository.findAll().stream()</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                .filter(m -&gt; m.getNumero() == numeroMesa)</span>
+<span class="nc" id="L77">                .findFirst()</span>
+<span class="nc" id="L78">                .orElse(null);</span>
+            
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            if (mesa == null) {</span>
+<span class="nc" id="L81">                response.put(&quot;disponible&quot;, false);</span>
+<span class="nc" id="L82">                response.put(&quot;mensaje&quot;, &quot;Mesa no encontrada&quot;);</span>
+<span class="nc" id="L83">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L86">            boolean disponible = mesa.getEstado().equals(&quot;Disponible&quot;);</span>
+<span class="nc" id="L87">            response.put(&quot;disponible&quot;, disponible);</span>
+<span class="nc" id="L88">            response.put(&quot;estado&quot;, mesa.getEstado());</span>
+<span class="nc" id="L89">            response.put(&quot;numero&quot;, mesa.getNumero());</span>
+            
+<span class="nc" id="L91">            return ResponseEntity.ok(response);</span>
+<span class="nc" id="L92">        } catch (Exception e) {</span>
+<span class="nc" id="L93">            response.put(&quot;disponible&quot;, false);</span>
+<span class="nc" id="L94">            response.put(&quot;error&quot;, e.getMessage());</span>
+<span class="nc" id="L95">            return ResponseEntity.badRequest().body(response);</span>
+        }
+    }
+
+    /**
+     * Obtener mesas que no están disponibles (ocupadas o inactivas)
+     */
+    @GetMapping(&quot;/no-disponibles&quot;)
+    @Operation(summary = &quot;Obtener mesas no disponibles&quot;,
+               description = &quot;Devuelvo las mesas que están ocupadas o inactivas para poder habilitarlas&quot;)
+    public ResponseEntity&lt;List&lt;Mesa&gt;&gt; obtenerMesasNoDisponibles() {
+<span class="nc" id="L106">        List&lt;Mesa&gt; mesas = mesaRepository.findAll();</span>
+<span class="nc" id="L107">        List&lt;Mesa&gt; mesasNoDisponibles = mesas.stream()</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            .filter(mesa -&gt; !mesa.getEstado().equals(&quot;Disponible&quot;))</span>
+<span class="nc" id="L109">            .toList();</span>
+<span class="nc" id="L110">        return ResponseEntity.ok(mesasNoDisponibles);</span>
+    }
+
+    /**
+     * Obtener mesas ocupadas
+     */
+    @GetMapping(&quot;/ocupadas&quot;)
+    @Operation(summary = &quot;Obtener mesas ocupadas&quot;,
+               description = &quot;Devuelvo solo las mesas con estado 'Ocupada'&quot;)
+    public ResponseEntity&lt;List&lt;Mesa&gt;&gt; obtenerMesasOcupadas() {
+<span class="nc" id="L120">        return ResponseEntity.ok(mesaRepository.findByEstado(&quot;Ocupada&quot;));</span>
+    }
+
+    /**
+     * Habilitar una mesa (cambiar su estado a Disponible)
+     */
+    @PutMapping(&quot;/{id}/habilitar&quot;)
+    @Operation(summary = &quot;Habilitar una mesa&quot;,
+               description = &quot;Cambio el estado de una mesa a 'Disponible'&quot;)
+    public ResponseEntity&lt;?&gt; habilitarMesa(@PathVariable Long id) {
+        try {
+<span class="nc" id="L131">            Optional&lt;Mesa&gt; mesaOpt = mesaRepository.findById(id);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">            if (mesaOpt.isEmpty()) {</span>
+<span class="nc" id="L133">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L136">            Mesa mesa = mesaOpt.get();</span>
+<span class="nc" id="L137">            mesa.setEstado(&quot;Disponible&quot;);</span>
+<span class="nc" id="L138">            mesaRepository.save(mesa);</span>
+            
+<span class="nc" id="L140">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L141">                &quot;exito&quot;, true,</span>
+<span class="nc" id="L142">                &quot;mensaje&quot;, &quot;Mesa &quot; + mesa.getNumero() + &quot; habilitada correctamente&quot;,</span>
+                &quot;mesa&quot;, mesa
+            ));
+<span class="nc" id="L145">        } catch (Exception e) {</span>
+<span class="nc" id="L146">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L147">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L148">                &quot;mensaje&quot;, &quot;Error al habilitar la mesa: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+
+    /**
+     * Deshabilitar una mesa (cambiar su estado a Ocupada)
+     */
+    @PutMapping(&quot;/{id}/deshabilitar&quot;)
+    @Operation(summary = &quot;Deshabilitar una mesa&quot;,
+               description = &quot;Cambio el estado de una mesa a 'Ocupada' para uso manual&quot;)
+    public ResponseEntity&lt;?&gt; deshabilitarMesa(@PathVariable Long id) {
+        try {
+<span class="nc" id="L161">            Optional&lt;Mesa&gt; mesaOpt = mesaRepository.findById(id);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (mesaOpt.isEmpty()) {</span>
+<span class="nc" id="L163">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L166">            Mesa mesa = mesaOpt.get();</span>
+            
+<span class="nc bnc" id="L168" title="All 2 branches missed.">            if (!mesa.getEstado().equals(&quot;Disponible&quot;)) {</span>
+<span class="nc" id="L169">                return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L170">                    &quot;exito&quot;, false,</span>
+                    &quot;mensaje&quot;, &quot;La mesa ya está ocupada o no disponible&quot;
+                ));
+            }
+            
+<span class="nc" id="L175">            mesa.setEstado(&quot;Ocupada&quot;);</span>
+<span class="nc" id="L176">            mesaRepository.save(mesa);</span>
+            
+<span class="nc" id="L178">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L179">                &quot;exito&quot;, true,</span>
+<span class="nc" id="L180">                &quot;mensaje&quot;, &quot;Mesa &quot; + mesa.getNumero() + &quot; marcada como ocupada&quot;,</span>
+                &quot;mesa&quot;, mesa
+            ));
+<span class="nc" id="L183">        } catch (Exception e) {</span>
+<span class="nc" id="L184">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L185">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L186">                &quot;mensaje&quot;, &quot;Error al deshabilitar la mesa: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+
+    /**
+     * Ocupar una mesa por número (para reservas)
+     */
+    @PutMapping(&quot;/{numeroMesa}/ocupar&quot;)
+    @Operation(summary = &quot;Ocupar una mesa&quot;,
+               description = &quot;Cambio el estado de una mesa a 'Ocupada'&quot;)
+    public ResponseEntity&lt;?&gt; ocuparMesa(@PathVariable Integer numeroMesa) {
+        try {
+<span class="nc" id="L199">            Mesa mesa = mesaRepository.findAll().stream()</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">                .filter(m -&gt; m.getNumero() == numeroMesa)</span>
+<span class="nc" id="L201">                .findFirst()</span>
+<span class="nc" id="L202">                .orElse(null);</span>
+            
+<span class="nc bnc" id="L204" title="All 2 branches missed.">            if (mesa == null) {</span>
+<span class="nc" id="L205">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc bnc" id="L208" title="All 2 branches missed.">            if (!mesa.getEstado().equals(&quot;Disponible&quot;)) {</span>
+<span class="nc" id="L209">                return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L210">                    &quot;exito&quot;, false,</span>
+                    &quot;mensaje&quot;, &quot;La mesa no está disponible&quot;
+                ));
+            }
+            
+<span class="nc" id="L215">            mesa.setEstado(&quot;Ocupada&quot;);</span>
+<span class="nc" id="L216">            mesaRepository.save(mesa);</span>
+            
+<span class="nc" id="L218">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L219">                &quot;exito&quot;, true,</span>
+<span class="nc" id="L220">                &quot;mensaje&quot;, &quot;Mesa &quot; + mesa.getNumero() + &quot; ocupada correctamente&quot;,</span>
+                &quot;mesa&quot;, mesa
+            ));
+<span class="nc" id="L223">        } catch (Exception e) {</span>
+<span class="nc" id="L224">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L225">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L226">                &quot;mensaje&quot;, &quot;Error al ocupar la mesa: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+
+    /**
+     * Cambiar estado de una mesa
+     */
+    @PutMapping(&quot;/{id}/estado&quot;)
+    @Operation(summary = &quot;Cambiar estado de mesa&quot;,
+               description = &quot;Cambio el estado de una mesa a cualquier estado válido&quot;)
+    public ResponseEntity&lt;?&gt; cambiarEstadoMesa(@PathVariable Long id, @RequestParam String nuevoEstado) {
+        try {
+<span class="nc" id="L239">            Optional&lt;Mesa&gt; mesaOpt = mesaRepository.findById(id);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">            if (mesaOpt.isEmpty()) {</span>
+<span class="nc" id="L241">                return ResponseEntity.notFound().build();</span>
+            }
+            
+<span class="nc" id="L244">            Mesa mesa = mesaOpt.get();</span>
+<span class="nc" id="L245">            mesa.setEstado(nuevoEstado);</span>
+<span class="nc" id="L246">            mesaRepository.save(mesa);</span>
+            
+<span class="nc" id="L248">            return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L249">                &quot;exito&quot;, true,</span>
+<span class="nc" id="L250">                &quot;mensaje&quot;, &quot;Estado de Mesa &quot; + mesa.getNumero() + &quot; actualizado a: &quot; + nuevoEstado,</span>
+                &quot;mesa&quot;, mesa
+            ));
+<span class="nc" id="L253">        } catch (Exception e) {</span>
+<span class="nc" id="L254">            return ResponseEntity.badRequest().body(Map.of(</span>
+<span class="nc" id="L255">                &quot;exito&quot;, false,</span>
+<span class="nc" id="L256">                &quot;mensaje&quot;, &quot;Error al cambiar estado de la mesa: &quot; + e.getMessage()</span>
+            ));
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

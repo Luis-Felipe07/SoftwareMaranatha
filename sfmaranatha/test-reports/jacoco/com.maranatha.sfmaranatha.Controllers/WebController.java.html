@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Controllers</a> &gt; <span class="el_source">WebController.java</span></div><h1>WebController.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+<span class="nc" id="L7">public class WebController {</span>
+    
+    @GetMapping(&quot;/&quot;)
+    public String index() {
+<span class="nc" id="L11">        return &quot;primera-pagina.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/login&quot;)
+    public String login() {
+<span class="nc" id="L16">        return &quot;login.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/admin&quot;)
+    public String admin() {
+<span class="nc" id="L21">        return &quot;admin.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/dashboard-cliente&quot;)
+    public String dashboardCliente() {
+<span class="nc" id="L26">        return &quot;dashboard-cliente.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/mesas&quot;)
+    public String mesas() {
+<span class="nc" id="L31">        return &quot;mesas.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/gestion-de-menus&quot;)
+    public String gestionMenus() {
+<span class="nc" id="L36">        return &quot;gestion-de-menus.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/gestion-de-reservas&quot;)
+    public String gestionReservas() {
+<span class="nc" id="L41">        return &quot;Gestion-de-reservas.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/formulario-de-registro&quot;)
+    public String formularioRegistro() {
+<span class="nc" id="L46">        return &quot;formulario-de-registro.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/registro-cliente&quot;)
+    public String registroCliente() {
+<span class="nc" id="L51">        return &quot;registro-cliente.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/recuperar-contrasenia&quot;)
+    public String recuperarContrasenia() {
+<span class="nc" id="L56">        return &quot;recuperar-contrasenia.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/pantalla-admin&quot;)
+    public String pantallaAdmin() {
+<span class="nc" id="L61">        return &quot;pantalla-admin.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/redes&quot;)
+    public String redes() {
+<span class="nc" id="L66">        return &quot;redes.html&quot;;</span>
+    }
+    
+    @GetMapping(&quot;/reporte-de-ventas&quot;)
+    public String reporteVentas() {
+<span class="nc" id="L71">        return &quot;reporte-de-ventas.html&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

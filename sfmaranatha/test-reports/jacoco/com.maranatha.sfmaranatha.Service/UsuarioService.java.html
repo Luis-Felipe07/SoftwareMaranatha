@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID; 
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; 
+
+import com.maranatha.sfmaranatha.Model.Usuario;
+import com.maranatha.sfmaranatha.Repository.UsuarioRepository;
+import com.maranatha.sfmaranatha.dto.RegistroUsuarioDTO;
+
+@Service
+<span class="fc" id="L17">public class UsuarioService {</span>
+
+    @Autowired
+    private UsuarioRepository miRepositorioDeUsuarios;
+
+    @Autowired
+    private BCryptPasswordEncoder miCodificadorDeContrasenas;
+
+    /**
+     * me encargo de registrar un nuevo usuario .
+     * Valido si el correo o el número de documento ya existen.
+     * Codifico la contraseña y considero si el registro fue directo en el restaurante.
+     */
+    @Transactional
+    public Usuario registrarUsuario(RegistroUsuarioDTO datosDelNuevoUsuario) {
+        
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">        if (datosDelNuevoUsuario.getCorreo() != null &amp;&amp; !datosDelNuevoUsuario.getCorreo().trim().isEmpty() &amp;&amp;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            miRepositorioDeUsuarios.findByCorreo(datosDelNuevoUsuario.getCorreo().trim()).isPresent()) {</span>
+<span class="fc" id="L35">            throw new RuntimeException(&quot;El correo que me diste ('&quot; + datosDelNuevoUsuario.getCorreo() + &quot;') ya está registrado. Intenta con otro.&quot;);</span>
+        }
+        
+<span class="pc bpc" id="L38" title="2 of 4 branches missed.">        if (datosDelNuevoUsuario.getNumeroDocumento() != null &amp;&amp; !datosDelNuevoUsuario.getNumeroDocumento().trim().isEmpty() &amp;&amp;</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">            miRepositorioDeUsuarios.findByNumeroDocumento(datosDelNuevoUsuario.getNumeroDocumento().trim()).isPresent()) {</span>
+<span class="nc" id="L40">            throw new RuntimeException(&quot;El número de documento que me diste ya está registrado.&quot;);</span>
+        }
+
+<span class="fc" id="L43">        Usuario nuevoUsuario = new Usuario();</span>
+<span class="fc" id="L44">        nuevoUsuario.setNombre(datosDelNuevoUsuario.getNombre());</span>
+<span class="fc" id="L45">        nuevoUsuario.setApellido(datosDelNuevoUsuario.getApellido());</span>
+<span class="fc" id="L46">        nuevoUsuario.setTipoDocumento(datosDelNuevoUsuario.getTipoDocumento());</span>
+<span class="fc" id="L47">        nuevoUsuario.setNumeroDocumento(datosDelNuevoUsuario.getNumeroDocumento());</span>
+<span class="fc" id="L48">        nuevoUsuario.setCorreo(datosDelNuevoUsuario.getCorreo());</span>
+<span class="fc" id="L49">        nuevoUsuario.setTelefono(datosDelNuevoUsuario.getTelefono());</span>
+<span class="fc" id="L50">        nuevoUsuario.setDireccion(datosDelNuevoUsuario.getDireccion());</span>
+        
+        // Si me dan una contraseña, la codifico. Si no (como para invitados), se generará una temporal.
+<span class="pc bpc" id="L53" title="2 of 4 branches missed.">        if (datosDelNuevoUsuario.getContrasena() != null &amp;&amp; !datosDelNuevoUsuario.getContrasena().isEmpty()) {</span>
+<span class="fc" id="L54">            nuevoUsuario.setContrasena(miCodificadorDeContrasenas.encode(datosDelNuevoUsuario.getContrasena()));</span>
+        } else {
+            // Genero una contraseña temporal segura 
+<span class="nc" id="L57">            String contrasenaTemporalMuySegura = &quot;InvitadoPass&quot; + System.currentTimeMillis() + UUID.randomUUID().toString();</span>
+<span class="nc" id="L58">            nuevoUsuario.setContrasena(miCodificadorDeContrasenas.encode(contrasenaTemporalMuySegura));</span>
+        }
+        
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        nuevoUsuario.setFueDirecto(datosDelNuevoUsuario.getFueDirecto() != null ? datosDelNuevoUsuario.getFueDirecto() : false);</span>
+<span class="fc" id="L62">        nuevoUsuario.setFechaRegistro(LocalDateTime.now());</span>
+        
+<span class="fc" id="L64">        String tipoUsuarioAAsignar = datosDelNuevoUsuario.getTipoUsuario();</span>
+<span class="pc bpc" id="L65" title="2 of 4 branches missed.">        if (tipoUsuarioAAsignar == null || tipoUsuarioAAsignar.trim().isEmpty()) {</span>
+<span class="nc" id="L66">            tipoUsuarioAAsignar = &quot;CLIENTE&quot;; </span>
+        }
+<span class="fc" id="L68">        nuevoUsuario.setTipoUsuario(tipoUsuarioAAsignar);</span>
+
+<span class="fc" id="L70">        return miRepositorioDeUsuarios.save(nuevoUsuario);</span>
+    }
+
+    /**
+     * creo un usuario &quot;invitado&quot; muy básico para esos pedidos rápidos en el local.
+    
+     * @param nombreOpcional 
+     * @return 
+     */
+    @Transactional
+    public Usuario crearUsuarioInvitadoLocal(String nombreOpcional) {
+<span class="fc" id="L81">        Usuario invitado = new Usuario();</span>
+        
+<span class="pc bpc" id="L83" title="2 of 4 branches missed.">        String nombreBase = (nombreOpcional != null &amp;&amp; !nombreOpcional.trim().isEmpty()) ? nombreOpcional.trim() : &quot;Cliente Local&quot;;</span>
+<span class="fc" id="L84">        long timestamp = System.currentTimeMillis(); // Para generar datos únicos</span>
+
+<span class="fc" id="L86">        invitado.setNombre(nombreBase);</span>
+<span class="fc" id="L87">        invitado.setApellido(&quot;.&quot;); // Pongo un punto como apellido por defecto, ya que es NOT NULL en la BD.</span>
+        
+        
+<span class="fc" id="L90">        invitado.setCorreo(&quot;invitado_&quot; + timestamp + &quot;@restaurantemaranatha.local&quot;); // Uso .local para diferenciar</span>
+<span class="fc" id="L91">        invitado.setNumeroDocumento(&quot;INV-&quot; + timestamp);</span>
+<span class="fc" id="L92">        invitado.setTipoDocumento(&quot;NA&quot;); </span>
+
+<span class="fc" id="L94">        invitado.setTelefono(&quot;&quot;); </span>
+<span class="fc" id="L95">        invitado.setDireccion(&quot;&quot;);</span>
+        
+        // Genero una contraseña muy segura y aleatoria que nadie ni el invitado usará para login.
+<span class="fc" id="L98">        String contrasenaTemporalInvitado = &quot;InvitadoPass_&quot; + UUID.randomUUID().toString() + &quot;_&quot; + timestamp;</span>
+<span class="fc" id="L99">        invitado.setContrasena(miCodificadorDeContrasenas.encode(contrasenaTemporalInvitado)); </span>
+        
+<span class="fc" id="L101">        invitado.setFueDirecto(true); // ¡Importante! Marco que este usuario se creó directamente en el restaurante.</span>
+<span class="fc" id="L102">        invitado.setFechaRegistro(LocalDateTime.now());</span>
+<span class="fc" id="L103">        invitado.setTipoUsuario(&quot;CLIENTE&quot;); // Aunque sea &quot;invitado&quot;, sigue siendo un tipo de cliente para el sistema.</span>
+
+<span class="fc" id="L105">        return miRepositorioDeUsuarios.save(invitado);</span>
+    }
+
+    /**
+     * busco un usuario por su correo electrónico.
+     */
+    public Optional&lt;Usuario&gt; buscarPorCorreo(String correo) {
+<span class="nc" id="L112">        return miRepositorioDeUsuarios.findByCorreo(correo);</span>
+    }
+
+    /**
+     *busco un usuario por su número de documento.
+     */
+    public Optional&lt;Usuario&gt; buscarPorNumeroDocumento(String numeroDocumento) {
+<span class="nc" id="L119">        return miRepositorioDeUsuarios.findByNumeroDocumento(numeroDocumento);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

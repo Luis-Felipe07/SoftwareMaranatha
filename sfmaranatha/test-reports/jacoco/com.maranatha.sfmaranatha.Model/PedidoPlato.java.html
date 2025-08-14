@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PedidoPlato.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Model</a> &gt; <span class="el_source">PedidoPlato.java</span></div><h1>PedidoPlato.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference; 
+import jakarta.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Objects;
+
+/**
+ *  defino la entidad intermedia PedidoPlato
+ * para la relación N-M entre Pedido y Plato.
+ */
+@Entity
+@Table(name = &quot;pedido_plato&quot;)
+public class PedidoPlato {
+
+    @Embeddable
+    public static class PedidoPlatoKey implements Serializable {
+
+        @Column(name = &quot;id_pedido&quot;)
+        private Long pedidoId;
+
+        @Column(name = &quot;id_plato&quot;)
+        private Integer platoId;
+
+<span class="nc" id="L26">        public PedidoPlatoKey() {}</span>
+
+<span class="nc" id="L28">        public PedidoPlatoKey(Long pedidoId, Integer platoId) {</span>
+<span class="nc" id="L29">            this.pedidoId = pedidoId;</span>
+<span class="nc" id="L30">            this.platoId = platoId;</span>
+<span class="nc" id="L31">        }</span>
+
+        public Long getPedidoId() {
+<span class="nc" id="L34">            return pedidoId;</span>
+        }
+
+        public void setPedidoId(Long pedidoId) {
+<span class="nc" id="L38">            this.pedidoId = pedidoId;</span>
+<span class="nc" id="L39">        }</span>
+
+        public Integer getPlatoId() {
+<span class="nc" id="L42">            return platoId;</span>
+        }
+
+        public void setPlatoId(Integer platoId) {
+<span class="nc" id="L46">            this.platoId = platoId;</span>
+<span class="nc" id="L47">        }</span>
+
+        @Override
+        public boolean equals(Object o) {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (this == o) return true;</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            if (!(o instanceof PedidoPlatoKey)) return false;</span>
+<span class="nc" id="L53">            PedidoPlatoKey that = (PedidoPlatoKey) o;</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            return Objects.equals(pedidoId, that.pedidoId) &amp;&amp;</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                   Objects.equals(platoId, that.platoId);</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L60">            return Objects.hash(pedidoId, platoId);</span>
+        }
+    }
+
+    @EmbeddedId
+    private PedidoPlatoKey id;
+
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @MapsId(&quot;pedidoId&quot;) 
+    @JoinColumn(name = &quot;id_pedido&quot;, nullable = false)
+    @JsonBackReference 
+    private Pedido pedido;
+
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @MapsId(&quot;platoId&quot;)  
+    @JoinColumn(name = &quot;id_plato&quot;, nullable = false)
+    private Plato plato;
+
+    @Column(nullable = false)
+    private Integer cantidad;
+
+    @Column(name = &quot;precio_unitario&quot;, nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioUnitario;
+
+<span class="nc" id="L84">    public PedidoPlato() {</span>
+<span class="nc" id="L85">        this.id = new PedidoPlatoKey(); </span>
+<span class="nc" id="L86">    }</span>
+
+    public PedidoPlato(Pedido pedido, Plato plato, Integer cantidad, BigDecimal precioUnitario) {
+<span class="nc" id="L89">        this(); </span>
+<span class="nc" id="L90">        this.pedido = pedido;</span>
+<span class="nc" id="L91">        this.plato = plato;</span>
+<span class="nc" id="L92">        this.cantidad = cantidad;</span>
+<span class="nc" id="L93">        this.precioUnitario = precioUnitario;</span>
+        // JPA poblará los campos de this.id a partir de this.pedido y this.plato debido a @MapsId
+<span class="nc" id="L95">    }</span>
+
+    // Getters y Setters (sin cambios)
+
+    public PedidoPlatoKey getId() {
+<span class="nc" id="L100">        return id;</span>
+    }
+
+    public void setId(PedidoPlatoKey id) {
+<span class="nc" id="L104">        this.id = id;</span>
+<span class="nc" id="L105">    }</span>
+
+    public Pedido getPedido() {
+<span class="nc" id="L108">        return pedido;</span>
+    }
+
+    public void setPedido(Pedido pedido) {
+<span class="nc" id="L112">        this.pedido = pedido;</span>
+<span class="nc" id="L113">    }</span>
+
+    public Plato getPlato() {
+<span class="nc" id="L116">        return plato;</span>
+    }
+
+    public void setPlato(Plato plato) {
+<span class="nc" id="L120">        this.plato = plato;</span>
+<span class="nc" id="L121">    }</span>
+
+    public Integer getCantidad() {
+<span class="nc" id="L124">        return cantidad;</span>
+    }
+
+    public void setCantidad(Integer cantidad) {
+<span class="nc" id="L128">        this.cantidad = cantidad;</span>
+<span class="nc" id="L129">    }</span>
+
+    public BigDecimal getPrecioUnitario() {
+<span class="nc" id="L132">        return precioUnitario;</span>
+    }
+
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
+<span class="nc" id="L136">        this.precioUnitario = precioUnitario;</span>
+<span class="nc" id="L137">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

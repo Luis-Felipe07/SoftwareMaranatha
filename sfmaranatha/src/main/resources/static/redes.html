@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PQR - Restaurante Maranatha</title>
+  <title>Calificaciones y Comentarios - Restaurante Maranatha</title>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
@@ -16,110 +16,287 @@
 </head>
 <body>
   <header class="py-3 shadow">
-    <div class="logo-container">
-      <h1 class="logo-text mb-0">Restaurante Maranatha</h1>
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="logo-container">
+          <h1 class="logo-text mb-0">Restaurante Maranatha</h1>
+        </div>
+        <button class="btn btn-outline-light" onclick="window.location.href='/'">
+          <i class="fas fa-home"></i> Volver al inicio
+        </button>
+      </div>
     </div>
   </header>
 
   <div class="container main-container animate__animated animate__fadeIn">
-    <h2 class="text-center mb-4" style="color: var(--dark-red)">Peticiones, Quejas y Reclamos</h2>
+    <h2 class="text-center mb-4 titulo-principal">Tu opinión es importante para nosotros</h2>
     
-    <div class="row mb-5">
+    <!-- Sección de redes sociales compacta -->
+    <div class="row mb-4">
       <div class="col-md-12">
-        <div class="social-card">
-          <h3 class="text-center mb-4" style="color: var(--dark-red)">Síguenos en redes sociales</h3>
-          <div class="d-flex justify-content-center flex-wrap gap-4">
-            <a href="#" class="social-link" target="_blank">
+        <div class="social-card-compact">
+          <p class="text-center mb-3">Síguenos en nuestras redes sociales</p>
+          <div class="d-flex justify-content-center flex-wrap gap-3">
+            <a href="#" class="social-link-compact" target="_blank">
               <i class="fab fa-facebook"></i>
-              <span>Restaurante Maranatha</span>
             </a>
-            <a href="#" class="social-link" target="_blank">
+            <a href="#" class="social-link-compact" target="_blank">
               <i class="fab fa-instagram"></i>
-              <span>@Restaurante_maranatha</span>
             </a>
-            <a href="mailto:restaurantemaranatha@gmail.com" class="contact-link">
+            <a href="mailto:restaurantemaranatha@gmail.com" class="social-link-compact">
               <i class="fas fa-envelope"></i>
-              <span>restaurantemaranatha@gmail.com</span>
             </a>
-            <a href="https://wa.me/573222222222" class="contact-link" target="_blank">
+            <a href="https://wa.me/573222222222" class="social-link-compact" target="_blank">
               <i class="fab fa-whatsapp"></i>
-              <span>+57 322 222 2222</span>
             </a>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row">
+    <!-- Estadísticas de calificaciones -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="estadisticas-card">
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <div class="promedio-calificacion">
+                <h3 class="calificacion-numero" id="promedioGeneral">4.5</h3>
+                <div class="estrellas-promedio" id="estrellasPromedio">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <p class="total-resenas">Basado en <span id="totalResenas">150</span> reseñas</p>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="distribucion-calificaciones">
+                <div class="barra-calificacion">
+                  <span class="numero-estrellas">5 estrellas</span>
+                  <div class="barra-progreso">
+                    <div class="barra-llena" id="barra5" style="width: 60%"></div>
+                  </div>
+                  <span class="porcentaje" id="porcentaje5">60%</span>
+                </div>
+                <div class="barra-calificacion">
+                  <span class="numero-estrellas">4 estrellas</span>
+                  <div class="barra-progreso">
+                    <div class="barra-llena" id="barra4" style="width: 25%"></div>
+                  </div>
+                  <span class="porcentaje" id="porcentaje4">25%</span>
+                </div>
+                <div class="barra-calificacion">
+                  <span class="numero-estrellas">3 estrellas</span>
+                  <div class="barra-progreso">
+                    <div class="barra-llena" id="barra3" style="width: 10%"></div>
+                  </div>
+                  <span class="porcentaje" id="porcentaje3">10%</span>
+                </div>
+                <div class="barra-calificacion">
+                  <span class="numero-estrellas">2 estrellas</span>
+                  <div class="barra-progreso">
+                    <div class="barra-llena" id="barra2" style="width: 3%"></div>
+                  </div>
+                  <span class="porcentaje" id="porcentaje2">3%</span>
+                </div>
+                <div class="barra-calificacion">
+                  <span class="numero-estrellas">1 estrella</span>
+                  <div class="barra-progreso">
+                    <div class="barra-llena" id="barra1" style="width: 2%"></div>
+                  </div>
+                  <span class="porcentaje" id="porcentaje1">2%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de calificación -->
+    <div class="row" id="seccionFormulario" style="display: none;">
       <div class="col-md-12">
         <div class="pqr-form">
-          <h3 class="form-section-title">Formulario PQR</h3>
-          <form id="pqrForm">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="nombre" placeholder="Nombre completo" required>
-                  <label for="nombre">Nombre completo</label>
+          <h3 class="form-section-title">Comparte tu experiencia</h3>
+          
+          <!-- Información del usuario logueado -->
+          <div class="alert alert-info mb-3">
+            <i class="fas fa-info-circle"></i> 
+            Hola <strong id="nombreUsuarioLogueado">Usuario</strong>, 
+            gracias por compartir tu opinión sobre el pedido #<span id="numeroPedido">--</span>
+          </div>
+          
+          <form id="formCalificacion">
+            <!-- Calificaciones por categoría -->
+            <div class="categorias-calificacion mb-4">
+              <h5 class="mb-3">Califica tu experiencia</h5>
+              
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-utensils"></i> Calidad de la comida
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="comida">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="email" class="form-control" id="email" placeholder="Correo electrónico" required>
-                  <label for="email">Correo electrónico</label>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-concierge-bell"></i> Servicio al cliente
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="servicio">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-broom"></i> Limpieza e higiene
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="limpieza">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-dollar-sign"></i> Relación calidad-precio
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="precio">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-store"></i> Ambiente del lugar
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="ambiente">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="tel" class="form-control" id="telefono" placeholder="Teléfono">
-                  <label for="telefono">Teléfono</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <select class="form-select" id="tipo" required>
-                    <option value="" selected disabled>Seleccione una opción</option>
-                    <option value="peticion">Petición</option>
-                    <option value="queja">Queja</option>
-                    <option value="reclamo">Reclamo</option>
-                    <option value="sugerencia">Sugerencia</option>
-                    <option value="felicitacion">Felicitación</option>
-                  </select>
-                  <label for="tipo">Tipo de solicitud</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group mb-4">
-              <label for="calificacion" class="form-label">¿Cómo calificaría nuestro servicio?</label>
-              <div class="star-rating" id="calificacion">
-                <i class="fas fa-star star" data-value="1"></i>
-                <i class="fas fa-star star" data-value="2"></i>
-                <i class="fas fa-star star" data-value="3"></i>
-                <i class="fas fa-star star" data-value="4"></i>
-                <i class="fas fa-star star" data-value="5"></i>
-              </div>
-              <input type="hidden" id="rating-value" name="rating" value="0">
-            </div>
+            <input type="hidden" id="calificacion-comida" name="calificacionComida" value="0">
+            <input type="hidden" id="calificacion-servicio" name="calificacionServicio" value="0">
+            <input type="hidden" id="calificacion-limpieza" name="calificacionLimpieza" value="0">
+            <input type="hidden" id="calificacion-precio" name="calificacionPrecio" value="0">
+            <input type="hidden" id="calificacion-ambiente" name="calificacionAmbiente" value="0">
+            <input type="hidden" id="idPedidoCalificar" value="">
 
             <div class="form-floating mb-3">
-              <textarea class="form-control" id="mensaje" style="height: 150px" placeholder="Escribe tu mensaje aquí" required></textarea>
-              <label for="mensaje">Detalle de tu solicitud</label>
+              <textarea class="form-control" id="comentario" style="height: 120px" placeholder="Cuéntanos tu experiencia" required></textarea>
+              <label for="comentario">Cuéntanos tu experiencia</label>
             </div>
-            
-            <div class="form-floating mb-4">
-              <textarea class="form-control" id="sugerencias" style="height: 100px" placeholder="¿Cómo podemos mejorar?"></textarea>
-              <label for="sugerencias">Sugerencias o comentarios adicionales</label>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="recomendaria" checked>
+              <label class="form-check-label" for="recomendaria">
+                <i class="fas fa-thumbs-up"></i> Recomendaría este restaurante a amigos y familiares
+              </label>
             </div>
 
             <div class="text-center">
               <button type="submit" class="btn btn-submit px-5 py-3">
-                <i class="fas fa-paper-plane me-2"></i>Enviar
+                <i class="fas fa-paper-plane me-2"></i>Enviar Calificación
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje para usuarios no autenticados -->
+    <div class="row" id="mensajeNoAutenticado" style="display: none;">
+      <div class="col-md-12">
+        <div class="alert alert-warning text-center">
+          <i class="fas fa-exclamation-triangle"></i> 
+          <strong>¡Inicia sesión para calificar!</strong><br>
+          Solo los clientes registrados que hayan realizado pedidos pueden dejar calificaciones.
+          <br><br>
+          <a href="/login.html" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje para usuarios sin pedidos -->
+    <div class="row" id="mensajeSinPedidos" style="display: none;">
+      <div class="col-md-12">
+        <div class="alert alert-info text-center">
+          <i class="fas fa-info-circle"></i> 
+          <strong>¡Aún no has realizado pedidos!</strong><br>
+          Para dejar una calificación, primero debes realizar un pedido y esperar a que sea entregado.
+          <br><br>
+          <a href="/gestion-de-menus.html" class="btn btn-primary">Ver Menú</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de comentarios recientes -->
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h3 class="text-center mb-4">Comentarios Recientes</h3>
+        
+        <div id="comentariosRecientes" class="comentarios-container">
+          <!-- Los comentarios se cargarán dinámicamente aquí -->
+        </div>
+        <div class="text-center mt-3">
+          <button class="btn btn-outline-primary" id="cargarMasComentarios">
+            <i class="fas fa-plus-circle"></i> Cargar más comentarios
+          </button>
         </div>
       </div>
     </div>
@@ -129,9 +306,197 @@
     <p>© 2025 Restaurante Maranatha. Todos los derechos reservados.</p>
   </footer>
 
+  <!-- Modal de confirmación -->
+  <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">¡Gracias por tu calificación!</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+          <p class="mt-3">Tu opinión es muy valiosa para nosotros. Nos ayuda a mejorar continuamente nuestro servicio.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal para editar comentario -->
+  <div class="modal fade" id="modalEditarComentario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Editar mi comentario</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditarComentario">
+            <input type="hidden" id="idComentarioEditar" value="">
+            
+            <div class="categorias-calificacion mb-4">
+              <h6 class="mb-3">Actualizar calificaciones</h6>
+              
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-utensils"></i> Calidad de la comida
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="comida-edit">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-concierge-bell"></i> Servicio al cliente
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="servicio-edit">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-broom"></i> Limpieza e higiene
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="limpieza-edit">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-dollar-sign"></i> Relación calidad-precio
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="precio-edit">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="categoria-item mb-3">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <label class="categoria-label">
+                      <i class="fas fa-store"></i> Ambiente del lugar
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="star-rating" data-categoria="ambiente-edit">
+                      <i class="fas fa-star star" data-value="1"></i>
+                      <i class="fas fa-star star" data-value="2"></i>
+                      <i class="fas fa-star star" data-value="3"></i>
+                      <i class="fas fa-star star" data-value="4"></i>
+                      <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <textarea class="form-control" id="comentarioEditar" style="height: 120px" required></textarea>
+              <label for="comentarioEditar">Tu comentario actualizado</label>
+            </div>
+            
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="recomendariaEditar">
+              <label class="form-check-label" for="recomendariaEditar">
+                <i class="fas fa-thumbs-up"></i> Recomendaría este restaurante
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="guardarEdicionComentario()">
+            <i class="fas fa-save"></i> Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para responder comentario -->
+  <div class="modal fade" id="modalResponderComentario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Responder comentario</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formResponderComentario">
+            <input type="hidden" id="idComentarioResponder" value="">
+            
+            <div class="mb-3">
+              <label class="form-label">Respondiendo a:</label>
+              <div class="alert alert-light">
+                <strong id="autorComentarioOriginal">Nombre</strong>
+                <p class="mb-0 mt-1" id="textoComentarioOriginal">Comentario...</p>
+              </div>
+            </div>
+            
+            <div class="form-floating">
+              <textarea class="form-control" id="respuestaComentario" style="height: 100px" placeholder="Tu respuesta" required></textarea>
+              <label for="respuestaComentario">Tu respuesta</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-info" onclick="enviarRespuesta()">
+            <i class="fas fa-reply"></i> Enviar respuesta
+          </button>
+        </div>
+      </div>
+    </div>
+
+
   <!-- Bootstrap JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
-  
   <script src="JS/redes.js"></script>
 </body>
 </html>

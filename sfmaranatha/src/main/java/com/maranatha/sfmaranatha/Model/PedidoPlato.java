@@ -94,7 +94,7 @@ public class PedidoPlato {
         // JPA poblará los campos de this.id a partir de this.pedido y this.plato debido a @MapsId
     }
 
-    // Getters y Setters (sin cambios)
+    // Getters y Setters 
 
     public PedidoPlatoKey getId() {
         return id;

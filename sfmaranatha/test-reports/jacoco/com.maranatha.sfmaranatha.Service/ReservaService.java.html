@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Service</a> &gt; <span class="el_source">ReservaService.java</span></div><h1>ReservaService.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Service;
+
+import com.maranatha.sfmaranatha.Model.*;
+import com.maranatha.sfmaranatha.Repository.*;
+import com.maranatha.sfmaranatha.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="nc" id="L16">public class ReservaService {</span>
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private MesaRepository mesaRepository;
+    
+    @Autowired
+    private PedidoService pedidoService;
+    
+    @Autowired
+    private PlatoRepository platoRepository;
+
+    /**
+     * Crear una nueva reserva
+     */
+    @Transactional
+    public Reserva crearReserva(ReservaRequestDTO datosReserva) throws Exception {
+        // Buscar el usuario
+<span class="nc" id="L39">        Usuario usuario = usuarioRepository.findById(datosReserva.getIdUsuario())</span>
+<span class="nc" id="L40">            .orElseThrow(() -&gt; new Exception(&quot;Usuario no encontrado&quot;));</span>
+
+        // Verificar disponibilidad de la mesa
+<span class="nc" id="L43">        Mesa mesa = mesaRepository.findAll().stream()</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            .filter(m -&gt; m.getNumero() == datosReserva.getNumeroMesa())</span>
+<span class="nc" id="L45">            .findFirst()</span>
+<span class="nc" id="L46">            .orElseThrow(() -&gt; new Exception(&quot;Mesa no encontrada&quot;));</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (!mesa.getEstado().equals(&quot;Disponible&quot;)) {</span>
+<span class="nc" id="L49">            throw new Exception(&quot;La mesa no está disponible&quot;);</span>
+        }
+
+        // Crear la reserva
+<span class="nc" id="L53">        Reserva nuevaReserva = new Reserva();</span>
+<span class="nc" id="L54">        nuevaReserva.setUsuario(usuario);</span>
+<span class="nc" id="L55">        nuevaReserva.setFechaReserva(datosReserva.getFechaReserva());</span>
+<span class="nc" id="L56">        nuevaReserva.setHoraReserva(datosReserva.getHoraReserva());</span>
+<span class="nc" id="L57">        nuevaReserva.setNumeroPersonas(datosReserva.getNumeroPersonas());</span>
+<span class="nc" id="L58">        nuevaReserva.setEstado(&quot;CONFIRMADA&quot;);</span>
+<span class="nc" id="L59">        nuevaReserva.setIdRestaurante(1); // Por defecto</span>
+<span class="nc" id="L60">        nuevaReserva.setNumeroMesa(datosReserva.getNumeroMesa());</span>
+
+        // Guardar la reserva
+<span class="nc" id="L63">        Reserva reservaGuardada = reservaRepository.save(nuevaReserva);</span>
+
+        // Si hay pedido anticipado, crearlo
+<span class="nc bnc" id="L66" title="All 4 branches missed.">        if (datosReserva.getPlatos() != null &amp;&amp; !datosReserva.getPlatos().isEmpty()) {</span>
+<span class="nc" id="L67">            crearPedidoAnticipado(reservaGuardada, usuario, datosReserva);</span>
+        }
+
+        // Marcar la mesa como ocupada
+<span class="nc" id="L71">        mesa.setEstado(&quot;Ocupada&quot;);</span>
+<span class="nc" id="L72">        mesaRepository.save(mesa);</span>
+
+<span class="nc" id="L74">        return reservaGuardada;</span>
+    }
+
+    /**
+     * Crear pedido anticipado para la reserva
+     */
+    private void crearPedidoAnticipado(Reserva reserva, Usuario usuario, ReservaRequestDTO datosReserva) {
+        try {
+            // Convertir los platos del DTO de reserva al formato esperado por PedidoRequestDTO
+<span class="nc" id="L83">            List&lt;LineaPedidoDTO&gt; items = datosReserva.getPlatos().stream()</span>
+<span class="nc" id="L84">                .map(plato -&gt; {</span>
+<span class="nc" id="L85">                    LineaPedidoDTO item = new LineaPedidoDTO();</span>
+<span class="nc" id="L86">                    item.setPlatoId(plato.getPlatoId());</span>
+<span class="nc" id="L87">                    item.setCantidad(plato.getCantidad());</span>
+<span class="nc" id="L88">                    return item;</span>
+                })
+<span class="nc" id="L90">                .toList();</span>
+
+            // Crear el DTO del pedido
+<span class="nc" id="L93">            PedidoRequestDTO pedidoDTO = new PedidoRequestDTO();</span>
+<span class="nc" id="L94">            pedidoDTO.setSolicitanteUsuarioId(usuario.getIdUsuario());</span>
+<span class="nc" id="L95">            pedidoDTO.setReservaId(reserva.getIdReserva().intValue());</span>
+<span class="nc" id="L96">            pedidoDTO.setItems(items);</span>
+<span class="nc" id="L97">            pedidoDTO.setMetodoPago(datosReserva.getMetodoPago());</span>
+<span class="nc" id="L98">            pedidoDTO.setDescripcion(&quot;Pedido anticipado para reserva #&quot; + reserva.getIdReserva());</span>
+<span class="nc" id="L99">            pedidoDTO.setHoraEntregaRestaurante(datosReserva.getHoraReserva().toString());</span>
+<span class="nc" id="L100">            pedidoDTO.setParaInvitadoPorEncargado(false);</span>
+
+            // Crear el pedido
+<span class="nc" id="L103">            pedidoService.crearPedido(pedidoDTO);</span>
+<span class="nc" id="L104">        } catch (Exception e) {</span>
+            // Log del error pero no fallar la reserva
+<span class="nc" id="L106">            System.err.println(&quot;Error al crear pedido anticipado: &quot; + e.getMessage());</span>
+<span class="nc" id="L107">        }</span>
+<span class="nc" id="L108">    }</span>
+
+    /**
+     * Obtener reservas por usuario
+     */
+    public List&lt;Reserva&gt; obtenerReservasPorUsuario(Integer idUsuario) {
+<span class="nc" id="L114">        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (usuario != null) {</span>
+<span class="nc" id="L116">            return usuario.getReservas();</span>
+        }
+<span class="nc" id="L118">        return List.of();</span>
+    }
+
+    /**
+     * Obtener reserva por ID
+     */
+    public Reserva obtenerReservaPorId(Long idReserva) throws Exception {
+<span class="nc" id="L125">        return reservaRepository.findById(idReserva)</span>
+<span class="nc" id="L126">            .orElseThrow(() -&gt; new Exception(&quot;Reserva no encontrada&quot;));</span>
+    }
+
+    /**
+     * Actualizar estado de reserva
+     */
+    @Transactional
+    public Reserva actualizarEstadoReserva(Long idReserva, String nuevoEstado) throws Exception {
+<span class="nc" id="L134">        Reserva reserva = obtenerReservaPorId(idReserva);</span>
+<span class="nc" id="L135">        reserva.setEstado(nuevoEstado);</span>
+<span class="nc" id="L136">        return reservaRepository.save(reserva);</span>
+    }
+
+    /**
+     * Cancelar reserva
+     */
+    @Transactional
+    public void cancelarReserva(Long idReserva) throws Exception {
+<span class="nc" id="L144">        Reserva reserva = obtenerReservaPorId(idReserva);</span>
+        
+        // Cambiar estado a cancelada
+<span class="nc" id="L147">        reserva.setEstado(&quot;CANCELADA&quot;);</span>
+<span class="nc" id="L148">        reservaRepository.save(reserva);</span>
+        
+        // Liberar la mesa
+<span class="nc" id="L151">        List&lt;Mesa&gt; mesas = mesaRepository.findAll();</span>
+<span class="nc" id="L152">        Mesa mesa = mesas.stream()</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            .filter(m -&gt; m.getNumero() == reserva.getNumeroMesa())</span>
+<span class="nc" id="L154">            .findFirst()</span>
+<span class="nc" id="L155">            .orElse(null);</span>
+            
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (mesa != null) {</span>
+<span class="nc" id="L158">            mesa.setEstado(&quot;Disponible&quot;);</span>
+<span class="nc" id="L159">            mesaRepository.save(mesa);</span>
+        }
+        
+        // Cancelar pedidos asociados si existen
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (reserva.getPedidos() != null) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            for (Pedido pedido : reserva.getPedidos()) {</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                if (pedido.getEstado().equals(&quot;PENDIENTE&quot;)) {</span>
+<span class="nc" id="L166">                    pedido.setEstado(&quot;CANCELADO&quot;);</span>
+                }
+<span class="nc" id="L168">            }</span>
+        }
+<span class="nc" id="L170">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

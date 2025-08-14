@@ -3,32 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenida Administrador</title>
+  <title>Panel de Administración - Restaurante Maranatha</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="CSS/estilo-pantalla-admin.css">
 </head>
 <body>
-
-  <div class="contenedor">
-    <h1>¡Bienvenido, Administrador/a!</h1>
-    <p>¿Por dónde deseas navegar hoy?</p>
-
-    <div class="opciones">
-        <a href="#menu">Gestión de Menús</a>
-        <a href="#reservas">Reservas de Mesas</a>
-        <a href="#pedidos">Gestión de Pedidos</a>
-        <a href="#pagos">Gestión de Pagos</a>
-        <a href="#reportes">Reportes de Ventas</a>
-        <a href="#lealtad">Programa de Lealtad</a>
-        <a href="#pqr">PQR de Clientes</a>
-        <a href="#notificaciones">Notificaciones</a>
-        <a href="#domicilios">Entregas a Domicilio</a>
-        <a href="#usuarios">Registro y Usuarios</a>
+  <!-- Header con información del usuario -->
+  <header class="admin-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="logo-section">
+            <div class="logo-circle">
+              <span class="logo-r">R</span>
+              <span class="logo-m">M</span>
+            </div>
+            <div class="header-text">
+              <h2>Restaurante Maranatha</h2>
+              <p>Panel de Administración</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="user-info">
+            <span class="welcome-text">Bienvenido, <strong id="nombreAdmin">Administrador</strong></span>
+            <button class="btn btn-logout" id="cerrarSesion">
+              <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <button id="cerrarSesion">Cerrar Sesión</button>
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Título y descripción -->
+      <div class="text-center mb-5 animate__animated animate__fadeInDown">
+        <h1 class="display-4">Centro de Control Administrativo</h1>
+        <p class="lead">Gestione todas las operaciones del restaurante desde un solo lugar</p>
+      </div>
+
+      <!-- Tarjetas de opciones principales -->
+      <div class="row g-4">
+        <!-- Gestión de Platillos y Menús -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp">
+          <div class="admin-card" onclick="window.location.href='/admin.html'">
+            <div class="card-icon bg-primary">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <h3>Gestión de Platillos</h3>
+            <p>Administre el menú, agregue nuevos platillos, actualice precios y descripciones</p>
+            <div class="card-footer">
+              <span>Ir a gestión <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión de Mesas -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+          <div class="admin-card" onclick="window.location.href='/admin.html#mesas'">
+            <div class="card-icon bg-success">
+              <i class="fas fa-chair"></i>
+            </div>
+            <h3>Control de Mesas</h3>
+            <p>Habilite o deshabilite mesas, visualice el estado actual del restaurante</p>
+            <div class="card-footer">
+              <span>Administrar mesas <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gestión de Pedidos y Reservas -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+          <div class="admin-card" onclick="window.location.href='/Gestion-de-reservas.html'">
+            <div class="card-icon bg-warning">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h3>Pedidos y Reservas</h3>
+            <p>Gestione pedidos pendientes, entregados y las reservas de mesas</p>
+            <div class="card-footer">
+              <span>Ver pedidos <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Registro de Usuarios -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+          <div class="admin-card" onclick="window.location.href='/formulario-de-registro.html'">
+            <div class="card-icon bg-info">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h3>Registro de Personal</h3>
+            <p>Registre nuevos administradores o encargados en el sistema</p>
+            <div class="card-footer">
+              <span>Registrar usuario <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reportes de Ventas -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+          <div class="admin-card" onclick="window.location.href='/reporte-de-ventas.html'">
+            <div class="card-icon bg-purple">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Reportes de Ventas</h3>
+            <p>Analice las ventas, genere reportes y visualice estadísticas</p>
+            <div class="card-footer">
+              <span>Ver reportes <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PQR y Feedback -->
+        <div class="col-lg-4 col-md-6 animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+          <div class="admin-card" onclick="window.location.href='/redes.html'">
+            <div class="card-icon bg-danger">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3>PQR de Clientes</h3>
+            <p>Revise peticiones, quejas y reclamos de los clientes</p>
+            <div class="card-footer">
+              <span>Gestionar PQR <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de accesos rápidos -->
+      <div class="quick-stats mt-5">
+        <div class="row text-center">
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card animate__animated animate__fadeIn">
+              <i class="fas fa-shopping-cart stat-icon"></i>
+              <h4 id="pedidosPendientes">0</h4>
+              <p>Pedidos Pendientes</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.1s">
+              <i class="fas fa-calendar-check stat-icon"></i>
+              <h4 id="reservasHoy">0</h4>
+              <p>Reservas Hoy</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+              <i class="fas fa-chair stat-icon"></i>
+              <h4 id="mesasDisponibles">0</h4>
+              <p>Mesas Disponibles</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.3s">
+              <i class="fas fa-dollar-sign stat-icon"></i>
+              <h4 id="ventasHoy">$0</h4>
+              <p>Ventas de Hoy</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </main>
 
-    <script src="/JS/pantalla-admin.js"></script>
+  <!-- Footer -->
+  <footer class="admin-footer">
+    <div class="container text-center">
+      <p>&copy; 2025 Restaurante Maranatha - Sistema de Administración</p>
+    </div>
+  </footer>
 
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="JS/pantalla-admin.js"></script>
 </body>
 </html>

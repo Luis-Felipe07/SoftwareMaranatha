@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Plato.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Model</a> &gt; <span class="el_source">Plato.java</span></div><h1>Plato.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; 
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+/**
+ * Representa la entidad Plato, que forma parte de un Menú
+ * y puede incluirse en varios pedidos.
+ */
+@Entity
+@Table(name = &quot;plato&quot;)
+@JsonIgnoreProperties({&quot;hibernateLazyInitializer&quot;, &quot;handler&quot;}) 
+public class Plato {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;id_plato&quot;)
+    private Integer idPlato;
+
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = &quot;id_menu&quot;, nullable = false)
+    @JsonBackReference(&quot;menu-platos&quot;) // Referencia al lado &quot;padre&quot; en Menu
+    private Menu menu;
+
+    @Column(name = &quot;nombre_plato&quot;, length = 100, nullable = false)
+    private String nombrePlato;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
+
+    @Column(length = 255)
+    private String descripcion;
+
+    @Column(name = &quot;imagen_url&quot;, length = 255)
+    private String imagenUrl;
+
+<span class="nc" id="L39">    public Plato() {}</span>
+
+    // Getters y Setters 
+
+    public Integer getIdPlato() {
+<span class="nc" id="L44">        return idPlato;</span>
+    }
+
+    public void setIdPlato(Integer idPlato) {
+<span class="nc" id="L48">        this.idPlato = idPlato;</span>
+<span class="nc" id="L49">    }</span>
+
+    public Menu getMenu() {
+<span class="nc" id="L52">        return menu;</span>
+    }
+
+    public void setMenu(Menu menu) {
+<span class="nc" id="L56">        this.menu = menu;</span>
+<span class="nc" id="L57">    }</span>
+
+    public String getNombrePlato() {
+<span class="nc" id="L60">        return nombrePlato;</span>
+    }
+
+    public void setNombrePlato(String nombrePlato) {
+<span class="nc" id="L64">        this.nombrePlato = nombrePlato;</span>
+<span class="nc" id="L65">    }</span>
+
+    public BigDecimal getPrecio() {
+<span class="nc" id="L68">        return precio;</span>
+    }
+
+    public void setPrecio(BigDecimal precio) {
+<span class="nc" id="L72">        this.precio = precio;</span>
+<span class="nc" id="L73">    }</span>
+
+    public String getDescripcion() {
+<span class="nc" id="L76">        return descripcion;</span>
+    }
+
+    public void setDescripcion(String descripcion) {
+<span class="nc" id="L80">        this.descripcion = descripcion;</span>
+<span class="nc" id="L81">    }</span>
+
+    public String getImagenUrl() {
+<span class="nc" id="L84">        return imagenUrl;</span>
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+<span class="nc" id="L88">        this.imagenUrl = imagenUrl;</span>
+<span class="nc" id="L89">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

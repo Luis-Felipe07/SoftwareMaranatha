@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pago.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Model</a> &gt; <span class="el_source">Pago.java</span></div><h1>Pago.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Model;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * pago asociado a un Pedido.
+ */
+@Entity
+@Table(name = &quot;pago&quot;)
+public class Pago {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;id_pago&quot;)
+    private Long idPago;
+
+    @OneToOne
+    @JoinColumn(name = &quot;id_pedido&quot;, nullable = false, unique = true)
+    private Pedido pedido;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal monto;
+
+<span class="nc" id="L26">    @Column(name = &quot;fecha_pago&quot;, nullable = false)</span>
+<span class="nc" id="L27">    private LocalDateTime fechaPago = LocalDateTime.now();</span>
+
+    @Column(name = &quot;metodo_pago&quot;, length = 50, nullable = false)
+    private String metodoPago;
+
+<span class="nc" id="L32">    public Pago() {}</span>
+
+    // Getters y Setters
+
+    public Long getIdPago() {
+<span class="nc" id="L37">        return idPago;</span>
+    }
+
+    public void setIdPago(Long idPago) {
+<span class="nc" id="L41">        this.idPago = idPago;</span>
+<span class="nc" id="L42">    }</span>
+
+    public Pedido getPedido() {
+<span class="nc" id="L45">        return pedido;</span>
+    }
+
+    public void setPedido(Pedido pedido) {
+<span class="nc" id="L49">        this.pedido = pedido;</span>
+<span class="nc" id="L50">    }</span>
+
+    public BigDecimal getMonto() {
+<span class="nc" id="L53">        return monto;</span>
+    }
+
+    public void setMonto(BigDecimal monto) {
+<span class="nc" id="L57">        this.monto = monto;</span>
+<span class="nc" id="L58">    }</span>
+
+    public LocalDateTime getFechaPago() {
+<span class="nc" id="L61">        return fechaPago;</span>
+    }
+
+    public void setFechaPago(LocalDateTime fechaPago) {
+<span class="nc" id="L65">        this.fechaPago = fechaPago;</span>
+<span class="nc" id="L66">    }</span>
+
+    public String getMetodoPago() {
+<span class="nc" id="L69">        return metodoPago;</span>
+    }
+
+    public void setMetodoPago(String metodoPago) {
+<span class="nc" id="L73">        this.metodoPago = metodoPago;</span>
+<span class="nc" id="L74">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

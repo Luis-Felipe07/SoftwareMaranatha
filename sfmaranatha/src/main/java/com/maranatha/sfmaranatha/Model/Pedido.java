@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,15 +17,15 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pedido")
-    private Long idPedido;
+    private Long idPedido; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonBackReference("usuario-pedidos") // Referencia al lado "padre" en Usuario
+    @JsonBackReference("usuario-pedidos")
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_reserva") // Puede ser null
+    @JoinColumn(name = "id_reserva")
     @JsonBackReference("reserva-pedidos") 
     private Reserva reserva;
 
@@ -32,7 +33,7 @@ public class Pedido {
     private LocalDateTime fechaPedido = LocalDateTime.now();
 
     @Column(length = 50, nullable = false)
-    private String estado;
+    private String estado = "PENDIENTE";
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
@@ -56,19 +57,22 @@ public class Pedido {
     private String metodoPago;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    
     private Pago pago;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("pedido-items") // Lado "padre" de la relación Pedido-PedidoPlato
-    private List<PedidoPlato> items;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("pedido-items")
+    private List<PedidoPlato> items = new ArrayList<>();
 
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"pedido", "usuario"})
+    private Calificacion calificacion;
+
+    // Constructor, getters y setters...
     public Pedido() {}
-
-    // Getters y Setters (sin cambios)
 
     public Long getIdPedido() {
         return idPedido;
@@ -78,6 +82,7 @@ public class Pedido {
         this.idPedido = idPedido;
     }
 
+    // Resto de getters y setters .
     public Usuario getUsuario() {
         return usuario;
     }
@@ -158,6 +163,8 @@ public class Pedido {
         this.horaEntregaRestaurante = horaEntregaRestaurante;
     }
 
+    
+
     public String getMetodoPago() {
         return metodoPago;
     }
@@ -188,5 +195,17 @@ public class Pedido {
 
     public void setItems(List<PedidoPlato> items) {
         this.items = items;
+    }
+
+    public Calificacion getCalificacion() {
+        return calificacion;
+    }
+
+    public void setCalificacion(Calificacion calificacion) {
+        this.calificacion = calificacion;
+    }
+
+    public boolean fueCalificado() {
+        return this.calificacion != null;
     }
 }

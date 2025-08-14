@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sfmaranatha</a> &gt; <a href="index.source.html" class="el_package">com.maranatha.sfmaranatha.Controllers</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package com.maranatha.sfmaranatha.Controllers;
+
+import com.maranatha.sfmaranatha.Model.Usuario;
+import com.maranatha.sfmaranatha.Service.UsuarioService;
+import com.maranatha.sfmaranatha.dto.LoginRequestDTO;
+import com.maranatha.sfmaranatha.dto.LoginResponseDTO;
+import com.maranatha.sfmaranatha.dto.RegistroUsuarioDTO;
+import com.maranatha.sfmaranatha.dto.RespuestaRegistroDTO;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository; 
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest; 
+import jakarta.servlet.http.HttpSession;      
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+
+@RestController
+@RequestMapping(&quot;/api/usuarios&quot;)
+@Tag(name = &quot;Usuarios&quot;, description = &quot;Manages operations related to clients and system users.&quot;)
+<span class="nc" id="L36">public class UsuarioController {</span>
+
+    @Autowired
+    private UsuarioService miServicioDeUsuarios; 
+
+    @Autowired
+    private BCryptPasswordEncoder miCodificador; 
+
+    /**
+     *
+     * @param datosDeRegistro 
+     * @return 
+     */
+    @PostMapping(
+        value = &quot;/registrar&quot;,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(
+        summary = &quot;Register a new user&quot;,
+        description = &quot;Creates a new user account with the provided details.&quot;
+    )
+    public ResponseEntity&lt;RespuestaRegistroDTO&gt; registrar(
+            @RequestBody RegistroUsuarioDTO datosDeRegistro) {
+        try {
+            
+<span class="nc" id="L62">            Usuario usuarioQueSeCreo = miServicioDeUsuarios.registrarUsuario(datosDeRegistro);</span>
+            
+<span class="nc" id="L64">            RespuestaRegistroDTO miRespuestaPositiva =</span>
+<span class="nc" id="L65">                new RespuestaRegistroDTO(&quot;¡Usuario registrado con éxito!&quot;, &quot;/login.html&quot;, usuarioQueSeCreo.getIdUsuario());</span>
+<span class="nc" id="L66">            return ResponseEntity.ok(miRespuestaPositiva);</span>
+<span class="nc" id="L67">        } catch (RuntimeException ex) {</span>
+            
+<span class="nc" id="L69">            RespuestaRegistroDTO miRespuestaDeError =</span>
+<span class="nc" id="L70">                new RespuestaRegistroDTO(&quot;Error: &quot; + ex.getMessage(), null, null);</span>
+<span class="nc" id="L71">            return ResponseEntity.badRequest().body(miRespuestaDeError);</span>
+        }
+    }
+
+
+    /**
+     * 
+     * @param credenciales 
+     * @param request 
+     * @return 
+     */
+    @PostMapping(
+        value = &quot;/validar&quot;,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(
+        summary = &quot;Validate user credentials and log in&quot;,
+        description = &quot;Validates email and password. If correct, initiates a Spring Security session and returns status.&quot;
+    )
+    public ResponseEntity&lt;LoginResponseDTO&gt; validarCredenciales(
+            @RequestBody LoginRequestDTO credenciales, HttpServletRequest request) {
+        
+<span class="nc" id="L94">        Optional&lt;Usuario&gt; usuarioEncontradoOpt = miServicioDeUsuarios.buscarPorCorreo(credenciales.getCorreo());</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (usuarioEncontradoOpt.isEmpty()) {</span>
+            
+<span class="nc" id="L97">            LoginResponseDTO respuestaNoEncontrado = new LoginResponseDTO(false, null, &quot;Usuario no encontrado&quot;, null, null);</span>
+<span class="nc" id="L98">            return ResponseEntity.status(404).body(respuestaNoEncontrado);</span>
+        }
+
+<span class="nc" id="L101">        Usuario usuario = usuarioEncontradoOpt.get();</span>
+       
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (!miCodificador.matches(credenciales.getContrasena(), usuario.getContrasena())) {</span>
+            
+<span class="nc" id="L105">            LoginResponseDTO respuestaClaveIncorrecta = new LoginResponseDTO(false, null, &quot;Contraseña incorrecta&quot;, null, null);</span>
+<span class="nc" id="L106">            return ResponseEntity.status(401).body(respuestaClaveIncorrecta);</span>
+        }
+
+        
+<span class="nc" id="L110">        List&lt;GrantedAuthority&gt; authorities = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L111">        authorities.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + usuario.getTipoUsuario().toUpperCase()));</span>
+       
+
+       
+<span class="nc" id="L115">        Authentication authentication = new UsernamePasswordAuthenticationToken(usuario.getCorreo(), null, authorities);</span>
+
+        
+<span class="nc" id="L118">        SecurityContextHolder.getContext().setAuthentication(authentication);</span>
+
+        
+<span class="nc" id="L121">        HttpSession session = request.getSession(true); </span>
+<span class="nc" id="L122">        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());</span>
+
+        
+<span class="nc" id="L125">        LoginResponseDTO respuestaExitosa =</span>
+<span class="nc" id="L126">            new LoginResponseDTO(true, usuario.getTipoUsuario(), &quot;Login correcto y sesión iniciada&quot;, usuario.getNombre(), usuario.getIdUsuario());</span>
+<span class="nc" id="L127">        return ResponseEntity.ok(respuestaExitosa);</span>
+    }
+
+    /**
+     * 
+     * 
+     * @param principal 
+     * @param request 
+     * @return 
+     */
+    @GetMapping(&quot;/sesion-actual&quot;)
+    @Operation(
+        summary = &quot;Get current session user data&quot;,
+        description = &quot;Returns basic data of the authenticated user, if one exists.&quot;
+    )
+    public ResponseEntity&lt;?&gt; obtenerUsuarioEnSesion(java.security.Principal principal, HttpServletRequest request) {
+        
+
+<span class="nc bnc" id="L145" title="All 4 branches missed.">        if (principal != null &amp;&amp; principal.getName() != null) {</span>
+            
+<span class="nc" id="L147">            Optional&lt;Usuario&gt; usuarioOpt = miServicioDeUsuarios.buscarPorCorreo(principal.getName());</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            if (usuarioOpt.isPresent()) {</span>
+<span class="nc" id="L149">                Usuario usuario = usuarioOpt.get();</span>
+                
+<span class="nc" id="L151">                return ResponseEntity.ok(Map.of(</span>
+<span class="nc" id="L152">                    &quot;autenticado&quot;, true,</span>
+<span class="nc" id="L153">                    &quot;idUsuario&quot;, usuario.getIdUsuario(),</span>
+<span class="nc" id="L154">                    &quot;nombre&quot;, usuario.getNombre(),</span>
+<span class="nc" id="L155">                    &quot;apellido&quot;, usuario.getApellido(),</span>
+<span class="nc" id="L156">                    &quot;correo&quot;, usuario.getCorreo(),</span>
+<span class="nc" id="L157">                    &quot;telefono&quot;, usuario.getTelefono(),</span>
+<span class="nc" id="L158">                    &quot;direccion&quot;, usuario.getDireccion(),</span>
+<span class="nc" id="L159">                    &quot;tipoUsuario&quot;, usuario.getTipoUsuario() </span>
+                ));
+            } else {
+                 
+<span class="nc" id="L163">                return ResponseEntity.ok(Map.of(&quot;autenticado&quot;, false, &quot;mensaje&quot;, &quot;Principal encontrado pero usuario no en BD.&quot;));</span>
+            }
+        }
+        
+<span class="nc" id="L167">        return ResponseEntity.ok(Map.of(&quot;autenticado&quot;, false));</span>
+    }
+
+    /**
+     * 
+     * @param correo 
+     * @return 
+     */
+    @GetMapping(&quot;/check&quot;)
+    @Operation(
+        summary = &quot;Check user existence by email&quot;,
+        description = &quot;Checks if an email is already registered and returns its status and ID if it exists.&quot;
+    )
+    public ResponseEntity&lt;?&gt; verificarUsuarioPorEmail(@RequestParam String correo) {
+<span class="nc" id="L181">        Optional&lt;Usuario&gt; usuarioOpt = miServicioDeUsuarios.buscarPorCorreo(correo);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (usuarioOpt.isPresent()) {</span>
+            
+<span class="nc" id="L184">            return ResponseEntity.ok(Map.of(&quot;existe&quot;, true, &quot;usuarioId&quot;, usuarioOpt.get().getIdUsuario()));</span>
+        } else {
+            
+<span class="nc" id="L187">            return ResponseEntity.ok(Map.of(&quot;existe&quot;, false, &quot;usuarioId&quot;, null));</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
